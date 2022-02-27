@@ -29,13 +29,50 @@ Window {
     height: 500
     visible: true
     title: qsTr("RAVEN Downloader")
+    Item {
+        id: buttons
+        height: 70
+        Rectangle{
+            id: buttons1
+            height: children.height
+            width: children.width
+
+            anchors {
+                left: parent.left
+                top: parent.top
+                topMargin: 5
+                leftMargin: 5
+            }
+
+            Image {
+                id: icon1
+                source: "icons/paste_button.png"
+                height: 50
+                width: 50
+                anchors {
+                    top: parent.top
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.info("image clicked!")
+                }
+            }
+            Text {
+                anchors.top: icon1.bottom
+                anchors.left: parent.left
+                text: qsTr("Paste Button")
+            }
+        }
+    }
 
     RowLayout {
         id: urlContainer
         anchors {
             left: parent.left
             right: parent.right
-            top: parent.top
+            top: buttons.bottom
             topMargin: 5
             leftMargin: 5
             rightMargin: 5
@@ -52,7 +89,7 @@ Window {
 
             highlighted: true
             text: "Submit"
-            //onClicked:
+            onClicked: console.info("SubmitButton clicked!")
         }
     }
 }
