@@ -35,8 +35,8 @@ Rectangle{
 
         Image {
             id: buttonIcon
-            height: 50
-            width: 50
+            height: 20
+            width: 20
             anchors.horizontalCenter: parent.horizontalCenter
         }
         Text {
