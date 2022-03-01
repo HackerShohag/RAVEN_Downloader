@@ -25,58 +25,129 @@ import QtQuick.Window
 import QtQuick.Layouts
 
 Window {
+    id: mainWindow
     width: 400
     height: 500
     visible: true
-    title: qsTr("RAVEN Downloader")
-    RowLayout {
-        id: buttons
-        height: 70
-        spacing: 20
-        Layout.topMargin: 5
-        Layout.leftMargin: 5
-        Layout.rightMargin: 5
-        HeaderButton {
-            source: "icons/paste_button.svg"
-            name: "Paste Link"
-        }
-        HeaderButton {
-            source: "icons/history_button.png"
-            name: "History"
-        }
-        HeaderButton {
-            source: "icons/help_button.png"
-            name: "Need Help?"
-        }
-        HeaderButton {
-            source: "icons/about_button.png"
-            name: "Credits"
-        }
+    title: qsTr("RAVEN Youtube Downloader")
+
+    function paste() {
+        console.log("Not defined yet")
+    }
+    function toggleToHistory() {
+        console.log("Not defined yet too")
+    }
+    function toggleToSettings() {
+        console.log("Not defined yet too too")
+    }
+    function toggleToAbout() {
+        console.log("Not defined yet too too too")
     }
 
-    RowLayout {
-        id: urlContainer
-        anchors {
-            left: parent.left
-            right: parent.right
-            top: buttons.bottom
-            topMargin: 10
-            leftMargin: 5
-            rightMargin: 5
-        }
-        TextField {
-            id: urlField
-            Layout.fillWidth: true
+    Item {
+        id: header
+        anchors.topMargin: 5
 
-            placeholderText: qsTr("Enter your link")
-            focus: true
-        }
-        Button {
-            id: submitButton
+        height: childrenRect.height
+        width: parent.width
 
-            highlighted: true
-            text: "Submit"
-            onClicked: console.info("SubmitButton clicked!")
+        RowLayout {
+            id: headerButtons
+
+            height: 70
+            width: parent.width
+            spacing: 2
+
+            HeaderButton {
+                id: pasteButton
+
+                buttonWidth: parent.width / 4
+                source: "icons/paste_button.svg"
+                name: "Paste Link"
+                buttonFunction: mainWindow.paste
+            }
+            HeaderButton {
+                id: historyButton
+
+                buttonWidth: parent.width / 4
+                source: "icons/history_button.png"
+                name: "History"
+                buttonFunction: mainWindow.toggleToHistory
+            }
+            HeaderButton {
+                id: settingsButton
+
+                buttonWidth: parent.width / 4
+                source: "icons/help_button.png"
+                name: "Preferences"
+                buttonFunction: mainWindow.toggleToSettings
+            }
+            HeaderButton {
+                id: aboutButton
+
+                buttonWidth: parent.width / 4
+                source: "icons/about_button.png"
+                name: "Credits"
+                buttonFunction: mainWindow.toggleToAbout
+            }
+        }
+
+        RowLayout {
+            id: urlContainer
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: headerButtons.bottom
+                topMargin: 10
+                leftMargin: 5
+                rightMargin: 5
+            }
+            TextField {
+                id: urlField
+                Layout.fillWidth: true
+
+                placeholderText: qsTr("Enter your link")
+                focus: true
+            }
+            Button {
+                id: submitButton
+
+                highlighted: true
+                text: "Submit"
+                onClicked: console.info("SubmitButton clicked!")
+            }
         }
     }
+//    Rectangle {
+//        anchors {
+//            top: header.bottom
+//            margins: 5
+//        }
+//        height: parent.height - header.height
+//        width: parent.width
+//        color: "red"
+
+//        Flickable {
+//            id: flickable
+//            width: parent.width
+//            height: parent.height
+//            contentWidth: parent.width
+//            contentHeight: image.height
+
+//            Image {
+//                id: image
+//                source: "icons/paste_button.svg" }
+//        }
+
+
+//        Rectangle {
+//            id: scrollbar
+//            anchors.right: flickable.right
+//            y: flickable.visibleArea.yPosition * flickable.height
+//            width: 10
+//            height: flickable.visibleArea.heightRatio * flickable.height
+//            color: "black"
+//        }
+
+//    }
 }

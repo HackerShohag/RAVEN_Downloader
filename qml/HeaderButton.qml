@@ -18,49 +18,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
+import QtQuick
+import QtQuick.Layouts
 
 Rectangle{
+    id: button
+
     property alias source: buttonIcon.source
     property alias name: buttonText.text
+    property alias buttonWidth: button.width
+    property var buttonFunction: null
 
-    id: pasteButton
-    height: buttons.height
-    width: buttonText.width
-    color: 'white'
+    height: parent.height
+//    Layout.minimumWidth: buttonText.width
+    color: clickArea.pressed ? 'grey' : 'white'
     radius: 5
-    anchors.topMargin: 5
-    anchors.leftMargin: 5
-    anchors.bottomMargin: 5
 
-        Image {
-            id: buttonIcon
-            height: 50
-            width: 50
-            anchors.horizontalCenter: parent.horizontalCenter
-        }
-        Text {
-            anchors.top: buttonIcon.bottom
-            id: buttonText
-        }
+    Image {
+        id: buttonIcon
+
+        fillMode: Image.Stretch
+        Layout.topMargin: 5
+        height: 50
+        width: 50
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
+    Text {
+        id: buttonText
+        anchors.top: buttonIcon.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+    }
 
     MouseArea {
+        id: clickArea
         anchors.fill: parent
         hoverEnabled : true
         onClicked: {
             console.info( name + " clicked!")
-            pasteButton.color = "white"
-        }
-        onPressed: {
-            pasteButton.color = "grey"
+            buttonFunction()
         }
         onEntered: {
-            pasteButton.border.width = 1
-            pasteButton.border.color = 'grey'
+            button.border.width = 1
         }
         onExited: {
-            pasteButton.border.width = 0
-            pasteButton.border.color = 'white'
+            button.border.width = 0
         }
     }
 }
