@@ -39,8 +39,8 @@ Rectangle{
 
         fillMode: Image.Stretch
         Layout.topMargin: 5
-        height: 50
-        width: 50
+        height: 20
+        width: 20
         anchors.horizontalCenter: parent.horizontalCenter
     }
     Text {

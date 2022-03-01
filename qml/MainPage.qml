@@ -57,7 +57,7 @@ ApplicationWindow {
         RowLayout {
             id: headerButtons
 
-            height: 70
+            height: 40
             width: parent.width
             spacing: 5
             
