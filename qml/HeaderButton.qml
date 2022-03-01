@@ -30,7 +30,9 @@ Rectangle{
     property var buttonFunction: null
 
     height: parent.height
-//    Layout.minimumWidth: buttonText.width
+    Layout.topMargin: 3
+    Layout.leftMargin: 2
+    Layout.rightMargin: 2
     color: clickArea.pressed ? 'grey' : 'white'
     radius: 5
 
@@ -38,7 +40,6 @@ Rectangle{
         id: buttonIcon
 
         fillMode: Image.Stretch
-        Layout.topMargin: 5
         height: 20
         width: 20
         anchors.horizontalCenter: parent.horizontalCenter

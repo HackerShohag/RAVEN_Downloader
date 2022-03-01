@@ -59,7 +59,7 @@ ApplicationWindow {
 
             height: 40
             width: parent.width
-            spacing: 5
+//            spacing: 5
             
             HeaderButton {
                 id: historyButton
@@ -88,7 +88,7 @@ ApplicationWindow {
             HeaderButton {
                 id: aboutButton
 
-                buttonWidth: parent.width / 4
+                buttonWidth: parent.width / 4 - 8
                 source: "icons/about_button.svg"
                 name: "Credits"
                 buttonFunction: mainWindow.toggleToAbout
