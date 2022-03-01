@@ -24,12 +24,12 @@ import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
 
-Window {
+ApplicationWindow {
     id: mainWindow
     width: 400
     height: 500
     visible: true
-    title: qsTr("RAVEN Youtube Downloader")
+    title: qsTr("RAVEN Downloader")
 
     function paste() {
         console.log("Not defined yet")
@@ -40,8 +40,11 @@ Window {
     function toggleToSettings() {
         console.log("Not defined yet too too")
     }
-    function toggleToAbout() {
+    function toggleToHelp() {
         console.log("Not defined yet too too too")
+    }
+    function toggleToAbout() {
+        console.log("Not defined yet too too too yet")
     }
 
     Item {
@@ -56,37 +59,37 @@ Window {
 
             height: 70
             width: parent.width
-            spacing: 2
-
-            HeaderButton {
-                id: pasteButton
-
-                buttonWidth: parent.width / 4
-                source: "icons/paste_button.svg"
-                name: "Paste Link"
-                buttonFunction: mainWindow.paste
-            }
+            spacing: 5
+            
             HeaderButton {
                 id: historyButton
 
                 buttonWidth: parent.width / 4
-                source: "icons/history_button.png"
+                source: "icons/history_button.svg"
                 name: "History"
                 buttonFunction: mainWindow.toggleToHistory
+            }
+            HeaderButton {
+                id: preferenceButton
+
+                buttonWidth: parent.width / 4
+                source: "icons/preference_button.png"
+                name: "Preferences"
+                buttonFunction: mainWindow.toggleToSettings
             }
             HeaderButton {
                 id: settingsButton
 
                 buttonWidth: parent.width / 4
-                source: "icons/help_button.png"
-                name: "Preferences"
-                buttonFunction: mainWindow.toggleToSettings
+                source: "icons/help_button.svg"
+                name: "Help"
+                buttonFunction: mainWindow.toggleToHelp
             }
             HeaderButton {
                 id: aboutButton
 
                 buttonWidth: parent.width / 4
-                source: "icons/about_button.png"
+                source: "icons/about_button.svg"
                 name: "Credits"
                 buttonFunction: mainWindow.toggleToAbout
             }
@@ -102,9 +105,33 @@ Window {
                 leftMargin: 5
                 rightMargin: 5
             }
+            
+            //Paste button section
+            Item {
+                id: pasteButton
+                width: 25
+                height: 25
+                signal clicked
+                Image {
+                    id: pasteImage
+                    anchors.fill: parent
+                    source: "icons/paste_button.svg"
+                    fillMode: Image.PreserveAspectFit
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    width: 20
+                    height: 20
+                    opacity: 50
+                    onClicked: mainWindow.paste()
+                }
+            }
+            
             TextField {
                 id: urlField
                 Layout.fillWidth: true
+                font.family: "Tahoma"
+                font.italic: true
 
                 placeholderText: qsTr("Enter your link")
                 focus: true
@@ -116,6 +143,7 @@ Window {
                 text: "Submit"
                 onClicked: console.info("SubmitButton clicked!")
             }
+
         }
     }
 //    Rectangle {
@@ -138,7 +166,6 @@ Window {
 //                id: image
 //                source: "icons/paste_button.svg" }
 //        }
-
 
 //        Rectangle {
 //            id: scrollbar
