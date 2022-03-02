@@ -31,6 +31,8 @@ ApplicationWindow {
     visible: true
     title: qsTr("RAVEN Downloader")
 
+    property var allLinks
+
     function paste() {
         console.log("Not defined yet")
     }
@@ -46,6 +48,10 @@ ApplicationWindow {
     function toggleToAbout() {
         console.log("Not defined yet too too too yet")
     }
+    function getLinks(url){
+        allLinks = downloadeng.getDownloadLinks(url)
+        console.log(allLinks)
+    }
 
     Item {
         id: header
@@ -59,7 +65,6 @@ ApplicationWindow {
 
             height: 40
             width: parent.width
-//            spacing: 5
             
             HeaderButton {
                 id: historyButton
@@ -107,11 +112,11 @@ ApplicationWindow {
             }
             
             //Paste button section
-            Item {
+            Rectangle {
                 id: pasteButton
                 width: 25
                 height: 25
-                signal clicked
+                color: "transparent"
                 Image {
                     id: pasteImage
                     anchors.fill: parent
@@ -119,6 +124,7 @@ ApplicationWindow {
                     fillMode: Image.PreserveAspectFit
                 }
                 MouseArea{
+                    id: pasteButtonClickArea
                     anchors.fill: parent
                     width: 20
                     height: 20
@@ -141,9 +147,8 @@ ApplicationWindow {
 
                 highlighted: true
                 text: "Submit"
-                onClicked: console.info("SubmitButton clicked!")
+                onClicked: mainWindow.getLinks(urlField.text)
             }
-
         }
     }
 //    Rectangle {
@@ -164,7 +169,8 @@ ApplicationWindow {
 
 //            Image {
 //                id: image
-//                source: "icons/paste_button.svg" }
+//                source: "icons/paste_button.svg"
+//            }
 //        }
 
 //        Rectangle {
@@ -175,6 +181,5 @@ ApplicationWindow {
 //            height: flickable.visibleArea.heightRatio * flickable.height
 //            color: "black"
 //        }
-
 //    }
 }

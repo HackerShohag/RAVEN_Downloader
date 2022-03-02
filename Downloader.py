@@ -25,11 +25,18 @@ import sys
 
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
+from python.DownloadManager import DownloadManager
 
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
+
+#    DownloadEngine = DownloadManager()
+    DownloadEngine = DownloadManager()
+    engine.rootContext().setContextProperty("downloadeng", DownloadEngine)
+
+
     engine.load(os.fspath(Path(__file__).resolve().parent / "qml/MainPage.qml"))
     if not engine.rootObjects():
         sys.exit(-1)
