@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Main.qml</file>
+        <file>HeaderButton.qml</file>
+        <file>icons/about_button.svg</file>
+        <file>icons/help_button.svg</file>
+        <file>icons/history_button.svg</file>
+        <file>icons/paste_button.svg</file>
+        <file>icons/preference_button.svg</file>
+    </qresource>
+</RCC>
