@@ -25,12 +25,13 @@ import QtQuick.Controls 2.2
 GroupBox {
     id: infoButtonParent
     Layout.fillWidth: true
+    Layout.topMargin: units.gu(1)
     Layout.minimumWidth: units.gu(10)
 
     background: Rectangle {
         y: infoButtonParent.topPadding - infoButtonParent.bottomPadding
         width: parent.width
-        height: parent.height - infoButtonParent.topPadding + infoButtonParent.bottomPadding
+        height: parent.height - infoButtonParent.topPadding + infoButtonParent.bottomPadding - units.gu(1)
         color: "transparent"
         border.color: "#21be2b"
         radius: units.gu(1)
@@ -45,8 +46,9 @@ GroupBox {
     // radius: units.gu(.3)
 
     RowLayout {
+        Layout.alignment: Qt.AlignVCenter
         Image {
-            source: "qrc:///icons/media/" + buttonNames[buttonID]
+            source: "qrc:///assets/media/" + buttonNames[buttonID]
             fillMode: Image.Stretch
             height: units.gu(1)
             width: units.gu(1)

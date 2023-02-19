@@ -2,3 +2,5 @@ build
 .user
 .clickable
 loop.py
+.gitlab-ci.yml
+.vscode

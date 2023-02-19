@@ -23,7 +23,6 @@ import QtQuick.Controls 2.2
 
 GroupBox {
     id: gridBox
-    title: "Grid layout"
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
 
@@ -45,11 +44,11 @@ GroupBox {
         anchors.fill: parent
 
         Image {
-            width: units.gu(5)
+            Layout.preferredWidth: units.gu(5)
             height: units.gu(3)
             fillMode: Image.Stretch
             
-            source: "qrc:///placeholder-video.png"
+            source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
             Layout.fillWidth: true

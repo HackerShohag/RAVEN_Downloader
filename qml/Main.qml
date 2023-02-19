@@ -36,6 +36,7 @@ MainView {
     property int margin: units.gu(1)
 
     Page {
+        id: mainPage
         anchors.fill: parent
 
         header: PageHeader {
@@ -45,85 +46,70 @@ MainView {
 
 
         Component.onCompleted: {
-            width = mainLayout.implicitWidth + 2 * margin
-            height = mainLayout.implicitHeight + 2 * margin
+            width = searchBarLayout.implicitWidth + 2 * margin
+            height = searchBarLayout.implicitHeight + 2 * margin
         }
 
 
         ColumnLayout {
-            id: mainLayout
+            id: searchBarLayout
             anchors.fill: parent
             anchors.margins: root.margin
-            GroupBox {
-                id: rowBox
+
+            Flickable {
+                id: mainScroll
                 Layout.fillWidth: true
-                Layout.minimumWidth: rowLayout.Layout.minimumWidth + 30
+                Layout.fillHeight: true
+                contentHeight: downloadItems.height
+                ScrollBar.vertical: ScrollBar { }
 
-                background: Rectangle {
-                    y: rowBox.topPadding - rowBox.bottomPadding
+                GroupBox {
+                    id: rowBox
                     width: parent.width
-                    height: parent.height - rowBox.topPadding + rowBox.bottomPadding
-                    color: "transparent"
-                    border.color: "#21be2b"
-                    radius: units.gu(1)
+                    bottomPadding: units.gu(1)
+                    Layout.minimumWidth: rowLayout.Layout.minimumWidth + 30
+                    Layout.fillWidth: true
+
+                    background: Rectangle {
+                        y: rowBox.topPadding - rowBox.bottomPadding
+                        width: parent.width
+                        height: parent.height - rowBox.topPadding + rowBox.bottomPadding
+                        color: "transparent"
+                        border.color: "#21be2b"
+                        radius: units.gu(1)
+                    }
+
+                    RowLayout {
+                        id: rowLayout
+                        TextField {
+                            placeholderText: i18n.tr("Put YouTube video or playlist URL here")
+                            Layout.fillWidth: true
+                        }
+                        Button {
+                            id: submitButton
+                            highlighted: true
+                            text: i18n.tr("Submit")
+                            // onClicked: root.getLinksQML(urlField.text)
+                        }
+                    }
                 }
 
-                RowLayout {
-                    id: rowLayout
-                    anchors.fill: parent
-                    TextField {
-                        placeholderText: i18n.tr("Put YouTube video or playlist URL here")
-                        Layout.fillWidth: true
-                    }
-                    Button {
-                        id: submitButton
-                        highlighted: true
-                        text: i18n.tr("Submit")
-                        // onClicked: root.getLinksQML(urlField.text)
+                Column {
+                    id: downloadItems
+                    width: parent.width
+                    anchors.top: rowBox.bottom
+                    spacing: units.gu(1)
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    Repeater {
+                        id: passwordsView_breadcrumb
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        model: 10
+                        delegate: MediaItem {}
                     }
                 }
             }
-
-            MediaItem{
-                
-            }
-
-            // TextArea {
-            //     id: t3
-            //     text: "This fills the whole cell"
-            //     Layout.minimumHeight: units.gu(10)
-            //     Layout.fillHeight: true
-            //     Layout.fillWidth: true
-            // }
-            // GroupBox {
-            //     id: stackBox
-            //     title: "Stack layout"
-            //     implicitWidth: 200
-            //     implicitHeight: 60
-            //     Layout.minimumHeight: units.
-            //     Layout.fillWidth: true
-            //     Layout.fillHeight: true
-            //     StackLayout {
-            //         id: stackLayout
-            //         anchors.fill: parent
-
-            //         function advance() { currentIndex = (currentIndex + 1) % count }
-
-            //         Repeater {
-            //             id: stackRepeater
-            //             model: 5
-            //             Rectangle {
-            //                 // required property int index
-            //                 color: Qt.hsla((0.5 + index) / stackRepeater.count, 0.3, 0.7, 1)
-            //                 Button {
-            //                     anchors.centerIn: parent
-            //                     text: "Page " + (index + 1)
-            //                     onClicked: { stackLayout.advance() }
-            //                 }
-            //             }
-            //         }
-            //     }
-            // }
         }
         BottomEdge {
             id: bottomEdge
