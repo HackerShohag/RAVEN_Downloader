@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Main.qml</file>
+        <file>placeholder-video.png</file>
+        <file>Components/HeaderButton.qml</file>
+        <file>Components/MediaItem.qml</file>
+        <file>Components/InfoButton.qml</file>
+
+        <file>icons/media/duration.png</file>
+        <file>icons/media/resolution.png</file>
+        <file>icons/media/size.png</file>
+        <file>icons/media/type.png</file>
+
+        <file>icons/about_button.svg</file>
+        <file>icons/help_button.svg</file>
+        <file>icons/history_button.svg</file>
+        <file>icons/paste_button.svg</file>
+        <file>icons/preference_button.svg</file>
+    </qresource>
+</RCC>

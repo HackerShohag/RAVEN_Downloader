@@ -1,0 +1,7 @@
+[Desktop Entry]
+_Name=RAVEN Downloader
+Exec=raven.downloader %U
+Icon=assets/raven_downloader_logo.svg
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
