@@ -71,10 +71,9 @@ GroupBox {
 
         Image {
             id: thumbnailContainer
-            Layout.preferredWidth: units.gu(5)
-            height: units.gu(3)
-            fillMode: Image.Stretch
-            
+            Layout.preferredWidth: units.gu(10)
+            fillMode: Image.PreserveAspectCrop
+
             source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
@@ -87,17 +86,16 @@ GroupBox {
         RowLayout {
             Label {
                 text: videoTitle
-                font.pixelSize: 18
                 font.bold: true
                 Layout.fillWidth: true
             }
         }
         RowLayout {
             Layout.fillWidth: true
-             ProgressBar {
+             CustomProgressBar {
                  id: progressBar
                  Layout.fillWidth: true
-                 value: 0.5
+                 value: 0.2
              }
              Label {
                  text: progressBar.value * 100 + "%"

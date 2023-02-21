@@ -6,6 +6,7 @@
         <file>Components/InfoButton.qml</file>
         <file>Components/CustomComboButton.qml</file>
         <file>Components/IndeterminateProgressBar.qml</file>
-        <file>Components/ThinProgressBar.qml</file>
+        <file>Components/CustomProgressBar.qml</file>
+        <file>Components/layouts.qml</file>
     </qresource>
 </RCC>
