@@ -4,5 +4,8 @@
         <file>Components/HeaderButton.qml</file>
         <file>Components/MediaItem.qml</file>
         <file>Components/InfoButton.qml</file>
+        <file>Components/CustomComboButton.qml</file>
+        <file>Components/IndeterminateProgressBar.qml</file>
+        <file>Components/ThinProgressBar.qml</file>
     </qresource>
 </RCC>

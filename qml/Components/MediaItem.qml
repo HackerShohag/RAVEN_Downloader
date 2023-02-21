@@ -20,9 +20,36 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
+import QtQuick.Dialogs 1.1
+import Lomiri.Components 1.3
+import Lomiri.Components.Popups 1.3
+import Lomiri.Components.ListItems 1.3
 
 GroupBox {
     id: gridBox
+
+    property string videoTitle: "<unknown video title>"
+    property alias thumbnail: thumbnailContainer.source
+    property var sizeAndDuration: null
+    property var mediaTypeModel: null
+    property var resolutionModel: null
+
+    property var downloadInvalid: resolutionModel === null && mediaTypeModel === null ? true : false
+    property var comboHeading: [ "select type", "select resolution" ]
+
+    Component {
+         id: invalidDownloadWarning
+         Dialog {
+             id: dialogue
+             title: "Download Invalid!"
+             text: "Please refresh download link."
+             Button {
+                 text: "OK"
+                 onClicked: PopupUtils.close(dialogue)
+             }
+         }
+    }
+
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
 
@@ -39,11 +66,11 @@ GroupBox {
     GridLayout {
         id: gridLayout
         rows: 3
-        columns: 3
         flow: GridLayout.TopToBottom
         anchors.fill: parent
 
         Image {
+            id: thumbnailContainer
             Layout.preferredWidth: units.gu(5)
             height: units.gu(3)
             fillMode: Image.Stretch
@@ -59,46 +86,51 @@ GroupBox {
 
         RowLayout {
             Label {
-                text: "Name of the YouTube video"
+                text: videoTitle
                 font.pixelSize: 18
                 font.bold: true
+                Layout.fillWidth: true
+            }
+        }
+        RowLayout {
+            Layout.fillWidth: true
+             ProgressBar {
+                 id: progressBar
+                 Layout.fillWidth: true
+                 value: 0.5
+             }
+             Label {
+                 text: progressBar.value * 100 + "%"
+                 font.pixelSize: 18
+                 font.bold: true
+             }
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            Repeater {
+                model: 2
+                InfoButton {
+                    Layout.fillWidth: true
+                    buttonID: modelData
+                    buttonValue: sizeAndDuration ? sizeAndDuration[modelData] : "unknown"
+                }
             }
 
-        }
-        RowLayout {
-            ProgressBar {
-                id: progressBar
-                Layout.fillWidth: true
-                value: 0.5
+            Repeater {
+                model: 2
+                CustomComboButton {
+                    Layout.fillWidth: true
+                    text: comboHeading[modelData]
+                    enabled: downloadInvalid ? false : true
+                    dropdownModel: mediaTypeModel
+                }
             }
-            Label {
-                text: progressBar.value * 100 + "%"
-                font.pixelSize: 18
-                font.bold: true
-            }
-        }
-        RowLayout {
-            InfoButton {
-                buttonID: 0
-                buttonValue: "3:01"
-                Layout.fillWidth: true
-            }
-            InfoButton {
-                buttonID: 1
-                buttonValue: "56MB"
-                Layout.fillWidth: true
-            }
-            ComboBox {
-                width: 1
-                model: [ "MP4", "MKV", "MP3" ]
-            }
-            ComboBox {
-                width: 0
-                model: [ "720p", "1080p", "1440p" ]
-            }
+
             Button {
-                highlighted: true
+                id: downloadButton
+                enabled: downloadInvalid ? false : true
                 text: i18n.tr("Download")
+                onClicked: downloadInvalid ? PopupUtils.open(invalidDownloadWarning) : (downloadButton.text = "Gotcha")
             }
         }
     }

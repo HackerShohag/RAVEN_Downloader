@@ -23,22 +23,22 @@ import QtQuick.Controls 2.2
 
 
 GroupBox {
-    id: infoButtonParent
-    Layout.fillWidth: true
+    id: infoButtonContainer
+    
+    property int buttonID: 0
+    property string buttonValue: null
+
     Layout.topMargin: units.gu(1)
     Layout.minimumWidth: units.gu(10)
 
     background: Rectangle {
-        y: infoButtonParent.topPadding - infoButtonParent.bottomPadding
-        width: parent.width
-        height: parent.height - infoButtonParent.topPadding + infoButtonParent.bottomPadding - units.gu(1)
+        y: infoButtonContainer.topPadding - infoButtonContainer.bottomPadding
+        width: infoButtonValues.width + units.gu(2)
+        height: parent.height - infoButtonContainer.topPadding + infoButtonContainer.bottomPadding - units.gu(1)
         color: "transparent"
         border.color: "#21be2b"
         radius: units.gu(1)
     }
-
-    property int buttonID: 0
-    property string buttonValue: null
 
     property var buttonNames:  ["duration.png", "size.png", "type.png", "resolution.png"]
 
@@ -46,7 +46,9 @@ GroupBox {
     // radius: units.gu(.3)
 
     RowLayout {
+        id: infoButtonValues
         Layout.alignment: Qt.AlignVCenter
+        Layout.fillWidth: true
         Image {
             source: "qrc:///assets/media/" + buttonNames[buttonID]
             fillMode: Image.Stretch
@@ -54,6 +56,7 @@ GroupBox {
             width: units.gu(1)
         }
         Text {
+            Layout.fillWidth: true
             text: buttonValue
         }
     }

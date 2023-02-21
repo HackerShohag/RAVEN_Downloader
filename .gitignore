@@ -1,6 +1,7 @@
 build
-.user
+*.user
 .clickable
 loop.py
 .gitlab-ci.yml
 .vscode
+*.shared

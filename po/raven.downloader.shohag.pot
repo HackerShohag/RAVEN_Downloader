@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-19 18:30+0000\n"
+"POT-Creation-Date: 2023-02-21 22:09+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/MediaItem.qml:101
+#: ../qml/Components/MediaItem.qml:132
 msgid "Download"
 msgstr ""
 
@@ -26,10 +26,14 @@ msgstr ""
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/Main.qml:85
+#: ../qml/Main.qml:88
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:91
+#: ../qml/Main.qml:93
 msgid "Submit"
+msgstr ""
+
+#: ../qml/Main.qml:111
+msgid "Downloaded Files"
 msgstr ""
