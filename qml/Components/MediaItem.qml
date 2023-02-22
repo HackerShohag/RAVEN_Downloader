@@ -25,7 +25,7 @@ import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 import Lomiri.Components.ListItems 1.3
 
-GroupBox {
+LayoutsCustom {
     id: gridBox
 
     property string videoTitle: "<unknown video title>"
@@ -34,8 +34,15 @@ GroupBox {
     property var mediaTypeModel: null
     property var resolutionModel: null
 
-    property var downloadInvalid: resolutionModel === null && mediaTypeModel === null ? true : false
+    property var downloadUnavailable: resolutionModel === null && mediaTypeModel === null ? true : false
     property var comboHeading: [ "select type", "select resolution" ]
+    property var models: [mediaTypeModel, resolutionModel]
+
+    function isDownloadValid(size, resolution) {
+        console.log("SizeL; " + size);
+        console.log("Res; " + resolution)
+        return true
+    }
 
     Component {
          id: invalidDownloadWarning
@@ -50,6 +57,9 @@ GroupBox {
          }
     }
 
+    height: gridLayout.height
+    width: gridLayout.width
+
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
 
@@ -58,7 +68,7 @@ GroupBox {
         width: parent.width
         height: parent.height - gridBox.topPadding + gridBox.bottomPadding
         color: "transparent"
-        border.color: "#21be2b"
+        border.color: "transparent"
         radius: units.gu(1)
     }
 
@@ -68,6 +78,7 @@ GroupBox {
         rows: 3
         flow: GridLayout.TopToBottom
         anchors.fill: parent
+        anchors.margins: units.gu(3)
 
         Image {
             id: thumbnailContainer
@@ -115,20 +126,21 @@ GroupBox {
             }
 
             Repeater {
+                id: comboMenuRepeater
                 model: 2
                 CustomComboButton {
                     Layout.fillWidth: true
                     text: comboHeading[modelData]
-                    enabled: downloadInvalid ? false : true
-                    dropdownModel: mediaTypeModel
+                    enabled: downloadUnavailable ? false : true
+                    dropdownModel: models[modelData]
                 }
             }
 
             Button {
                 id: downloadButton
-                enabled: downloadInvalid ? false : true
+                enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: downloadInvalid ? PopupUtils.open(invalidDownloadWarning) : (downloadButton.text = "Gotcha")
+                onClicked: isDownloadValid(comboMenuRepeater.itemAt(0).text, comboMenuRepeater.itemAt(1).text) ? PopupUtils.open(invalidDownloadWarning) : (downloadButton.text = "Gotcha")
             }
         }
     }

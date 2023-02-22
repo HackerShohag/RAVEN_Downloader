@@ -2,16 +2,16 @@
     <qresource prefix="/assets">
         <file>raven_downloader_logo.svg</file>
         <file>placeholder-video.png</file>
-
-	<file>media/duration.png</file>
+        <file>media/duration.png</file>
         <file>media/resolution.png</file>
         <file>media/size.png</file>
         <file>media/type.png</file>
-
         <file>icons/about_button.svg</file>
         <file>icons/help_button.svg</file>
         <file>icons/history_button.svg</file>
         <file>icons/paste_button.svg</file>
         <file>icons/preference_button.svg</file>
+        <file>media/duration_12x12.png</file>
+        <file>media/size_12x12.png</file>
     </qresource>
 </RCC>

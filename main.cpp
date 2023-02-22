@@ -25,6 +25,8 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication *app = new QGuiApplication(argc, (char**)argv);
+    QQuickView *view = new QQuickView();
+    
     app->setApplicationName("raven.downloader.shohag");
 
     qDebug() << "Starting app from main.cpp";
@@ -32,7 +34,7 @@ int main(int argc, char *argv[])
     // QJsonObject result = ytdl->createJsonObject("https://www.youtube.com/watch?v=ouxySCJe8a4");
 //    qDebug() << result;
 
-    QQuickView *view = new QQuickView();
+    // view.engine()->rootContext()->setContextProperty("msg", &msg);
     view->setSource(QUrl("qrc:/Main.qml"));
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->show();

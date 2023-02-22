@@ -20,6 +20,7 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
+import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 
 import "Components"
@@ -44,16 +45,27 @@ MainView {
             title: i18n.tr('RAVEN Downloader')
         }
 
+        function toggleBlankPage() {
+            if (downloadItems.modelData === 0) {
+                searchBarLayout.visible = false;
+                blankDownloadPage.visible = true;
+                return ;
+            }
+            searchBarLayout.visible = true;
+            blankDownloadPage.visible = false;
+        }
 
         Component.onCompleted: {
             width = searchBarLayout.implicitWidth + 2 * margin
             height = searchBarLayout.implicitHeight + 2 * margin
+            toggleBlankPage()
         }
 
 
         ColumnLayout {
             id: searchBarLayout
-            anchors.topMargin: header.height + root.margin
+            visible: false
+            anchors.topMargin: header.height /*+ root.margin*/
             anchors.fill: parent
             anchors.margins: root.margin
 
@@ -61,28 +73,24 @@ MainView {
                 id: mainScroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin
+                contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin + units.gu(2)
                 ScrollBar.vertical: ScrollBar { }
 
-                GroupBox {
-                    id: rowBox
-                    width: parent.width
-                    bottomPadding: units.gu(1)
-                    Layout.minimumWidth: rowLayout.Layout.minimumWidth + units.gu(10)
+                LayoutsCustom {
+                    id: inputPanel
+                    anchors {
+                        top: parent.top
+                        right: parent.right
+                    }
                     Layout.fillWidth: true
 
-                    background: Rectangle {
-                        y: rowBox.topPadding - rowBox.bottomPadding
-                        width: parent.width
-                        height: parent.height - rowBox.topPadding + rowBox.bottomPadding
-                        color: "transparent"
-                        border.color: "#21be9b"
-                        radius: units.gu(1)
-                    }
+                    height: rowLayout.height + units.gu(11)
+                    width: parent.width
 
                     RowLayout {
                         id: rowLayout
-                        Layout.fillWidth: true
+                        anchors.fill: parent
+                        anchors.margins: units.gu(3)
                         width: parent.width
                         TextField {
                             placeholderText: i18n.tr("Put YouTube video or playlist URL here")
@@ -100,15 +108,16 @@ MainView {
                     id: downloadItemsContainer
 
                     width: parent.width
-                    anchors.top: rowBox.bottom
-                    spacing: units.gu(1)
+                    anchors.top: inputPanel.bottom
+                    spacing: -units.gu(3)
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.topMargin: units.gu(1)
 
                     Label {
                         id: downloadContainerHeading
-                        text: i18n.tr("Downloaded Files")
+                        text: i18n.tr("        Downloaded Files")
+                        height: units.gu(5)
                         font.bold: true
                     }
 
@@ -120,12 +129,54 @@ MainView {
                         delegate: MediaItem {
                             anchors.left: parent.left
                             anchors.right: parent.right
+                            height: units.gu(20)
                             videoTitle: "Youtube video name " + modelData
+                            sizeAndDuration: ["0:21:09", "128MB"]
+                            mediaTypeModel: ["MP4"]
+                            resolutionModel: ["720p"]
                         }
                     }
                 }
             }
         }
+
+
+        // empty page while no downloads
+
+
+        ColumnLayout {
+            id: blankDownloadPage
+            visible: true
+            spacing: units.gu(2)
+            anchors {
+                margins: units.gu(2)
+                top: header.bottom
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+
+            Label {
+                id: label
+                Layout.alignment: Qt.AlignHCenter
+                text: i18n.tr('Press the button below and check the logs!')
+            }
+
+            Button {
+                Layout.alignment: Qt.AlignHCenter
+                text: i18n.tr('Press here!')
+            }
+
+            Item {
+                Layout.fillHeight: true
+            }
+        }
+
+
         BottomEdge {
             id: bottomEdge
             height: parent.height - units.gu(20)
