@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2023  Your FullName
+ * Copyright (C) 2022  Abdullah AL Shohag
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
- * appname is distributed in the hope that it will be useful,
+ * raven.downloader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.

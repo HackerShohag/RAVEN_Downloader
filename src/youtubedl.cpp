@@ -1,4 +1,12 @@
-#include "youtubedl.h"
+/* youtube-dl-qt is Free Software: You can use, study share
+ * and improve it at your will. Specifically you can redistribute
+ * and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ * 
+ * The original author of this code is : Robin de Rooij (https://github.com/rrooij)
+ * The original repository of this code : https://github.com/rrooij/youtube-dl-qt 
+ */
 
 #include <QGuiApplication>
 #include <QJsonArray>
@@ -10,6 +18,8 @@
 #include <QString>
 #include <QStringList>
 #include <QProcess>
+
+#include "youtubedl.h"
 
 YoutubeDL::YoutubeDL()
 {
