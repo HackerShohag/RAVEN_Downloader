@@ -1,20 +1,36 @@
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-project(youtubedl_src)
-set(PLUGIN "YoutubeDL")
+set(YOUTUBEDL "YoutubeDL")
+set(DOWNLOADER "DownloadManager")
 
 find_package(Qt5 COMPONENTS Gui REQUIRED)
+find_package(Qt5 REQUIRED COMPONENTS Core)
 
 set(
     SRC
+    mediaformat.h
+    youtubedl.h
     mediaformat.cpp
     youtubedl.cpp
+)
+set(
+    DMSRC
+    downloadmanager.h
+    downloadmanager.cpp
 )
 
 set(CMAKE_AUTOMOC ON)
 
-add_library(${PLUGIN} MODULE ${SRC})
-set_target_properties(${PLUGIN} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PLUGIN})
-qt5_use_modules(${PLUGIN} Qml Quick DBus)
+add_library(${YOUTUBEDL} SHARED ${SRC})
+add_library(${DOWNLOADER} SHARED ${DMSRC})
+set_target_properties(${YOUTUBEDL} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${YOUTUBEDL})
+set_target_properties(${DOWNLOADER} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${DOWNLOADER})
+qt5_use_modules(${YOUTUBEDL} Qml Quick DBus)
+qt5_use_modules(${DOWNLOADER} Core)
+
+target_link_libraries(${DOWNLOADER} Qt5::Core)
+
+target_include_directories(${YOUTUBEDL} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_include_directories(${DOWNLOADER} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 
 execute_process(
     COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
@@ -24,5 +40,7 @@ execute_process(
 
 set(QT_IMPORTS_DIR "/lib/${ARCH_TRIPLET}")
 
-install(TARGETS ${PLUGIN} DESTINATION ${QT_IMPORTS_DIR}/${PLUGIN}/)
-install(FILES qmldir DESTINATION ${QT_IMPORTS_DIR}/${PLUGIN}/)
+install(TARGETS ${YOUTUBEDL} DESTINATION ${QT_IMPORTS_DIR})
+install(TARGETS ${DOWNLOADER} DESTINATION ${QT_IMPORTS_DIR})
+install(FILES qmldir DESTINATION ${QT_IMPORTS_DIR})
+install(FILES qmldir DESTINATION ${QT_IMPORTS_DIR})

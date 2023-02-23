@@ -19,22 +19,26 @@
 #include <QUrl>
 #include <QString>
 #include <QQuickView>
+#include <QQmlEngine>
+#include <QQmlContext>
 
-#include "src/youtubedl.h"
+#include "youtubedl.h"
+#include "downloadmanager.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication *app = new QGuiApplication(argc, (char**)argv);
     QQuickView *view = new QQuickView();
+    DownloadManager *dm = new DownloadManager();
     
     app->setApplicationName("raven.downloader.shohag");
 
     qDebug() << "Starting app from main.cpp";
-    // YoutubeDL* ytdl;
-    // QJsonObject result = ytdl->createJsonObject("https://www.youtube.com/watch?v=ouxySCJe8a4");
+//    YoutubeDL* ytdl = new YoutubeDL();
+//    QJsonObject result = ytdl->createJsonObject("https://www.youtube.com/watch?v=ouxySCJe8a4");
 //    qDebug() << result;
 
-    // view.engine()->rootContext()->setContextProperty("msg", &msg);
+    view->engine()->rootContext()->setContextProperty("downloadManager", dm);
     view->setSource(QUrl("qrc:/Main.qml"));
     view->setResizeMode(QQuickView::SizeRootObjectToView);
     view->show();

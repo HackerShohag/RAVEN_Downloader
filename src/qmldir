@@ -1,2 +1,4 @@
 module YoutubeDL
 plugin YoutubeDL
+module DownloadManager
+plugin DownloadManager

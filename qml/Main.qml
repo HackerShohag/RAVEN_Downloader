@@ -22,6 +22,8 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
+import Lomiri.Components.Popups 1.3
+
 
 import "Components"
 
@@ -35,6 +37,19 @@ MainView {
     height: units.gu(100)
 
     property int margin: units.gu(1)
+
+    Component {
+         id: invalidURLWarning
+         Dialog {
+             id: dialogue
+             title: "Invalid URL!"
+             text: "Please provide a valid download link."
+             Button {
+                 text: "OK"
+                 onClicked: PopupUtils.close(dialogue)
+             }
+         }
+    }
 
     Page {
         id: mainPage
@@ -93,13 +108,14 @@ MainView {
                         anchors.margins: units.gu(3)
                         width: parent.width
                         TextField {
+                            id: urlContainer
                             placeholderText: i18n.tr("Put YouTube video or playlist URL here")
                             Layout.fillWidth: true
                         }
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: downloadItems.model += 1
+                            onClicked: downloadManager.sayHello(urlContainer.text) ? PopupUtils.open(invalidURLWarning) : downloadItems.model += 1
                         }
                     }
                 }
