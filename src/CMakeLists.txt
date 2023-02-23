@@ -22,8 +22,10 @@ set(CMAKE_AUTOMOC ON)
 
 add_library(${YOUTUBEDL} SHARED ${SRC})
 add_library(${DOWNLOADER} SHARED ${DMSRC})
+
 set_target_properties(${YOUTUBEDL} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${YOUTUBEDL})
 set_target_properties(${DOWNLOADER} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${DOWNLOADER})
+
 qt5_use_modules(${YOUTUBEDL} Qml Quick DBus)
 qt5_use_modules(${DOWNLOADER} Core)
 
