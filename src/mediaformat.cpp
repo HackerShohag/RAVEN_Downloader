@@ -20,12 +20,6 @@ QStringList MediaFormat::getFormatId() const
     return m_formatId;
 }
 
-void MediaFormat::setFormatId(const QStringList &value)
-{
-    m_formatId = value;
-    emit formatIdChanged(value);
-}
-
 void MediaFormat::setFormatIdItem(QString value)
 {
     m_formatId << value;
@@ -34,12 +28,6 @@ void MediaFormat::setFormatIdItem(QString value)
 QStringList MediaFormat::getExtension() const
 {
     return m_extension;
-}
-
-void MediaFormat::setExtension(const QStringList &value)
-{
-    m_extension = value;
-    emit extensionChanged(value);
 }
 
 void MediaFormat::setExtensionItem(QString value)
@@ -52,12 +40,6 @@ QStringList MediaFormat::getResolution() const
     return m_resolution;
 }
 
-void MediaFormat::setResolution(const QStringList &value)
-{
-    m_resolution = value;
-    emit resolutionChanged(value);
-}
-
 void MediaFormat::setResolutionItem(QString value)
 {
     m_resolution << value;
@@ -66,12 +48,6 @@ void MediaFormat::setResolutionItem(QString value)
 QStringList MediaFormat::getQuality() const
 {
     return m_quality;
-}
-
-void MediaFormat::setQuality(const QStringList &value)
-{
-    m_quality = value;
-    emit qualityChanged(value);
 }
 
 void MediaFormat::setQualityItem(QString value)
@@ -84,12 +60,6 @@ QStringList MediaFormat::getNote() const
     return m_note;
 }
 
-void MediaFormat::setNote(const QStringList &value)
-{
-    m_note = value;
-    emit noteChanged(value);
-}
-
 void MediaFormat::setNoteItem(QString value)
 {
     m_note << value;
@@ -98,12 +68,6 @@ void MediaFormat::setNoteItem(QString value)
 QStringList MediaFormat::getFormat() const
 {
     return m_format;
-}
-
-void MediaFormat::setFormat(const QStringList &value)
-{
-    m_format = value;
-    emit formatChanged(value);
 }
 
 void MediaFormat::setFormatItem(QString value)
@@ -116,12 +80,6 @@ QStringList MediaFormat::getAcodec() const
     return m_acodec;
 }
 
-void MediaFormat::setAcodec(const QStringList &value)
-{
-    m_acodec = value;
-    emit acodecChanged(value);
-}
-
 void MediaFormat::setAcodecItem(QString value)
 {
     m_acodec << value;
@@ -130,12 +88,6 @@ void MediaFormat::setAcodecItem(QString value)
 QStringList MediaFormat::getVcodec() const
 {
     return m_vcodec;
-}
-
-void MediaFormat::setVcodec(const QStringList &value)
-{
-    m_vcodec = value;
-    emit vcodecChanged(value);
 }
 
 void MediaFormat::setVcodecItem(QString value)

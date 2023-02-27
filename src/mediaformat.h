@@ -18,47 +18,39 @@
 class MediaFormat : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QStringList formatId READ getFormatId WRITE setFormatId NOTIFY formatIdChanged)
-    Q_PROPERTY(QStringList format READ getFormat WRITE setFormat NOTIFY formatChanged)
-    Q_PROPERTY(QStringList extension READ getExtension WRITE setExtension NOTIFY extensionChanged)
-    Q_PROPERTY(QStringList resolution READ getResolution WRITE setResolution NOTIFY resolutionChanged)
-    Q_PROPERTY(QStringList quality READ getQuality WRITE setQuality NOTIFY qualityChanged)
-    Q_PROPERTY(QStringList note READ getNote WRITE setNote NOTIFY noteChanged)
-    Q_PROPERTY(QStringList acodec READ getAcodec WRITE setAcodec NOTIFY acodecChanged)
-    Q_PROPERTY(QStringList vcodec READ getVcodec WRITE setVcodec NOTIFY vcodecChanged)
+    Q_PROPERTY(QStringList formatId READ getFormatId NOTIFY formatIdChanged)
+    Q_PROPERTY(QStringList format READ getFormat NOTIFY formatChanged)
+    Q_PROPERTY(QStringList extension READ getExtension NOTIFY extensionChanged)
+    Q_PROPERTY(QStringList resolution READ getResolution NOTIFY resolutionChanged)
+    Q_PROPERTY(QStringList quality READ getQuality NOTIFY qualityChanged)
+    Q_PROPERTY(QStringList note READ getNote NOTIFY noteChanged)
+    Q_PROPERTY(QStringList acodec READ getAcodec NOTIFY acodecChanged)
+    Q_PROPERTY(QStringList vcodec READ getVcodec NOTIFY vcodecChanged)
 
 public:
     explicit MediaFormat(QObject *parent = nullptr);
     QStringList getFormatId() const;
-    void setFormatId(const QStringList &value);
     void setFormatIdItem(QString value);
 
     QStringList getExtension() const;
-    void setExtension(const QStringList &value);
     void setExtensionItem(QString value);
 
     QStringList getResolution() const;
-    void setResolution(const QStringList &value);
     void setResolutionItem(QString value);
 
     QStringList getQuality() const;
-    void setQuality(const QStringList &value);
     void setQualityItem(QString value);
 
     QStringList getNote() const;
-    void setNote(const QStringList &value);
     void setNoteItem(QString value);
 
     QStringList getFormat() const;
-    void setFormat(const QStringList &value);
     void setFormatItem(QString value);
 
     QStringList getAcodec() const;
-    void setAcodec(const QStringList &value);
     void setAcodecItem(QString value);
 
     QStringList getVcodec() const;
-    void setVcodec(const QStringList &value);
     void setVcodecItem(QString value);
 
 signals:
