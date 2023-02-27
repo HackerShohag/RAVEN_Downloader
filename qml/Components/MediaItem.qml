@@ -64,9 +64,9 @@ LayoutsCustom {
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
 
     background: Rectangle {
-        y: gridBox.topPadding - gridBox.bottomPadding
+        y: parent.topPadding - parent.bottomPadding
         width: parent.width
-        height: parent.height - gridBox.topPadding + gridBox.bottomPadding
+        height: parent.height - parent.topPadding + parent.bottomPadding
         color: "transparent"
         border.color: "transparent"
         radius: units.gu(1)
@@ -91,7 +91,6 @@ LayoutsCustom {
             Layout.fillWidth: true
             Layout.minimumHeight: units.gu(6)
             Layout.minimumWidth: units.gu(10)
-
         }
 
         RowLayout {
@@ -121,16 +120,16 @@ LayoutsCustom {
                 InfoButton {
                     Layout.fillWidth: true
                     buttonID: modelData
-                    buttonValue: sizeAndDuration ? sizeAndDuration[modelData] : "unknown"
+                    text: sizeAndDuration ? sizeAndDuration[modelData] : "unknown"
                 }
             }
 
             Repeater {
                 id: comboMenuRepeater
                 model: 2
-                CustomComboButton {
+                CustomComboPopup {
                     Layout.fillWidth: true
-                    text: comboHeading[modelData]
+                    heading: comboHeading[modelData]
                     enabled: downloadUnavailable ? false : true
                     dropdownModel: models[modelData]
                 }

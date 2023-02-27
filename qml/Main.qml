@@ -38,17 +38,30 @@ MainView {
 
     property int margin: units.gu(1)
 
+    function urlHandler(url) {
+        if (downloadManager.isValidUrl(url)) {
+            if (downloadItemsContainer.visible === false)
+                mainPage.toggleBlankPage();
+            downloadItems.model += 1;
+            downloadManager.actionSubmit(url);
+            console.log(downloadManager.mediaFormats.resolution[10]);
+        } else {
+            PopupUtils.open(invalidURLWarning);
+        }
+    }
+
     Component {
-         id: invalidURLWarning
-         Dialog {
-             id: dialogue
-             title: "Invalid URL!"
-             text: "Please provide a valid download link."
-             Button {
-                 text: "OK"
-                 onClicked: PopupUtils.close(dialogue)
-             }
-         }
+        id: invalidURLWarning
+        Dialog {
+            id: dialogue
+            title: "Invalid URL!"
+            text: "Please provide a valid download link."
+            Keys.onPressed: PopupUtils.close(dialogue)
+            Button {
+               text: "OK"
+               onClicked: PopupUtils.close(dialogue)
+            }
+        }
     }
 
     Page {
@@ -61,25 +74,24 @@ MainView {
         }
 
         function toggleBlankPage() {
-            if (downloadItems.modelData === 0) {
-                searchBarLayout.visible = false;
+            if (downloadItemsContainer.visible === false) {
+                blankDownloadPage.visible = false;
+                downloadItemsContainer.visible = true;
+            } else {
+                downloadItemsContainer.visible = false;
                 blankDownloadPage.visible = true;
-                return ;
             }
-            searchBarLayout.visible = true;
-            blankDownloadPage.visible = false;
         }
 
         Component.onCompleted: {
             width = searchBarLayout.implicitWidth + 2 * margin
             height = searchBarLayout.implicitHeight + 2 * margin
-            toggleBlankPage()
+            toggleBlankPage();
         }
 
 
         ColumnLayout {
             id: searchBarLayout
-            visible: false
             anchors.topMargin: header.height /*+ root.margin*/
             anchors.fill: parent
             anchors.margins: root.margin
@@ -93,13 +105,13 @@ MainView {
 
                 LayoutsCustom {
                     id: inputPanel
-                    anchors {
-                        top: parent.top
-                        right: parent.right
-                    }
+//                    anchors {
+//                        top: parent.top
+//                        right: parent.right
+//                    }
                     Layout.fillWidth: true
 
-                    height: rowLayout.height + units.gu(11)
+                    height:  units.gu(14)
                     width: parent.width
 
                     RowLayout {
@@ -109,13 +121,14 @@ MainView {
                         width: parent.width
                         TextField {
                             id: urlContainer
-                            placeholderText: i18n.tr("Put YouTube video or playlist URL here")
                             Layout.fillWidth: true
+                            placeholderText: i18n.tr("Put YouTube video or playlist URL here")
+                            Keys.onReturnPressed: urlHandler(urlContainer.text)
                         }
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: downloadManager.sayHello(urlContainer.text) ? PopupUtils.open(invalidURLWarning) : downloadItems.model += 1
+                            onClicked: urlHandler(urlContainer.text)
                         }
                     }
                 }
@@ -139,8 +152,11 @@ MainView {
 
                     Repeater {
                         id: downloadItems
+//                        anchors.top: inputPanel.bottom
                         anchors.left: parent.left
                         anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        anchors.fill: parent
                         model: 0
                         delegate: MediaItem {
                             anchors.left: parent.left
@@ -148,8 +164,8 @@ MainView {
                             height: units.gu(20)
                             videoTitle: "Youtube video name " + modelData
                             sizeAndDuration: ["0:21:09", "128MB"]
-                            mediaTypeModel: ["MP4"]
-                            resolutionModel: ["720p"]
+                            mediaTypeModel: downloadManager.mediaFormats.vcodec
+                            resolutionModel: downloadManager.mediaFormats.resolution
                         }
                     }
                 }
@@ -162,7 +178,7 @@ MainView {
 
         ColumnLayout {
             id: blankDownloadPage
-            visible: true
+            visible: false
             spacing: units.gu(2)
             anchors {
                 margins: units.gu(2)
@@ -179,12 +195,8 @@ MainView {
             Label {
                 id: label
                 Layout.alignment: Qt.AlignHCenter
-                text: i18n.tr('Press the button below and check the logs!')
-            }
-
-            Button {
-                Layout.alignment: Qt.AlignHCenter
-                text: i18n.tr('Press here!')
+                text: i18n.tr('No Downloads!')
+                font.pixelSize: units.gu(3)
             }
 
             Item {
@@ -200,8 +212,8 @@ MainView {
             contentComponent: Rectangle {
                 width: bottomEdge.width
                 height: bottomEdge.height
-                color: bottomEdge.activeRegion ?
-                         bottomEdge.activeRegion.color : LomiriColors.green
+                //color: bottomEdge.activeRegion ?
+                //         bottomEdge.activeRegion.color : LomiriColors.green
             }
             regions: [
                 BottomEdgeRegion {

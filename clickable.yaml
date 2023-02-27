@@ -2,3 +2,8 @@ framework: ubuntu-sdk-20.04
 clickable_minimum_required: "7"
 builder: cmake
 kill: raven.downloader
+dependencies_target:
+- python3-pip youtube-dl
+image_setup:
+  run:
+  - pip3 install yt-dlp

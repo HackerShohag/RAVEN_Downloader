@@ -18,22 +18,36 @@
  */
 
 import QtQuick 2.7
+import QtQuick.Controls 2.2
 import Lomiri.Components 1.3
+import Lomiri.Components.Popups 1.3
 
-ComboButton {
+Button {
     id: dropdown
 
     property var dropdownModel
+    property string heading
+    property int index
 
-    expandedHeight: -1
-    Column {
-        Repeater {
-            model: dropdownModel ? dropdownModel.length : 0
-            Button {
-                text: dropdownModel[modelData]
-                onClicked: {
-                    dropdown.text = text;
-                    dropdown.expanded = false;
+    color: "white"
+    text: heading
+    onClicked: PopupUtils.open(invalidURLWarning)
+
+    Component {
+        id: invalidURLWarning
+        Dialog {
+            id: dialogue
+            title: heading
+            Keys.onPressed: PopupUtils.close(dialogue)
+            Repeater {
+                model: dropdownModel ? dropdownModel.length : 0
+                Button {
+                    text: dropdownModel[modelData]
+                    onClicked: {
+                        dropdown.text = text;
+                        dropdown.index = modelData
+                        onClicked: PopupUtils.close(dialogue)
+                    }
                 }
             }
         }

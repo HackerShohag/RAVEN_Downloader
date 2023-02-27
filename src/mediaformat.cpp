@@ -4,93 +4,141 @@
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  * 
- * The original author of this code is : Robin de Rooij (https://github.com/rrooij)
+ * The original author of this code : Robin de Rooij (https://github.com/rrooij)
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt 
  */
 
 #include "mediaformat.h"
 
-MediaFormat::MediaFormat()
+MediaFormat::MediaFormat(QObject *parent) : QObject{parent}
 {
 
 }
 
-QString MediaFormat::getFormatId() const
+QStringList MediaFormat::getFormatId() const
 {
-    return formatId;
+    return m_formatId;
 }
 
-void MediaFormat::setFormatId(const QString &value)
+void MediaFormat::setFormatId(const QStringList &value)
 {
-    formatId = value;
+    m_formatId = value;
+    emit formatIdChanged(value);
 }
 
-QString MediaFormat::getExtension() const
+void MediaFormat::setFormatIdItem(QString value)
 {
-    return extension;
+    m_formatId << value;
 }
 
-void MediaFormat::setExtension(const QString &value)
+QStringList MediaFormat::getExtension() const
 {
-    extension = value;
+    return m_extension;
 }
 
-QString MediaFormat::getResolution() const
+void MediaFormat::setExtension(const QStringList &value)
 {
-    return resolution;
+    m_extension = value;
+    emit extensionChanged(value);
 }
 
-void MediaFormat::setResolution(const QString &value)
+void MediaFormat::setExtensionItem(QString value)
 {
-    resolution = value;
+    m_extension << value;
 }
 
-QString MediaFormat::getQuality() const
+QStringList MediaFormat::getResolution() const
 {
-    return quality;
+    return m_resolution;
 }
 
-void MediaFormat::setQuality(const QString &value)
+void MediaFormat::setResolution(const QStringList &value)
 {
-    quality = value;
+    m_resolution = value;
+    emit resolutionChanged(value);
 }
 
-QString MediaFormat::getNote() const
+void MediaFormat::setResolutionItem(QString value)
 {
-    return note;
+    m_resolution << value;
 }
 
-void MediaFormat::setNote(const QString &value)
+QStringList MediaFormat::getQuality() const
 {
-    note = value;
+    return m_quality;
 }
 
-QString MediaFormat::getFormat() const
+void MediaFormat::setQuality(const QStringList &value)
 {
-    return format;
+    m_quality = value;
+    emit qualityChanged(value);
 }
 
-void MediaFormat::setFormat(const QString &value)
+void MediaFormat::setQualityItem(QString value)
 {
-    format = value;
+    m_quality << value;
 }
 
-QString MediaFormat::getAcodec() const
+QStringList MediaFormat::getNote() const
 {
-    return acodec;
+    return m_note;
 }
 
-void MediaFormat::setAcodec(const QString &value)
+void MediaFormat::setNote(const QStringList &value)
 {
-    acodec = value;
+    m_note = value;
+    emit noteChanged(value);
 }
 
-QString MediaFormat::getVcodec() const
+void MediaFormat::setNoteItem(QString value)
 {
-    return vcodec;
+    m_note << value;
 }
 
-void MediaFormat::setVcodec(const QString &value)
+QStringList MediaFormat::getFormat() const
 {
-    vcodec = value;
+    return m_format;
+}
+
+void MediaFormat::setFormat(const QStringList &value)
+{
+    m_format = value;
+    emit formatChanged(value);
+}
+
+void MediaFormat::setFormatItem(QString value)
+{
+    m_format << value;
+}
+
+QStringList MediaFormat::getAcodec() const
+{
+    return m_acodec;
+}
+
+void MediaFormat::setAcodec(const QStringList &value)
+{
+    m_acodec = value;
+    emit acodecChanged(value);
+}
+
+void MediaFormat::setAcodecItem(QString value)
+{
+    m_acodec << value;
+}
+
+QStringList MediaFormat::getVcodec() const
+{
+    return m_vcodec;
+}
+
+void MediaFormat::setVcodec(const QStringList &value)
+{
+    m_vcodec = value;
+    emit vcodecChanged(value);
+}
+
+void MediaFormat::setVcodecItem(QString value)
+{
+    m_vcodec << value;
 }

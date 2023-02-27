@@ -18,26 +18,37 @@
 #define DOWNLOADMANAGER_H
 
 #include <QObject>
+#include <QVector>
+#include <youtubedl.h>
+#include <mediaformat.h>
 
 class DownloadManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged)
+    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged);
+    Q_PROPERTY(MediaFormat *mediaFormats READ getMediaFormats WRITE setMediaFormats NOTIFY mediaFormatsChanged);
 
 public:
     explicit DownloadManager(QObject *parent = nullptr);
     QString author() const;
     void setAuthor(const QString &a);
 
+    MediaFormat *getMediaFormats();
+    void setMediaFormats(MediaFormat *f);
+
 public slots:
+    void actionSubmit(QString url);
     bool isValidUrl(QString url);
     void sayHello(QString hello);
 
 signals:
     void authorChanged(const QString &m_string);
+    void mediaFormatsChanged();
 
 private:
     QString m_author;
+    YoutubeDL *ytdl;
+    MediaFormat *m_mediaFormats = new MediaFormat();
 };
 
 #endif // DOWNLOADMANAGER_H

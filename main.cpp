@@ -22,8 +22,8 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 
-#include "youtubedl.h"
-#include "downloadmanager.h"
+#include <youtubedl.h>
+#include <downloadmanager.h>
 
 int main(int argc, char *argv[])
 {
@@ -34,9 +34,6 @@ int main(int argc, char *argv[])
     app->setApplicationName("raven.downloader.shohag");
 
     qDebug() << "Starting app from main.cpp";
-//    YoutubeDL* ytdl = new YoutubeDL();
-//    QJsonObject result = ytdl->createJsonObject("https://www.youtube.com/watch?v=ouxySCJe8a4");
-//    qDebug() << result;
 
     view->engine()->rootContext()->setContextProperty("downloadManager", dm);
     view->setSource(QUrl("qrc:/Main.qml"));
