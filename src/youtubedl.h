@@ -21,8 +21,7 @@ public:
     YoutubeDL();
     ~YoutubeDL();
     QJsonObject createJsonObject(QString url);
-    void fetchAvailableFormats(QString url);
-    QList<QJsonObject> fetchJSONAvailableFormats(QString url);
+    QList<QJsonObject> fetchAvailableFormats(QString url);
     QString getUrl(QString url);
     QProcess *getYtdl();
     void resetArguments();
@@ -31,9 +30,15 @@ public:
     void startDownload(QString url, QString workingDirectory);
     void addArguments(QString arg);
 
+    // get functions of properties
+    QString getMediaTitle();
+    QString getThumbnail();
+
 private:
     QStringList arguments;
     QString program;
+    QString title;
+    QString thumbnail;
     QProcess *ytdl;
 };
 

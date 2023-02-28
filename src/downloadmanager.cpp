@@ -51,7 +51,9 @@ void DownloadManager::setMediaFormats(MediaFormat *f)
 
 void DownloadManager::actionSubmit(QString url)
 {
-    QList<QJsonObject> result = this->ytdl->fetchJSONAvailableFormats(url);
+    QList<QJsonObject> result = this->ytdl->fetchAvailableFormats(url);
+    this->m_mediaFormats->setTitle(this->ytdl->getMediaTitle());
+    this->m_mediaFormats->setThumbnail(this->ytdl->getThumbnail());
 
     for (int i = 0; i < result.length(); ++i) {
         this->m_mediaFormats->setFormatIdItem(result.value(i)["format_id"].toString());
@@ -61,6 +63,7 @@ void DownloadManager::actionSubmit(QString url)
         this->m_mediaFormats->setResolutionItem(result.value(i)["resolution"].toString());
         this->m_mediaFormats->setVcodecItem(result.value(i)["vcodec"].toString());
         this->m_mediaFormats->setAcodecItem(result.value(i)["acodec"].toString());
+        this->m_mediaFormats->setUrlItem(result.value(i)["url"].toString());
     }
 }
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-27 22:36+0600\n"
+"POT-Creation-Date: 2023-02-28 12:53+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/MediaItem.qml:141
+#: ../qml/Components/MediaItem.qml:155
 msgid "Download"
 msgstr ""
 
@@ -37,6 +37,6 @@ msgstr ""
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:198
+#: ../qml/Main.qml:199
 msgid "No Downloads!"
 msgstr ""

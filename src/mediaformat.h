@@ -18,8 +18,11 @@
 class MediaFormat : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString title READ getTitle NOTIFY titleChanged)
+    Q_PROPERTY(QString thumbnail READ getThumbnail NOTIFY thumbnailChanged)
     Q_PROPERTY(QStringList formatId READ getFormatId NOTIFY formatIdChanged)
     Q_PROPERTY(QStringList format READ getFormat NOTIFY formatChanged)
+    Q_PROPERTY(QStringList url READ getUrl NOTIFY urlChanged)
     Q_PROPERTY(QStringList extension READ getExtension NOTIFY extensionChanged)
     Q_PROPERTY(QStringList resolution READ getResolution NOTIFY resolutionChanged)
     Q_PROPERTY(QStringList quality READ getQuality NOTIFY qualityChanged)
@@ -29,6 +32,10 @@ class MediaFormat : public QObject
 
 public:
     explicit MediaFormat(QObject *parent = nullptr);
+
+    QString getTitle() const;
+    void setTitle(QString value);
+
     QStringList getFormatId() const;
     void setFormatIdItem(QString value);
 
@@ -53,7 +60,14 @@ public:
     QStringList getVcodec() const;
     void setVcodecItem(QString value);
 
+    QStringList getUrl() const;
+    void setUrlItem(QString value);
+
+    QString getThumbnail() const;
+    void setThumbnail(QString value);
+
 signals:
+    void titleChanged(const QString &value);
     void formatIdChanged(const QStringList &value);
     void formatChanged(const QStringList &value);
     void extensionChanged(const QStringList &value);
@@ -62,8 +76,11 @@ signals:
     void noteChanged(const QStringList &value);
     void acodecChanged(const QStringList &value);
     void vcodecChanged(const QStringList &value);
+    void urlChanged(const QStringList &value);
+    void thumbnailChanged(const QString &value);
 
 private:
+    QString m_title;
     QStringList m_formatId;
     QStringList m_format;
     QStringList m_extension;
@@ -72,6 +89,8 @@ private:
     QStringList m_note;
     QStringList m_acodec;
     QStringList m_vcodec;
+    QStringList m_url;
+    QString m_thumbnail;
 };
 
 #endif // MEDIAFORMAT_H

@@ -21,6 +21,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtQuick.Dialogs 1.1
+import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 import Lomiri.Components.ListItems 1.3
@@ -28,7 +29,7 @@ import Lomiri.Components.ListItems 1.3
 LayoutsCustom {
     id: gridBox
 
-    property string videoTitle: "<unknown video title>"
+    property alias videoTitle: titleBox.text
     property alias thumbnail: thumbnailContainer.source
     property var sizeAndDuration: null
     property var mediaTypeModel: null
@@ -83,34 +84,47 @@ LayoutsCustom {
         Image {
             id: thumbnailContainer
             Layout.preferredWidth: units.gu(10)
-            fillMode: Image.PreserveAspectCrop
+
+            layer.enabled: true
+            layer.effect: OpacityMask {
+                maskSource: Item {
+                    width: thumbnailContainer.width
+                    height: thumbnailContainer.height
+                    Rectangle {
+                        anchors.centerIn: parent
+                        width: parent.width
+                        height: parent.height
+                        radius: units.gu(1)
+                    }
+                }
+            }
 
             source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Layout.minimumHeight: units.gu(6)
-            Layout.minimumWidth: units.gu(10)
+            Layout.minimumWidth: units.gu(20)
         }
 
         RowLayout {
             Label {
-                text: videoTitle
+                id: titleBox
                 font.bold: true
+                elide: Label.ElideRight
                 Layout.fillWidth: true
             }
         }
         RowLayout {
             Layout.fillWidth: true
              CustomProgressBar {
-                 id: progressBar
-                 Layout.fillWidth: true
-                 value: 0.2
+                id: progressBar
+                Layout.fillWidth: true
+                value: 0.2
              }
              Label {
-                 text: progressBar.value * 100 + "%"
-                 font.pixelSize: 18
-                 font.bold: true
+                text: progressBar.value * 100 + "%"
+                font.pixelSize: 18
+                font.bold: true
              }
         }
         RowLayout {

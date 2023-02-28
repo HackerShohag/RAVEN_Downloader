@@ -15,82 +15,112 @@ MediaFormat::MediaFormat(QObject *parent) : QObject{parent}
 
 }
 
+QString MediaFormat::getTitle() const
+{
+    return this->m_title;
+}
+
+void MediaFormat::setTitle(QString value)
+{
+    this->m_title = value;
+}
+
 QStringList MediaFormat::getFormatId() const
 {
-    return m_formatId;
+    return this->m_formatId;
 }
 
 void MediaFormat::setFormatIdItem(QString value)
 {
-    m_formatId << value;
+    this->m_formatId << value;
 }
 
 QStringList MediaFormat::getExtension() const
 {
-    return m_extension;
+    return this->m_extension;
 }
 
 void MediaFormat::setExtensionItem(QString value)
 {
-    m_extension << value;
+    this->m_extension << value;
 }
 
 QStringList MediaFormat::getResolution() const
 {
-    return m_resolution;
+    return this->m_resolution;
 }
 
 void MediaFormat::setResolutionItem(QString value)
 {
-    m_resolution << value;
+    this->m_resolution << value;
 }
 
 QStringList MediaFormat::getQuality() const
 {
-    return m_quality;
+    return this->m_quality;
 }
 
 void MediaFormat::setQualityItem(QString value)
 {
-    m_quality << value;
+    this->m_quality << value;
 }
 
 QStringList MediaFormat::getNote() const
 {
-    return m_note;
+    return this->m_note;
 }
 
 void MediaFormat::setNoteItem(QString value)
 {
-    m_note << value;
+    this->m_note << value;
 }
 
 QStringList MediaFormat::getFormat() const
 {
-    return m_format;
+    return this->m_format;
 }
 
 void MediaFormat::setFormatItem(QString value)
 {
-    m_format << value;
+    this->m_format << value;
 }
 
 QStringList MediaFormat::getAcodec() const
 {
-    return m_acodec;
+    return this->m_acodec;
 }
 
 void MediaFormat::setAcodecItem(QString value)
 {
-    m_acodec << value;
+    this->m_acodec << value;
 }
 
 QStringList MediaFormat::getVcodec() const
 {
-    return m_vcodec;
+    return this->m_vcodec;
 }
 
 void MediaFormat::setVcodecItem(QString value)
 {
-    m_vcodec << value;
+    this->m_vcodec << value;
+}
+
+QStringList MediaFormat::getUrl() const
+{
+    return this->m_url;
+}
+
+void MediaFormat::setUrlItem(QString value)
+{
+    this->m_url << value;
+}
+
+QString MediaFormat::getThumbnail() const
+{
+    return m_thumbnail;
+}
+
+void MediaFormat::setThumbnail(QString value)
+{
+    this->m_thumbnail = value;
 }

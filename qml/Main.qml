@@ -42,9 +42,9 @@ MainView {
         if (downloadManager.isValidUrl(url)) {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-            downloadItems.model += 1;
             downloadManager.actionSubmit(url);
-            console.log(downloadManager.mediaFormats.vcodec);
+            console.log(downloadManager.mediaFormats.title);
+            downloadItems.model += 1;
         } else {
             PopupUtils.open(invalidURLWarning);
         }
@@ -162,7 +162,8 @@ MainView {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             height: units.gu(20)
-                            videoTitle: "Youtube video name " + modelData
+                            videoTitle: downloadManager.mediaFormats.title
+                            thumbnail: downloadManager.mediaFormats.thumbnail
                             sizeAndDuration: ["0:21:09", "128MB"]
                             mediaTypeModel: downloadManager.mediaFormats.vcodec
                             resolutionModel: downloadManager.mediaFormats.note

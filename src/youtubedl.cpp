@@ -42,15 +42,19 @@ QJsonObject YoutubeDL::createJsonObject(QString url)
     ytdl->waitForFinished();
     QByteArray output(this->ytdl->readAllStandardOutput());
     QJsonDocument json = QJsonDocument::fromJson(output);
+    this->resetArguments();
     return json.object();
 }
 
-QList<QJsonObject> YoutubeDL::fetchJSONAvailableFormats(QString url)
+QList<QJsonObject> YoutubeDL::fetchAvailableFormats(QString url)
 {
-    int j=0, k=0;
     QList<QJsonObject> formats;
 
     QJsonObject jsonObject = createJsonObject(url);
+
+    this->title = jsonObject["title"].toString();
+    this->thumbnail = jsonObject["thumbnail"].toString();
+
     QJsonArray jsonFormats = jsonObject["formats"].toArray();
     QJsonArray::iterator i;
     QJsonObject format;
@@ -58,25 +62,16 @@ QList<QJsonObject> YoutubeDL::fetchJSONAvailableFormats(QString url)
     for (i = jsonFormats.begin(); i != jsonFormats.end(); ++i) {
         QJsonValue value = *i;
         QJsonObject formatObject = value.toObject();
-//        QJsonObject format;
         format.insert("format_id", QJsonValue(formatObject["format_id"].toString()));
+        format.insert("url", QJsonValue(formatObject["url"].toString()));
         format.insert("format", QJsonValue(formatObject["format"].toString()));
         format.insert("ext", QJsonValue(formatObject["ext"].toString()));
         format.insert("format_note", QJsonValue(formatObject["format_note"].toString()));
-        if (formatObject.contains("height") && !formatObject["height"].isNull()) {
-            QString resolution = QString::number(formatObject["width"].toDouble()) + "x"
-                    + QString::number(formatObject["height"].toDouble());
-            format.insert("resolution", QJsonValue(resolution));
-//            qDebug() << "loop: Resolution: " << resolution;
-            k++;
-        }
+        format.insert("resolution", QJsonValue(formatObject["resolution"].toString()));
         format.insert("vcodec", QJsonValue(formatObject["vcodec"].toString().trimmed()));
         format.insert("acodec", QJsonValue(formatObject["acodec"].toString().trimmed()));
         formats.append(format);
-        j++;
     }
-//    qDebug() << "The value of j and k are " << j << k;
-//    qDebug() << "format[0] is " << formats.value(0);
     return formats;
 }
 
@@ -127,6 +122,16 @@ QProcess* YoutubeDL::getYtdl()
 void YoutubeDL::addArguments(QString arg)
 {
     this->arguments << arg;
+}
+
+QString YoutubeDL::getMediaTitle()
+{
+    return this->title;
+}
+
+QString YoutubeDL::getThumbnail()
+{
+    return this->thumbnail;
 }
 
 void YoutubeDL::resetArguments()
