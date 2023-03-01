@@ -24,9 +24,10 @@ Button {
     id: infoButtonContainer
     
     property int buttonID: 0
-    property var buttonIcons:  ["duration.png", "size.png", "type.png", "resolution.png"]
+    property var buttonIcons:  ["duration.png", "size.png"]
 
-    Layout.maximumWidth: units.gu(12)
+    Layout.maximumWidth: units.gu(15)
+    Layout.alignment: Qt.AlignLeft
 
 //    enabled: false
     color: "white"

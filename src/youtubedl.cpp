@@ -54,6 +54,7 @@ QList<QJsonObject> YoutubeDL::fetchAvailableFormats(QString url)
 
     this->title = jsonObject["title"].toString();
     this->thumbnail = jsonObject["thumbnail"].toString();
+    this->duration = jsonObject["duration_string"].toString();
 
     QJsonArray jsonFormats = jsonObject["formats"].toArray();
     QJsonArray::iterator i;
@@ -70,6 +71,9 @@ QList<QJsonObject> YoutubeDL::fetchAvailableFormats(QString url)
         format.insert("resolution", QJsonValue(formatObject["resolution"].toString()));
         format.insert("vcodec", QJsonValue(formatObject["vcodec"].toString().trimmed()));
         format.insert("acodec", QJsonValue(formatObject["acodec"].toString().trimmed()));
+        format.insert("filesize", QJsonValue(formatObject["filesize"].toDouble()/1048576));
+//        qDebug() << "Filesize: " << formatObject["filesize"].toDouble()/1048576;
+
         formats.append(format);
     }
     return formats;
@@ -132,6 +136,11 @@ QString YoutubeDL::getMediaTitle()
 QString YoutubeDL::getThumbnail()
 {
     return this->thumbnail;
+}
+
+QString YoutubeDL::getDuration()
+{
+    return this->duration;
 }
 
 void YoutubeDL::resetArguments()

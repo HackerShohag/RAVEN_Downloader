@@ -10,7 +10,7 @@ GroupBox {
     property int serialNumber
 
     visible: true
-    opacity: 0
+    opacity: 1
 
     background: Rectangle {
         y: boderShadow.topPadding - boderShadow.bottomPadding
@@ -20,18 +20,18 @@ GroupBox {
         border.color: "transparent"
         radius: units.gu(0)
     }
-    NumberAnimation on y {
-        running: true
-        from: -units.gu(10);
-    }
+//    NumberAnimation on y {
+//        running: true
+//        from: -units.gu(10);
+//    }
 
-    OpacityAnimator {
-        target: boderShadow;
-        from: 0;
-        to: 1;
-        duration: 1000
-        running: true
-    }
+//    OpacityAnimator {
+//        target: boderShadow;
+//        from: 0;
+//        to: 1;
+//        duration: 1000
+//        running: true
+//    }
 
     Item {
         anchors.fill: parent

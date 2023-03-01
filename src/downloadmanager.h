@@ -19,34 +19,37 @@
 
 #include <QObject>
 #include <QVector>
+#include <QJsonObject>
 #include <youtubedl.h>
 #include <mediaformat.h>
 
 class DownloadManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString author READ author WRITE setAuthor NOTIFY authorChanged);
+    Q_PROPERTY(QJsonObject author READ author WRITE setAuthor NOTIFY authorChanged);
     Q_PROPERTY(MediaFormat *mediaFormats READ getMediaFormats WRITE setMediaFormats NOTIFY mediaFormatsChanged);
 
 public:
     explicit DownloadManager(QObject *parent = nullptr);
-    QString author() const;
-    void setAuthor(const QString &a);
+    QJsonObject author() const;
+    void setAuthor(const QJsonObject &a);
 
     MediaFormat *getMediaFormats();
     void setMediaFormats(MediaFormat *f);
 
+    QJsonDocument loadJson(QString fileName);
+    void saveJson(QJsonDocument document, QString fileName);
 public slots:
     void actionSubmit(QString url);
     bool isValidUrl(QString url);
     void sayHello(QString hello);
 
 signals:
-    void authorChanged(const QString &m_string);
+    void authorChanged(const QJsonObject &m_string);
     void mediaFormatsChanged();
 
 private:
-    QString m_author;
+    QJsonObject m_author;
     YoutubeDL *ytdl;
     MediaFormat *m_mediaFormats = new MediaFormat();
 };

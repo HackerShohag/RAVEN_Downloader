@@ -124,3 +124,23 @@ void MediaFormat::setThumbnail(QString value)
 {
     this->m_thumbnail = value;
 }
+
+QList<double> MediaFormat::getFilesize() const
+{
+    return this->m_filesize;
+}
+
+void MediaFormat::setFilesizeItem(double value)
+{
+    this->m_filesize << value;
+}
+
+QString MediaFormat::getDuration() const
+{
+    return this->m_duration;
+}
+
+void MediaFormat::setDuration(QString value)
+{
+    this->m_duration = value;
+}

@@ -15,6 +15,9 @@
  */
 
 #include <QDebug>
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonArray>
 #include "downloadmanager.h"
 
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
@@ -24,14 +27,16 @@ DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
     this->ytdl = new YoutubeDL();
 
     qDebug() << "Constructor of DownloadManager";
+//    saveJson( QJsonDocument::fromJson("{\"id\": \"EkjaiDsiM-Q\",\"title\":\"Qt Tutorials For Beginners 1 - Introduction\"},\"formats\": [{\"format_id\": \"sb2\",\"format_note\": \"storyboard\",},{\"ext\": \"mhtml\",\"protocol\": \"mhtml\"}]") , "data.json");
+//    this->setAuthor(loadJson("data.json").object());
 }
 
-QString DownloadManager::author() const
+QJsonObject DownloadManager::author() const
 {
     return m_author;
 }
 
-void DownloadManager::setAuthor(const QString &a)
+void DownloadManager::setAuthor(const QJsonObject &a)
 {
     if (a != m_author) {
         m_author = a;
@@ -54,6 +59,7 @@ void DownloadManager::actionSubmit(QString url)
     QList<QJsonObject> result = this->ytdl->fetchAvailableFormats(url);
     this->m_mediaFormats->setTitle(this->ytdl->getMediaTitle());
     this->m_mediaFormats->setThumbnail(this->ytdl->getThumbnail());
+    this->m_mediaFormats->setDuration(this->ytdl->getDuration());
 
     for (int i = 0; i < result.length(); ++i) {
         this->m_mediaFormats->setFormatIdItem(result.value(i)["format_id"].toString());
@@ -64,6 +70,8 @@ void DownloadManager::actionSubmit(QString url)
         this->m_mediaFormats->setVcodecItem(result.value(i)["vcodec"].toString());
         this->m_mediaFormats->setAcodecItem(result.value(i)["acodec"].toString());
         this->m_mediaFormats->setUrlItem(result.value(i)["url"].toString());
+        this->m_mediaFormats->setFilesizeItem(result.value(i)["filesize"].toDouble());
+//        qDebug() << "Filesize: " << result.value(i)["filesize"].toDouble();
     }
 }
 
@@ -75,4 +83,15 @@ bool DownloadManager::isValidUrl(QString url)
 void DownloadManager::sayHello(QString hello)
 {
     qDebug() << "Hello, " << hello;
+}
+QJsonDocument DownloadManager::loadJson(QString fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::ReadOnly);
+    return QJsonDocument().fromJson(jsonFile.readAll());
+}
+
+void DownloadManager::saveJson(QJsonDocument document, QString fileName) {
+    QFile jsonFile(fileName);
+    jsonFile.open(QFile::WriteOnly);
+    jsonFile.write(document.toJson());
 }

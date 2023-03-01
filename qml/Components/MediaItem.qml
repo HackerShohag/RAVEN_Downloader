@@ -25,19 +25,21 @@ import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 import Lomiri.Components.ListItems 1.3
+import Lomiri.DownloadManager 1.2
 
 LayoutsCustom {
     id: gridBox
 
     property alias videoTitle: titleBox.text
     property alias thumbnail: thumbnailContainer.source
-    property var sizeAndDuration: null
+    property string duration
+    property var sizeModel: null
     property var mediaTypeModel: null
     property var resolutionModel: null
+    property var downloadLinks: null
 
     property var downloadUnavailable: resolutionModel === null && mediaTypeModel === null ? true : false
     property var comboHeading: [ "select type", "select resolution" ]
-    property var models: [mediaTypeModel, resolutionModel]
 
     function isDownloadValid(size, resolution) {
         console.log("SizeL; " + size);
@@ -99,6 +101,12 @@ LayoutsCustom {
                 }
             }
 
+            BusyIndicator {
+                anchors.fill: parent
+                padding: units.gu(2)
+                running: thumbnailContainer.status === Image.Loading
+            }
+
             source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
@@ -119,7 +127,7 @@ LayoutsCustom {
              CustomProgressBar {
                 id: progressBar
                 Layout.fillWidth: true
-                value: 0.2
+                value: single.progress
              }
              Label {
                 text: progressBar.value * 100 + "%"
@@ -129,31 +137,46 @@ LayoutsCustom {
         }
         RowLayout {
             Layout.fillWidth: true
-            Repeater {
-                model: 2
-                InfoButton {
-                    Layout.fillWidth: true
-                    buttonID: modelData
-                    text: sizeAndDuration ? sizeAndDuration[modelData] : "unknown"
-                }
+
+            InfoButton {
+                id: durationButton
+                Layout.fillWidth: true
+                buttonID: 0
+                text: duration ? duration : "unknown"
             }
 
-            Repeater {
-                id: comboMenuRepeater
-                model: 2
-                CustomComboPopup {
-                    Layout.fillWidth: true
-                    heading: comboHeading[modelData]
-                    enabled: downloadUnavailable ? false : true
-                    dropdownModel: models[modelData]
-                }
+            InfoButton {
+                id: sizeButton
+                Layout.fillWidth: true
+                buttonID: 1
+                text: sizeModel ? Math.round(sizeModel[sizePopup.index] * 10) / 10 + "MB" : "unknown"
+                enabled: sizeModel ? true : false
+            }
+
+            CustomComboPopup {
+                id: typePopup
+                Layout.fillWidth: true
+                heading: comboHeading[0]
+                enabled: downloadUnavailable ? false : true
+                dropdownModel: mediaTypeModel
+            }
+            CustomComboPopup {
+                id: sizePopup
+                Layout.fillWidth: true
+                heading: comboHeading[1]
+                enabled: downloadUnavailable ? false : true
+                dropdownModel: resolutionModel
             }
 
             Button {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(comboMenuRepeater.itemAt(0).text, comboMenuRepeater.itemAt(1).text) ? PopupUtils.open(invalidDownloadWarning) : (downloadButton.text = "Gotcha")
+                onClicked: isDownloadValid(comboMenuRepeater.itemAt(0).text, comboMenuRepeater.itemAt(1).text) ? single.download(downloadLinks[downloadLinks.length - 1]) : PopupUtils.open(invalidDownloadWarning)
+            }
+            SingleDownload {
+                id: single
+                onFinished: console.log()
             }
         }
     }

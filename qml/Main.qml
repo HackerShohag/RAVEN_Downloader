@@ -43,8 +43,16 @@ MainView {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
             downloadManager.actionSubmit(url);
-            console.log(downloadManager.mediaFormats.title);
-            downloadItems.model += 1;
+            console.log(downloadManager.mediaFormats.filesizes);
+            downloadItemsModel.append({
+                                          vTitle: downloadManager.mediaFormats.title,
+                                          vThumbnail: downloadManager.mediaFormats.thumbnail,
+                                          vLinks: downloadManager.mediaFormats.urls,
+                                          vDuration: downloadManager.mediaFormats.duration,
+                                          vSizeModel: downloadManager.mediaFormats.filesizes,
+                                          vMediaType: downloadManager.mediaFormats.vcodeces,
+                                          vResolution: downloadManager.mediaFormats.notes
+                                      })
         } else {
             PopupUtils.open(invalidURLWarning);
         }
@@ -58,8 +66,8 @@ MainView {
             text: "Please provide a valid download link."
             Keys.onPressed: PopupUtils.close(dialogue)
             Button {
-               text: "OK"
-               onClicked: PopupUtils.close(dialogue)
+                text: "OK"
+                onClicked: PopupUtils.close(dialogue)
             }
         }
     }
@@ -105,10 +113,10 @@ MainView {
 
                 LayoutsCustom {
                     id: inputPanel
-//                    anchors {
-//                        top: parent.top
-//                        right: parent.right
-//                    }
+                    //                    anchors {
+                    //                        top: parent.top
+                    //                        right: parent.right
+                    //                    }
                     Layout.fillWidth: true
 
                     height:  units.gu(14)
@@ -125,6 +133,13 @@ MainView {
                             placeholderText: i18n.tr("Put YouTube video or playlist URL here")
                             Keys.onReturnPressed: urlHandler(urlContainer.text)
                         }
+                        CustomComboPopup {
+                            id: donwloadType
+                            heading: "Select download type"
+                            defaultValue: true
+                            dropdownModel: ["single video", "playlist"]
+                        }
+
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
@@ -149,24 +164,32 @@ MainView {
                         height: units.gu(5)
                         font.bold: true
                     }
+                    ListModel {
+                        id: downloadItemsModel
+                        dynamicRoles: true
+                    }
 
-                    Repeater {
+                    ListView {
                         id: downloadItems
-//                        anchors.top: inputPanel.bottom
-                        anchors.left: parent.left
-                        anchors.right: parent.right
-                        anchors.bottom: parent.bottom
-                        anchors.fill: parent
-                        model: 0
+                        anchors {
+                            top: downloadContainerHeading.bottom
+                            bottom: parent.bottom
+                            right: parent.right
+                            left: parent.left
+                        }
+
+                        model: downloadItemsModel
                         delegate: MediaItem {
                             anchors.left: parent.left
                             anchors.right: parent.right
                             height: units.gu(20)
-                            videoTitle: downloadManager.mediaFormats.title
-                            thumbnail: downloadManager.mediaFormats.thumbnail
-                            sizeAndDuration: ["0:21:09", "128MB"]
-                            mediaTypeModel: downloadManager.mediaFormats.vcodec
-                            resolutionModel: downloadManager.mediaFormats.note
+                            videoTitle: vTitle
+                            thumbnail: vThumbnail
+                            downloadLinks: vLinks
+                            duration: vDuration
+                            sizeModel: vSizeModel
+                            mediaTypeModel: vMediaType
+                            resolutionModel: vResolution
                         }
                     }
                 }

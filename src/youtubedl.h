@@ -33,12 +33,14 @@ public:
     // get functions of properties
     QString getMediaTitle();
     QString getThumbnail();
+    QString getDuration();
 
 private:
     QStringList arguments;
     QString program;
     QString title;
     QString thumbnail;
+    QString duration;
     QProcess *ytdl;
 };
 

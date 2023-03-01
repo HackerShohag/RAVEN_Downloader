@@ -28,9 +28,10 @@ Button {
     property var dropdownModel
     property string heading
     property int index
+    property bool defaultValue: false
 
     color: "white"
-    text: heading
+    text: defaultValue ? dropdownModel[0] : heading
     onClicked: PopupUtils.open(invalidURLWarning)
 
     Component {
