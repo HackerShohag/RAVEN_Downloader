@@ -7,13 +7,13 @@ find_package(Qt5 REQUIRED COMPONENTS Core)
 
 set(
     SRC
-    mediaformat.h
     youtubedl.h
-    mediaformat.cpp
     youtubedl.cpp
 )
 set(
     DMSRC
+    mediaformat.h
+    mediaformat.cpp
     downloadmanager.h
     downloadmanager.cpp
 )

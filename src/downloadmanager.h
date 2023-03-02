@@ -26,32 +26,26 @@
 class DownloadManager : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QJsonObject author READ author WRITE setAuthor NOTIFY authorChanged);
-    Q_PROPERTY(MediaFormat *mediaFormats READ getMediaFormats WRITE setMediaFormats NOTIFY mediaFormatsChanged);
+    Q_PROPERTY(MediaFormat *mediaFormats READ getMediaFormats NOTIFY mediaFormatsChanged);
 
 public:
     explicit DownloadManager(QObject *parent = nullptr);
-    QJsonObject author() const;
-    void setAuthor(const QJsonObject &a);
-
     MediaFormat *getMediaFormats();
-    void setMediaFormats(MediaFormat *f);
-
     QJsonDocument loadJson(QString fileName);
     void saveJson(QJsonDocument document, QString fileName);
+
 public slots:
     void actionSubmit(QString url);
+    void setFormats(QList<QJsonObject> result);
     bool isValidUrl(QString url);
-    void sayHello(QString hello);
 
 signals:
-    void authorChanged(const QJsonObject &m_string);
     void mediaFormatsChanged();
+    void formatsUpdated();
 
 private:
-    QJsonObject m_author;
-    YoutubeDL *ytdl;
+    YoutubeDL *ytdl = new YoutubeDL();
     MediaFormat *m_mediaFormats = new MediaFormat();
 };
 
-#endif // DOWNLOADMANAGER_H
+#endif

@@ -22,26 +22,8 @@
 
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
 {
-    connect(this, SIGNAL(authorChanged(QString)), this, SLOT(actionSubmit(QString)));
-
-    this->ytdl = new YoutubeDL();
-
+    connect(this->ytdl, SIGNAL(updateData(QList<QJsonObject>)), this, SLOT(setFormats(QList<QJsonObject>)));
     qDebug() << "Constructor of DownloadManager";
-//    saveJson( QJsonDocument::fromJson("{\"id\": \"EkjaiDsiM-Q\",\"title\":\"Qt Tutorials For Beginners 1 - Introduction\"},\"formats\": [{\"format_id\": \"sb2\",\"format_note\": \"storyboard\",},{\"ext\": \"mhtml\",\"protocol\": \"mhtml\"}]") , "data.json");
-//    this->setAuthor(loadJson("data.json").object());
-}
-
-QJsonObject DownloadManager::author() const
-{
-    return m_author;
-}
-
-void DownloadManager::setAuthor(const QJsonObject &a)
-{
-    if (a != m_author) {
-        m_author = a;
-        emit authorChanged(m_author);
-    }
 }
 
 MediaFormat *DownloadManager::getMediaFormats()
@@ -49,41 +31,6 @@ MediaFormat *DownloadManager::getMediaFormats()
     return this->m_mediaFormats;
 }
 
-void DownloadManager::setMediaFormats(MediaFormat *f)
-{
-    this->m_mediaFormats = f;
-}
-
-void DownloadManager::actionSubmit(QString url)
-{
-    QList<QJsonObject> result = this->ytdl->fetchAvailableFormats(url);
-    this->m_mediaFormats->setTitle(this->ytdl->getMediaTitle());
-    this->m_mediaFormats->setThumbnail(this->ytdl->getThumbnail());
-    this->m_mediaFormats->setDuration(this->ytdl->getDuration());
-
-    for (int i = 0; i < result.length(); ++i) {
-        this->m_mediaFormats->setFormatIdItem(result.value(i)["format_id"].toString());
-        this->m_mediaFormats->setFormatItem(result.value(i)["format"].toString());
-        this->m_mediaFormats->setExtensionItem(result.value(i)["ext"].toString());
-        this->m_mediaFormats->setNoteItem(result.value(i)["format_note"].toString());
-        this->m_mediaFormats->setResolutionItem(result.value(i)["resolution"].toString());
-        this->m_mediaFormats->setVcodecItem(result.value(i)["vcodec"].toString());
-        this->m_mediaFormats->setAcodecItem(result.value(i)["acodec"].toString());
-        this->m_mediaFormats->setUrlItem(result.value(i)["url"].toString());
-        this->m_mediaFormats->setFilesizeItem(result.value(i)["filesize"].toDouble());
-//        qDebug() << "Filesize: " << result.value(i)["filesize"].toDouble();
-    }
-}
-
-bool DownloadManager::isValidUrl(QString url)
-{
-    return YoutubeDL::isValidUrl(url);
-}
-
-void DownloadManager::sayHello(QString hello)
-{
-    qDebug() << "Hello, " << hello;
-}
 QJsonDocument DownloadManager::loadJson(QString fileName) {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
@@ -94,4 +41,36 @@ void DownloadManager::saveJson(QJsonDocument document, QString fileName) {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(document.toJson());
+}
+
+void DownloadManager::actionSubmit(QString url)
+{
+    this->ytdl->fetchAvailableFormats(url);
+}
+
+void DownloadManager::setFormats(QList<QJsonObject> result)
+{
+    this->m_mediaFormats->setTitle(result.value(0)["title"].toString());
+    this->m_mediaFormats->setThumbnail(result.value(0)["thumbnail"].toString());
+    this->m_mediaFormats->setDuration(result.value(0)["duration"].toString());
+
+    qDebug() << "DownloadManager::setFormats(): Title:" << result.value(2)["format_id"].toString();
+
+    for (int i = 1; i < result.length(); ++i) {
+        this->m_mediaFormats->setFormatIdItem(result.value(i)["format_id"].toString());
+        this->m_mediaFormats->setFormatItem(result.value(i)["format"].toString());
+        this->m_mediaFormats->setExtensionItem(result.value(i)["ext"].toString());
+        this->m_mediaFormats->setNoteItem(result.value(i)["format_note"].toString());
+        this->m_mediaFormats->setResolutionItem(result.value(i)["resolution"].toString());
+        this->m_mediaFormats->setVcodecItem(result.value(i)["vcodec"].toString());
+        this->m_mediaFormats->setAcodecItem(result.value(i)["acodec"].toString());
+        this->m_mediaFormats->setUrlItem(result.value(i)["url"].toString());
+        this->m_mediaFormats->setFilesizeItem(result.value(i)["filesize"].toDouble());
+    }
+    emit formatsUpdated();
+}
+
+bool DownloadManager::isValidUrl(QString url)
+{
+    return YoutubeDL::isValidUrl(url);
 }

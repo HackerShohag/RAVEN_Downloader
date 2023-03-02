@@ -42,8 +42,8 @@ LayoutsCustom {
     property var comboHeading: [ "select type", "select resolution" ]
 
     function isDownloadValid(size, resolution) {
-        console.log("SizeL; " + size);
-        console.log("Res; " + resolution)
+        console.log("Size: " + size);
+        console.log("Res: " + resolution)
         return true
     }
 
@@ -160,6 +160,7 @@ LayoutsCustom {
                 enabled: downloadUnavailable ? false : true
                 dropdownModel: mediaTypeModel
             }
+
             CustomComboPopup {
                 id: sizePopup
                 Layout.fillWidth: true
@@ -172,7 +173,7 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(comboMenuRepeater.itemAt(0).text, comboMenuRepeater.itemAt(1).text) ? single.download(downloadLinks[downloadLinks.length - 1]) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? single.download(downloadLinks[downloadLinks.length - 1]) : PopupUtils.open(invalidDownloadWarning)
             }
             SingleDownload {
                 id: single

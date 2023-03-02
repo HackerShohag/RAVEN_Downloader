@@ -41,6 +41,9 @@ public:
     QString getThumbnail() const;
     void setThumbnail(QString value);
 
+    QString getDuration() const;
+    void setDuration(QString value);
+
     QStringList getFormatId() const;
     void setFormatIdItem(QString value);
 
@@ -70,9 +73,6 @@ public:
 
     QList<double> getFilesize() const;
     void setFilesizeItem(double value);
-
-    QString getDuration() const;
-    void setDuration(QString value);
 
 signals:
     void titleChanged(const QString &value);
@@ -105,4 +105,4 @@ private:
     QList<double> m_filesize;
 };
 
-#endif // MEDIAFORMAT_H
+#endif

@@ -23,6 +23,7 @@ QString MediaFormat::getTitle() const
 void MediaFormat::setTitle(QString value)
 {
     this->m_title = value;
+    emit titleChanged(value);
 }
 
 QStringList MediaFormat::getFormatId() const
@@ -123,6 +124,7 @@ QString MediaFormat::getThumbnail() const
 void MediaFormat::setThumbnail(QString value)
 {
     this->m_thumbnail = value;
+    emit thumbnailChanged(value);
 }
 
 QList<double> MediaFormat::getFilesize() const
@@ -143,4 +145,5 @@ QString MediaFormat::getDuration() const
 void MediaFormat::setDuration(QString value)
 {
     this->m_duration = value;
+    emit durationChanged(value);
 }

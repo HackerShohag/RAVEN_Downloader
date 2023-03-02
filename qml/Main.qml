@@ -24,7 +24,6 @@ import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 
-
 import "Components"
 
 MainView {
@@ -43,7 +42,15 @@ MainView {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
             downloadManager.actionSubmit(url);
-            console.log(downloadManager.mediaFormats.filesizes);
+        } else {
+            PopupUtils.open(invalidURLWarning);
+        }
+    }
+
+    Connections {
+        target: downloadManager
+        onFormatsUpdated: {
+            console.log("emitted signal formatsUpdated()")
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
                                           vThumbnail: downloadManager.mediaFormats.thumbnail,
@@ -53,8 +60,7 @@ MainView {
                                           vMediaType: downloadManager.mediaFormats.vcodeces,
                                           vResolution: downloadManager.mediaFormats.notes
                                       })
-        } else {
-            PopupUtils.open(invalidURLWarning);
+
         }
     }
 

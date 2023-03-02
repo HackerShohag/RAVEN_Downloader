@@ -14,24 +14,31 @@
 #include <QJsonObject>
 #include <QJsonValueRef>
 #include <QJsonValue>
-#include <QRegExp>
 #include <QRegExpValidator>
 #include <QString>
 #include <QStringList>
 #include <QProcess>
 #include <QDebug>
+#include <QUrl>
+#include <QUrlQuery>
 
 #include "youtubedl.h"
 
 YoutubeDL::YoutubeDL()
 {
-    this->program = "yt-dlp"; // "youtube-dl";
     QObject *parent = QGuiApplication::instance();
     this->ytdl = new QProcess(parent);
-    this->ytdl->setProcessChannelMode(QProcess::MergedChannels);
+    this->program = "yt-dlp"; // "youtube-dl";
+    this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
+
+//    connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
+//    connect(this->ytdl,SIGNAL(readyRead),this,SLOT(readyReadStandardOutput()));
+
 }
 
-YoutubeDL::~YoutubeDL() {
+YoutubeDL::~YoutubeDL()
+{
+    // pass this
 }
 
 QJsonObject YoutubeDL::createJsonObject(QString url)
@@ -46,15 +53,22 @@ QJsonObject YoutubeDL::createJsonObject(QString url)
     return json.object();
 }
 
-QList<QJsonObject> YoutubeDL::fetchAvailableFormats(QString url)
+void YoutubeDL::fetchAvailableFormats(QString url)
+{
+    QJsonObject jsonObject = createJsonObject(url);
+    emit updateData(createFormats(jsonObject));
+}
+
+QList<QJsonObject> YoutubeDL::createFormats(QJsonObject jsonObject)
 {
     QList<QJsonObject> formats;
 
-    QJsonObject jsonObject = createJsonObject(url);
+    QJsonObject metaData;
+    metaData.insert("title", jsonObject["title"].toString());
+    metaData.insert("thumbnail", jsonObject["thumbnail"].toString());
+    metaData.insert("duration", jsonObject["duration_string"].toString());
 
-    this->title = jsonObject["title"].toString();
-    this->thumbnail = jsonObject["thumbnail"].toString();
-    this->duration = jsonObject["duration_string"].toString();
+    formats.append(metaData);
 
     QJsonArray jsonFormats = jsonObject["formats"].toArray();
     QJsonArray::iterator i;
@@ -72,26 +86,16 @@ QList<QJsonObject> YoutubeDL::fetchAvailableFormats(QString url)
         format.insert("vcodec", QJsonValue(formatObject["vcodec"].toString().trimmed()));
         format.insert("acodec", QJsonValue(formatObject["acodec"].toString().trimmed()));
         format.insert("filesize", QJsonValue(formatObject["filesize"].toDouble()/1048576));
-//        qDebug() << "Filesize: " << formatObject["filesize"].toDouble()/1048576;
 
         formats.append(format);
     }
     return formats;
 }
 
-QString YoutubeDL::getUrl(QString url)
+QString YoutubeDL::extractPlaylistUrl(QString url)
 {
-    qDebug() << "Started getUrl function";
-    this->arguments << "-g" << url;
-    this->ytdl->start(this->program, this->arguments);
-    this->ytdl->waitForFinished();
-    qDebug() << "Program:" << this->program << "arguments:" << this->arguments;
-//    qDebug() << "standard output:" << this->ytdl->readAllStandardOutput();
-    QString output(this->ytdl->readAllStandardOutput());
-    qDebug() << "Output:" << output;
-    qDebug() << "Error:" << this->ytdl->readAllStandardError();
-    qDebug() << "Finished getUrl function";
-    return output;
+    QString listValue = QUrlQuery(QUrl(url).query()).queryItemValue("list");
+    return "https://www.youtube.com/watch?list="+ listValue;
 }
 
 bool YoutubeDL::isValidUrl(QString url)
@@ -128,19 +132,27 @@ void YoutubeDL::addArguments(QString arg)
     this->arguments << arg;
 }
 
-QString YoutubeDL::getMediaTitle()
+void YoutubeDL::startFetchPlayListFormats(QString playlistUrl)
 {
-    return this->title;
+    this->resetArguments();
+
+    arguments << "-j" << playlistUrl;
+    ytdl->setProcessChannelMode(QProcess::SeparateChannels);
+    ytdl->start(this->program, this->arguments);
+    ytdl->waitForFinished();
+    QByteArray output(this->ytdl->readAllStandardOutput());
+    QJsonDocument json = QJsonDocument::fromJson(output);
+
+    this->resetArguments();
+    emit updateData(createFormats(json.object()));
 }
 
-QString YoutubeDL::getThumbnail()
+void YoutubeDL::readyReadStandardOutput()
 {
-    return this->thumbnail;
-}
-
-QString YoutubeDL::getDuration()
-{
-    return this->duration;
+    QByteArray output(this->ytdl->readAllStandardOutput());
+    QJsonDocument json = QJsonDocument::fromJson(output);
+    emit updateData(createFormats(json.object()));
+    qDebug() << "YoutubeDL::readyReadStandardOutput() called" << json;
 }
 
 void YoutubeDL::resetArguments()

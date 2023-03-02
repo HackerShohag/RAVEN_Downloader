@@ -28,10 +28,10 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication *app = new QGuiApplication(argc, (char**)argv);
+    app->setApplicationName("raven.downloader.shohag");
+
     QQuickView *view = new QQuickView();
     DownloadManager *dm = new DownloadManager();
-    
-    app->setApplicationName("raven.downloader.shohag");
 
     qDebug() << "Starting app from main.cpp";
 
