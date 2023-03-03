@@ -3,9 +3,9 @@
  * and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
  * The original author of this code : Robin de Rooij (https://github.com/rrooij)
- * The original repository of this code : https://github.com/rrooij/youtube-dl-qt 
+ * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
  */
 
 #ifndef YOUTUBEDL_H
@@ -20,8 +20,7 @@ class YoutubeDL: public QObject {
 public:
     YoutubeDL();
     ~YoutubeDL();
-    QJsonObject createJsonObject(QString url);
-    void fetchAvailableFormats(QString url);
+    void fetchSingleFormats(QString url);
     QString extractPlaylistUrl(QString url);
     QProcess *getYtdl();
     void resetArguments();
@@ -34,11 +33,10 @@ public:
     void startForPlayList(QString url);
 
 public slots:
-    QList<QJsonObject> createFormats(QJsonObject jsonObject);
     void readyReadStandardOutput();
 
 signals:
-    void updateData(QList<QJsonObject> value);
+    void updateQString(QString value);
 
 private:
     QStringList arguments;

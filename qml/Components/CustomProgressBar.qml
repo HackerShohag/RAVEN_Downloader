@@ -16,39 +16,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//import QtQuick 2.4
-//import Lomiri.Components 1.3
-
-//ProgressBar {
-//    height: units.dp(3)
-//    showProgressPercentage: false
-//    minimumValue: 0
-//    maximumValue: 100
-//}
-
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 
 ProgressBar {
-        id: control
-        value: 0.5
+    id: control
+    value: 0.5
 
-        background: Rectangle {
-            implicitWidth: units.gu(20)
-            implicitHeight: units.gu(2)
-            color: "#4c4c4c"
+    background: Rectangle {
+        implicitWidth: units.gu(20)
+        implicitHeight: units.gu(2)
+        color: "#4c4c4c"
+        radius: 8
+    }
+
+    contentItem: Item {
+        implicitWidth: units.gu(20)
+        implicitHeight: units.gu(2)
+
+        Rectangle {
+            width: control.visualPosition * parent.width
+            height: parent.height
             radius: 8
-        }
-
-        contentItem: Item {
-            implicitWidth: units.gu(20)
-            implicitHeight: units.gu(2)
-
-            Rectangle {
-                width: control.visualPosition * parent.width
-                height: parent.height
-                radius: 8
-                color: "#21be9b"
-            }
+            color: "#21be9b"
         }
     }
+}

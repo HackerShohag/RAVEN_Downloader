@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-03 05:15+0600\n"
+"POT-Creation-Date: 2023-03-04 01:57+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,26 +17,82 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../qml/Components/MediaItem.qml:42
+msgid "select resolution"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:42
+msgid "select type"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:54
+msgid "Download Invalid!"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:55
+msgid "Please refresh download link."
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:145 ../qml/Components/MediaItem.qml:152
+msgid "unknown"
+msgstr ""
+
 #: ../qml/Components/MediaItem.qml:175
 msgid "Download"
 msgstr ""
 
-#: ../qml/Main.qml:87 raven.downloader.desktop.in.h:1
-msgid "RAVEN Downloader"
+#: ../qml/Main.qml:85
+msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:139
+#: ../qml/Main.qml:86
+msgid "Please provide a link with valid list argument."
+msgstr ""
+
+#: ../qml/Main.qml:89 ../qml/Main.qml:103
+msgid "OK"
+msgstr ""
+
+#: ../qml/Main.qml:99
+msgid "Invalid URL!"
+msgstr ""
+
+#: ../qml/Main.qml:100
+msgid "Please provide a valid video link."
+msgstr ""
+
+#: ../qml/Main.qml:163
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:151
+#: ../qml/Main.qml:168
+msgid "Select download type"
+msgstr ""
+
+#: ../qml/Main.qml:170
+msgid "playlist"
+msgstr ""
+
+#: ../qml/Main.qml:170
+msgid "single video"
+msgstr ""
+
+#: ../qml/Main.qml:175
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:169
+#: ../qml/Main.qml:193
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:228
+#: ../qml/Main.qml:249
 msgid "No Downloads!"
+msgstr ""
+
+#: ../qml/Main.qml:262
+msgid "Spwipe"
+msgstr ""
+
+#: raven.downloader.desktop.in.h:1
+msgid "RAVEN Downloader"
 msgstr ""

@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>Main.qml</file>
-        <file>Components/HeaderButton.qml</file>
         <file>Components/MediaItem.qml</file>
         <file>Components/InfoButton.qml</file>
         <file>Components/CustomComboPopup.qml</file>

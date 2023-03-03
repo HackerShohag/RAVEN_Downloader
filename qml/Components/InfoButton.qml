@@ -29,7 +29,7 @@ Button {
     Layout.maximumWidth: units.gu(15)
     Layout.alignment: Qt.AlignLeft
 
-//    enabled: false
+    // enabled: false
     color: "white"
     iconSource: "qrc:///assets/media/" + buttonIcons[buttonID]
     opacity: 1

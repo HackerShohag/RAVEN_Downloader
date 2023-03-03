@@ -39,7 +39,7 @@ LayoutsCustom {
     property var downloadLinks: null
 
     property var downloadUnavailable: resolutionModel === null && mediaTypeModel === null ? true : false
-    property var comboHeading: [ "select type", "select resolution" ]
+    property var comboHeading: [ i18n.tr("select type"), i18n.tr("select resolution") ]
 
     function isDownloadValid(size, resolution) {
         console.log("Size: " + size);
@@ -48,16 +48,16 @@ LayoutsCustom {
     }
 
     Component {
-         id: invalidDownloadWarning
-         Dialog {
-             id: dialogue
-             title: "Download Invalid!"
-             text: "Please refresh download link."
-             Button {
-                 text: "OK"
-                 onClicked: PopupUtils.close(dialogue)
-             }
-         }
+        id: invalidDownloadWarning
+        Dialog {
+            id: dialogue
+            title: i18n.tr("Download Invalid!")
+            text: i18n.tr("Please refresh download link.")
+            Button {
+                text: "OK"
+                onClicked: PopupUtils.close(dialogue)
+            }
+        }
     }
 
     height: gridLayout.height
@@ -124,16 +124,16 @@ LayoutsCustom {
         }
         RowLayout {
             Layout.fillWidth: true
-             CustomProgressBar {
+            CustomProgressBar {
                 id: progressBar
                 Layout.fillWidth: true
                 value: single.progress
-             }
-             Label {
+            }
+            Label {
                 text: progressBar.value * 100 + "%"
                 font.pixelSize: 18
                 font.bold: true
-             }
+            }
         }
         RowLayout {
             Layout.fillWidth: true
@@ -142,14 +142,14 @@ LayoutsCustom {
                 id: durationButton
                 Layout.fillWidth: true
                 buttonID: 0
-                text: duration ? duration : "unknown"
+                text: duration ? duration : i18n.tr("unknown")
             }
 
             InfoButton {
                 id: sizeButton
                 Layout.fillWidth: true
                 buttonID: 1
-                text: sizeModel ? Math.round(sizeModel[sizePopup.index] * 10) / 10 + "MB" : "unknown"
+                text: sizeModel ? Math.round(sizeModel[sizePopup.index] * 10) / 10 + "MB" : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }
 

@@ -37,14 +37,25 @@ MainView {
 
     property int margin: units.gu(1)
 
-    function urlHandler(url) {
+    function urlHandler(url, index) {
+        if (index) {
+            if (!(downloadManager.isValidPlayListUrl(url))) {
+                PopupUtils.open(invalidPlayListURLWarning);
+                return ;
+            }
+            if (downloadItemsContainer.visible === false)
+                mainPage.toggleBlankPage();
+            downloadManager.actionSubmit(url, index);
+            return ;
+        }
+
         if (downloadManager.isValidUrl(url)) {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-            downloadManager.actionSubmit(url);
-        } else {
-            PopupUtils.open(invalidURLWarning);
+            downloadManager.actionSubmit(url, index);
+            return ;
         }
+        PopupUtils.open(invalidURLWarning);
     }
 
     Connections {
@@ -62,17 +73,34 @@ MainView {
                                       })
 
         }
+        onInvalidPlaylistUrl: {
+            PopupUtils.open(invalidPlayListURLWarning);
+        }
+    }
+
+    Component {
+        id: invalidPlayListURLWarning
+        Dialog {
+            id: dialogue
+            title: i18n.tr("Invalid Playlist URL!")
+            text: i18n.tr("Please provide a link with valid list argument.")
+            Keys.onPressed: PopupUtils.close(dialogue)
+            Button {
+                text: i18n.tr("OK")
+                onClicked: PopupUtils.close(dialogue)
+            }
+        }
     }
 
     Component {
         id: invalidURLWarning
         Dialog {
             id: dialogue
-            title: "Invalid URL!"
-            text: "Please provide a valid download link."
+            title: i18n.tr("Invalid URL!")
+            text: i18n.tr("Please provide a valid video link.")
             Keys.onPressed: PopupUtils.close(dialogue)
             Button {
-                text: "OK"
+                text: i18n.tr("OK")
                 onClicked: PopupUtils.close(dialogue)
             }
         }
@@ -84,7 +112,7 @@ MainView {
 
         header: PageHeader {
             id: header
-            title: i18n.tr('RAVEN Downloader')
+            title: 'RAVEN Downloader'
         }
 
         function toggleBlankPage() {
@@ -119,10 +147,6 @@ MainView {
 
                 LayoutsCustom {
                     id: inputPanel
-                    //                    anchors {
-                    //                        top: parent.top
-                    //                        right: parent.right
-                    //                    }
                     Layout.fillWidth: true
 
                     height:  units.gu(14)
@@ -137,19 +161,19 @@ MainView {
                             id: urlContainer
                             Layout.fillWidth: true
                             placeholderText: i18n.tr("Put YouTube video or playlist URL here")
-                            Keys.onReturnPressed: urlHandler(urlContainer.text)
+                            Keys.onReturnPressed: urlHandler(urlContainer.text, donwloadType.index)
                         }
                         CustomComboPopup {
                             id: donwloadType
-                            heading: "Select download type"
+                            heading: i18n.tr("Select download type")
                             defaultValue: true
-                            dropdownModel: ["single video", "playlist"]
+                            dropdownModel: [i18n.tr("single video"), i18n.tr("playlist")]
                         }
 
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: urlHandler(urlContainer.text)
+                            onClicked: urlHandler(urlContainer.text, donwloadType.index)
                         }
                     }
                 }
@@ -202,10 +226,7 @@ MainView {
             }
         }
 
-
         // empty page while no downloads
-
-
         ColumnLayout {
             id: blankDownloadPage
             visible: false
@@ -238,12 +259,11 @@ MainView {
         BottomEdge {
             id: bottomEdge
             height: parent.height - units.gu(20)
-            hint.text: "My bottom edge"
+            hint.text: i18n.tr("Spwipe")
             contentComponent: Rectangle {
                 width: bottomEdge.width
                 height: bottomEdge.height
-                //color: bottomEdge.activeRegion ?
-                //         bottomEdge.activeRegion.color : LomiriColors.green
+//                color: bottomEdge.activeRegion ? bottomEdge.activeRegion.color : LomiriColors.green
             }
             regions: [
                 BottomEdgeRegion {

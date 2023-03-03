@@ -30,22 +30,28 @@ class DownloadManager : public QObject
 
 public:
     explicit DownloadManager(QObject *parent = nullptr);
+    ~DownloadManager();
     MediaFormat *getMediaFormats();
     QJsonDocument loadJson(QString fileName);
     void saveJson(QJsonDocument document, QString fileName);
 
 public slots:
-    void actionSubmit(QString url);
-    void setFormats(QList<QJsonObject> result);
+    void actionSubmit(QString url, int index);
+    void setFormats(QJsonObject jsonObject);
     bool isValidUrl(QString url);
+    bool isValidPlayListUrl(QString url);
+    void checkJsonObject(QString value);
 
 signals:
     void mediaFormatsChanged();
     void formatsUpdated();
+    void invalidPlaylistUrl();
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();
     MediaFormat *m_mediaFormats = new MediaFormat();
+    QString tempJSONDataHolder;
+    int i = 0;
 };
 
 #endif
