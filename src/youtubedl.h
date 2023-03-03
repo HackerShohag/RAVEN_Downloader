@@ -31,7 +31,7 @@ public:
     void addArguments(QString arg);
 
     // playlist compatible methods
-    void startFetchPlayListFormats(QString url);
+    void startForPlayList(QString url);
 
 public slots:
     QList<QJsonObject> createFormats(QJsonObject jsonObject);

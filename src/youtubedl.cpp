@@ -28,7 +28,7 @@ YoutubeDL::YoutubeDL()
 {
     QObject *parent = QGuiApplication::instance();
     this->ytdl = new QProcess(parent);
-    this->program = "yt-dlp"; // "youtube-dl";
+    this->program = "ping"; // "youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
 
 //    connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
@@ -132,24 +132,20 @@ void YoutubeDL::addArguments(QString arg)
     this->arguments << arg;
 }
 
-void YoutubeDL::startFetchPlayListFormats(QString playlistUrl)
+void YoutubeDL::startForPlayList(QString url)
 {
     this->resetArguments();
 
-    arguments << "-j" << playlistUrl;
+    arguments << "-j" << extractPlaylistUrl(url);
     ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     ytdl->start(this->program, this->arguments);
     ytdl->waitForFinished();
-    QByteArray output(this->ytdl->readAllStandardOutput());
-    QJsonDocument json = QJsonDocument::fromJson(output);
-
     this->resetArguments();
-    emit updateData(createFormats(json.object()));
 }
 
 void YoutubeDL::readyReadStandardOutput()
 {
-    QByteArray output(this->ytdl->readAllStandardOutput());
+    QByteArray output(this->ytdl->readAll());
     QJsonDocument json = QJsonDocument::fromJson(output);
     emit updateData(createFormats(json.object()));
     qDebug() << "YoutubeDL::readyReadStandardOutput() called" << json;
