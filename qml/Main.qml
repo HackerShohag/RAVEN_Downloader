@@ -61,7 +61,7 @@ MainView {
     Connections {
         target: downloadManager
         onFormatsUpdated: {
-            console.log("emitted signal formatsUpdated()")
+            console.log("formatsUpdated(): Title: " + downloadManager.mediaFormats.title)
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
                                           vThumbnail: downloadManager.mediaFormats.thumbnail,
@@ -72,6 +72,7 @@ MainView {
                                           vResolution: downloadManager.mediaFormats.notes
                                       })
 
+            downloadItemsModel.move(1, downloadItemsModel.count-1, downloadItemsModel.count-1)
         }
         onInvalidPlaylistUrl: {
             PopupUtils.open(invalidPlayListURLWarning);
@@ -98,6 +99,9 @@ MainView {
             id: dialogue
             title: i18n.tr("Invalid URL!")
             text: i18n.tr("Please provide a valid video link.")
+            theme: ThemeSettings {
+                name: "Ubuntu.Components.Themes.SuruDark"
+            }
             Keys.onPressed: PopupUtils.close(dialogue)
             Button {
                 text: i18n.tr("OK")
@@ -113,6 +117,16 @@ MainView {
         header: PageHeader {
             id: header
             title: 'RAVEN Downloader'
+            Icon {
+                width: units.gu(5)
+                height: units.gu(5)
+                anchors {
+                    right: parent.right
+                    margins: units.gu(1)
+                    verticalCenter: parent.verticalCenter
+                }
+                name: 'settings'
+            }
         }
 
         function toggleBlankPage() {
@@ -199,7 +213,7 @@ MainView {
                         dynamicRoles: true
                     }
 
-                    ListView {
+                    Repeater {
                         id: downloadItems
                         anchors {
                             top: downloadContainerHeading.bottom
@@ -207,7 +221,7 @@ MainView {
                             right: parent.right
                             left: parent.left
                         }
-
+//                        clip: true
                         model: downloadItemsModel
                         delegate: MediaItem {
                             anchors.left: parent.left

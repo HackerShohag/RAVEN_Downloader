@@ -70,7 +70,7 @@ bool DownloadManager::isValidPlayListUrl(QString url) {
 
 void DownloadManager::actionSubmit(QString url, int index)
 {
-    qDebug() << "index:" << index;
+    this->ytdl->setFormat("mp4");
     if (index) {
         this->ytdl->startForPlayList(url);
         return ;
@@ -80,6 +80,7 @@ void DownloadManager::actionSubmit(QString url, int index)
 
 void DownloadManager::setFormats(QJsonObject jsonObject)
 {
+    this->m_mediaFormats->clearClutter();
     this->m_mediaFormats->setTitle(jsonObject["title"].toString());
     this->m_mediaFormats->setThumbnail(jsonObject["thumbnail"].toString());
     this->m_mediaFormats->setDuration(jsonObject["duration_string"].toString());

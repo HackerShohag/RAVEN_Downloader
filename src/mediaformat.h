@@ -74,6 +74,8 @@ public:
     QList<double> getFilesize() const;
     void setFilesizeItem(double value);
 
+    void clearClutter();
+
 signals:
     void titleChanged(const QString &value);
     void formatIdChanged(const QStringList &value);

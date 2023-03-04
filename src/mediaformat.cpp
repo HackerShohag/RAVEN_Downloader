@@ -137,6 +137,23 @@ void MediaFormat::setFilesizeItem(double value)
     this->m_filesize << value;
 }
 
+void MediaFormat::clearClutter()
+{
+    this->m_title.clear();
+    this->m_thumbnail.clear();
+    this->m_duration.clear();
+    this->m_formatId.clear();
+    this->m_format.clear();
+    this->m_extension.clear();
+    this->m_resolution.clear();
+    this->m_quality.clear();
+    this->m_note.clear();
+    this->m_acodec.clear();
+    this->m_vcodec.clear();
+    this->m_url.clear();
+    this->m_filesize.clear();
+}
+
 QString MediaFormat::getDuration() const
 {
     return this->m_duration;

@@ -52,7 +52,7 @@ void YoutubeDL::fetchSingleFormats(QString url)
 QString YoutubeDL::extractPlaylistUrl(QString url)
 {
     QString listValue = QUrlQuery(QUrl(url).query()).queryItemValue("list");
-    return "https://www.youtube.com/watch?list="+ listValue;
+    return "https://www.youtube.com/playlist?list="+ listValue;
 }
 
 bool YoutubeDL::isValidUrl(QString url)
