@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-05 01:57+0600\n"
+"POT-Creation-Date: 2023-03-05 03:48+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,11 +33,11 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:145 ../qml/Components/MediaItem.qml:152
+#: ../qml/Components/MediaItem.qml:146 ../qml/Components/MediaItem.qml:153
 msgid "unknown"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:175
+#: ../qml/Components/MediaItem.qml:176
 msgid "Download"
 msgstr ""
 

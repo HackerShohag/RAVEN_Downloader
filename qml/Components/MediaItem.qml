@@ -110,8 +110,8 @@ LayoutsCustom {
             source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
-            Layout.fillWidth: true
             Layout.minimumWidth: units.gu(20)
+            Layout.maximumWidth: units.gu(25)
         }
 
         RowLayout {

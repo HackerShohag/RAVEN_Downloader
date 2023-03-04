@@ -72,7 +72,7 @@ MainView {
                                           vResolution: downloadManager.mediaFormats.notes
                                       })
 
-            downloadItemsModel.move(1, downloadItemsModel.count-1, downloadItemsModel.count-1)
+            downloadItemsModel.move(0, 1, downloadItems.count-1)
         }
         onInvalidPlaylistUrl: {
             PopupUtils.open(invalidPlayListURLWarning);
@@ -118,8 +118,8 @@ MainView {
             id: header
             title: 'RAVEN Downloader'
             Icon {
-                width: units.gu(5)
-                height: units.gu(5)
+                width: units.gu(4)
+                height: units.gu(4)
                 anchors {
                     right: parent.right
                     margins: units.gu(1)
