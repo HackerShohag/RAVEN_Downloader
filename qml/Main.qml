@@ -23,6 +23,7 @@ import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
+import Ubuntu.Content 1.1
 
 import "Components"
 
@@ -36,9 +37,14 @@ MainView {
     height: units.gu(100)
 
     property int margin: units.gu(1)
+    property string playListTitle
+    property string entry
+    property bool isPlaylist
+    property var indecies
 
     function urlHandler(url, index) {
         if (index) {
+            root.isPlaylist = true;
             if (!(downloadManager.isValidPlayListUrl(url))) {
                 PopupUtils.open(invalidPlayListURLWarning);
                 return ;
@@ -48,32 +54,56 @@ MainView {
             downloadManager.actionSubmit(url, index);
             return ;
         }
-
+        root.isPlaylist = false;
         if (downloadManager.isValidUrl(url)) {
-            if (downloadItemsContainer.visible === false)
-                mainPage.toggleBlankPage();
             downloadManager.actionSubmit(url, index);
             return ;
         }
         PopupUtils.open(invalidURLWarning);
     }
 
+    function deformIndex(index) {
+        return downloadItemsModel.count - index - 1;
+    }
+
+//    function reformIndex(index) {
+//        return downloadItemsModel.count - index - 1;
+//    }
+
     Connections {
         target: downloadManager
         onFormatsUpdated: {
-            console.log("formatsUpdated(): Title: " + downloadManager.mediaFormats.title)
+            if (downloadItemsContainer.visible === false)
+                mainPage.toggleBlankPage();
+            console.log("formatsUpdated(): ID: " + downloadManager.mediaFormats.videoUrl)
+//            indecies[downloadItemsModel.count] = downloadManager.mediaFormats.videoUrl;
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
                                           vThumbnail: downloadManager.mediaFormats.thumbnail,
-                                          vLinks: downloadManager.mediaFormats.urls,
+                                          vID: downloadManager.mediaFormats.videoUrl,
                                           vDuration: downloadManager.mediaFormats.duration,
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
-                                          vMediaType: downloadManager.mediaFormats.vcodeces,
-                                          vResolution: downloadManager.mediaFormats.notes
+                                          vCodec: downloadManager.mediaFormats.vcodeces,
+                                          aCodec: downloadManager.mediaFormats.acodeces,
+                                          vResolution: downloadManager.mediaFormats.notes,
+                                          vFormats: downloadManager.mediaFormats.formatIds,
+                                          vProgress: 0
                                       })
 
             downloadItemsModel.move(0, 1, downloadItems.count-1)
         }
+        onFinished: {
+            console.log("playlistTitle: " + playlistTitle + " " + entries);
+            root.playListTitle = playlistTitle;
+            root.entry = entries;
+            if (root.isPlaylist)
+                PopupUtils.open(finishedPopup);
+        }
+
+        onDownloadProgress:{
+            downloadItemsModel.setProperty(0, "vProgress", value/100)
+        }
+
         onInvalidPlaylistUrl: {
             PopupUtils.open(invalidPlayListURLWarning);
         }
@@ -94,14 +124,28 @@ MainView {
     }
 
     Component {
+        id: finishedPopup
+        Dialog {
+            id: dialogue
+            title: i18n.tr("Download Complete!")
+            text: i18n.tr(root.entry + " video(s) from \"" + root.playListTitle + "\" playlist have been added.")
+            Keys.onPressed: PopupUtils.close(dialogue)
+            Button {
+                text: i18n.tr("OK")
+                onClicked: PopupUtils.close(dialogue)
+            }
+        }
+    }
+
+    Component {
         id: invalidURLWarning
         Dialog {
             id: dialogue
             title: i18n.tr("Invalid URL!")
             text: i18n.tr("Please provide a valid video link.")
-            theme: ThemeSettings {
-                name: "Ubuntu.Components.Themes.SuruDark"
-            }
+//            theme: ThemeSettings {
+//                name: "Ubuntu.Components.Themes.SuruDark"
+//            }
             Keys.onPressed: PopupUtils.close(dialogue)
             Button {
                 text: i18n.tr("OK")
@@ -156,7 +200,7 @@ MainView {
                 id: mainScroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin + units.gu(2)
+                contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin + units.gu(3)
                 ScrollBar.vertical: ScrollBar { }
 
                 LayoutsCustom {
@@ -229,11 +273,14 @@ MainView {
                             height: units.gu(20)
                             videoTitle: vTitle
                             thumbnail: vThumbnail
-                            downloadLinks: vLinks
+                            videoLink: "https://youtu.be/" + vID
                             duration: vDuration
                             sizeModel: vSizeModel
-                            mediaTypeModel: vMediaType
+                            vcodec: vCodec
+                            acodec: aCodec
                             resolutionModel: vResolution
+                            formats: vFormats
+                            progress: vProgress
                         }
                     }
                 }

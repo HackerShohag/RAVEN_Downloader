@@ -4,6 +4,8 @@
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  *
+ * This source have been modified significantly to adapt with the project.
+ *
  * The original author of this code : Robin de Rooij (https://github.com/rrooij)
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
  */
@@ -21,7 +23,8 @@ public:
     YoutubeDL();
     ~YoutubeDL();
     void fetchSingleFormats(QString url);
-    QString extractPlaylistUrl(QString url);
+    static QString extractPlaylistUrl(QString url);
+    static QString extractSingleVideoUrl(QString url);
     QProcess *getYtdl();
     void resetArguments();
     static bool isValidUrl(QString url);
@@ -32,11 +35,16 @@ public:
     // playlist compatible methods
     void startForPlayList(QString url);
 
+    // stopping connection
+    void stopConnection();
+
 public slots:
     void readyReadStandardOutput();
+    void finishedSlot(int exitCode, QProcess::ExitStatus exitStatus);
 
 signals:
     void updateQString(QString value);
+    void dataFetchFinished();
 
 private:
     QStringList arguments;

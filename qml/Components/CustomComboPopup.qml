@@ -41,12 +41,12 @@ Button {
             title: heading
             Keys.onPressed: PopupUtils.close(dialogue)
             Repeater {
-                model: dropdownModel ? dropdownModel.length : 0
+                model: dropdownModel
                 Button {
-                    text: dropdownModel[modelData]
+                    text: modelData
                     onClicked: {
                         dropdown.text = text;
-                        dropdown.index = modelData
+                        dropdown.index = index
                         onClicked: PopupUtils.close(dialogue)
                     }
                 }

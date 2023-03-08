@@ -4,6 +4,8 @@
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
  *
+ * This source have been modified significantly to adapt with the project.
+ *
  * The original author of this code : Robin de Rooij (https://github.com/rrooij)
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
  */
@@ -30,9 +32,10 @@ YoutubeDL::YoutubeDL()
     this->ytdl = new QProcess(parent);
     this->program = "yt-dlp"; // "youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
-
+    // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
     connect(this->ytdl,SIGNAL(readyRead()),this,SLOT(readyReadStandardOutput()));
+    connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)),this,SLOT(finishedSlot(int, QProcess::ExitStatus)));
 }
 
 YoutubeDL::~YoutubeDL()
@@ -43,6 +46,7 @@ YoutubeDL::~YoutubeDL()
 
 void YoutubeDL::fetchSingleFormats(QString url)
 {
+    qInfo() << Q_FUNC_INFO;
     this->arguments << "-j" << "--no-playlist" << "--flat-playlist" << url;
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     this->ytdl->start(this->program, this->arguments);
@@ -53,6 +57,12 @@ QString YoutubeDL::extractPlaylistUrl(QString url)
 {
     QString listValue = QUrlQuery(QUrl(url).query()).queryItemValue("list");
     return "https://www.youtube.com/playlist?list="+ listValue;
+}
+
+QString YoutubeDL::extractSingleVideoUrl(QString url)
+{
+    QString vValue = QUrlQuery(QUrl(url).query()).queryItemValue("v");
+    return "https://www.youtube.com/watch?v="+ vValue;
 }
 
 bool YoutubeDL::isValidUrl(QString url)
@@ -97,10 +107,22 @@ void YoutubeDL::startForPlayList(QString url)
     this->resetArguments();
 }
 
+void YoutubeDL::stopConnection()
+{
+    this->ytdl->close();
+}
+
 void YoutubeDL::readyReadStandardOutput()
 {
+    qDebug() << Q_FUNC_INFO;
     QByteArray output = this->ytdl->readAll().trimmed();
     emit updateQString(output);
+}
+
+void YoutubeDL::finishedSlot(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    qDebug() << "exitCode:" << exitCode << "exitStatus:" << exitStatus;
+    emit dataFetchFinished();
 }
 
 void YoutubeDL::resetArguments()

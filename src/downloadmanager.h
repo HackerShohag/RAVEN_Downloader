@@ -22,6 +22,7 @@
 #include <QJsonObject>
 #include <youtubedl.h>
 #include <mediaformat.h>
+#include <QStandardPaths>
 
 class DownloadManager : public QObject
 {
@@ -37,21 +38,34 @@ public:
 
 public slots:
     void actionSubmit(QString url, int index);
+    void actionDownload(QString url, QString format);
+    void stopProcess();
     void setFormats(QJsonObject jsonObject);
     bool isValidUrl(QString url);
     bool isValidPlayListUrl(QString url);
     void checkJsonObject(QString value);
+    void finishedFetching();
+
+    void debugInfo(QProcess *downloader);
 
 signals:
     void mediaFormatsChanged();
     void formatsUpdated();
     void invalidPlaylistUrl();
+    void finished(QString playlistTitle, int entries);
+    void downloadProgress(QString value);
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();
+//    QProcess *downloader;
     MediaFormat *m_mediaFormats = new MediaFormat();
     QString tempJSONDataHolder;
-    int i = 0;
+    QString playlistTitle;
+    int entries;
+    QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    QString cachePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+
 };
 
 #endif

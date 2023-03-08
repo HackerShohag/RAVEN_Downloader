@@ -3,7 +3,9 @@
  * and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either
  * version 3 of the License, or (at your option) any later version.
- * 
+ *
+ * This source have been modified significantly to adapt with the project.
+ *
  * The original author of this code : Robin de Rooij (https://github.com/rrooij)
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt 
  */
@@ -12,7 +14,6 @@
 
 MediaFormat::MediaFormat(QObject *parent) : QObject{parent}
 {
-
 }
 
 QString MediaFormat::getTitle() const
@@ -106,14 +107,14 @@ void MediaFormat::setVcodecItem(QString value)
     this->m_vcodec << value;
 }
 
-QStringList MediaFormat::getUrl() const
+QString MediaFormat::getUrl() const
 {
-    return this->m_url;
+    return this->m_videoUrl;
 }
 
-void MediaFormat::setUrlItem(QString value)
+void MediaFormat::setUrl(QString value)
 {
-    this->m_url << value;
+    this->m_videoUrl = value;
 }
 
 QString MediaFormat::getThumbnail() const
@@ -150,7 +151,7 @@ void MediaFormat::clearClutter()
     this->m_note.clear();
     this->m_acodec.clear();
     this->m_vcodec.clear();
-    this->m_url.clear();
+    this->m_videoUrl.clear();
     this->m_filesize.clear();
 }
 

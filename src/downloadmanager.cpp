@@ -25,10 +25,17 @@
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
 {
     connect(this->ytdl, SIGNAL(updateQString(QString)), this, SLOT(checkJsonObject(QString)));
+    connect(this->ytdl, SIGNAL(dataFetchFinished()), this, SLOT(finishedFetching()));
     qDebug() << "Constructor of DownloadManager";
 }
 
-void DownloadManager::checkJsonObject(QString value) {
+DownloadManager::~DownloadManager()
+{
+    delete m_mediaFormats;
+}
+
+void DownloadManager::checkJsonObject(QString value)
+{
     this->tempJSONDataHolder.append(value);
 
     QJsonDocument jsonDocument = QJsonDocument::fromJson(tempJSONDataHolder.toUtf8());
@@ -39,9 +46,22 @@ void DownloadManager::checkJsonObject(QString value) {
     }
 }
 
-DownloadManager::~DownloadManager()
+void DownloadManager::finishedFetching()
 {
-    delete m_mediaFormats;
+    emit finished(this->playlistTitle, this->entries);
+    this->playlistTitle.clear();
+    this->entries = 0;
+}
+
+void DownloadManager::debugInfo(QProcess *downloader)
+{
+    QString output = downloader->readAllStandardOutput();
+    QRegExp rx("\\d+.\\d+%");
+    int pos = rx.indexIn(output);
+    QStringList f = rx.capturedTexts();
+    qDebug() << f[0] << output ;
+    if (!(f[0].isEmpty()))
+        emit downloadProgress(f[0].replace("%",""));
 }
 
 MediaFormat *DownloadManager::getMediaFormats()
@@ -49,20 +69,24 @@ MediaFormat *DownloadManager::getMediaFormats()
     return this->m_mediaFormats;
 }
 
-QJsonDocument DownloadManager::loadJson(QString fileName) {
+QJsonDocument DownloadManager::loadJson(QString fileName)
+{
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
-void DownloadManager::saveJson(QJsonDocument document, QString fileName) {
+void DownloadManager::saveJson(QJsonDocument document, QString fileName)
+{
     QFile jsonFile(fileName);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(document.toJson());
 }
 
-bool DownloadManager::isValidPlayListUrl(QString url) {
-    if (QUrlQuery(QUrl(url).query()).queryItemValue("list").isEmpty()) {
+bool DownloadManager::isValidPlayListUrl(QString url)
+{
+    if (QUrlQuery(QUrl(url).query()).queryItemValue("list").isEmpty())
+    {
         return false;
     }
     return true;
@@ -70,20 +94,42 @@ bool DownloadManager::isValidPlayListUrl(QString url) {
 
 void DownloadManager::actionSubmit(QString url, int index)
 {
-    this->ytdl->setFormat("mp4");
+    qDebug() << Q_FUNC_INFO;
     if (index) {
-        this->ytdl->startForPlayList(url);
+        this->ytdl->startForPlayList(this->ytdl->extractPlaylistUrl(url));
         return ;
     }
-    this->ytdl->fetchSingleFormats(url);
+    this->ytdl->fetchSingleFormats(this->ytdl->extractSingleVideoUrl(url));
+}
+
+void DownloadManager::actionDownload(QString url, QString format)
+{
+    qDebug() << Q_FUNC_INFO;
+//    qDebug() << "appDataPath:" << this->appDataPath;
+    QProcess *downloader = new QProcess();
+    QStringList arguments;
+    arguments << "-f" << format << url;
+    downloader->setWorkingDirectory(this->appDataPath);
+    downloader->start("yt-dlp", arguments);
+    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader] {debugInfo(downloader);} );
+    qDebug() << "Finished" << arguments;
+}
+
+void DownloadManager::stopProcess()
+{
+    this->ytdl->stopConnection();
 }
 
 void DownloadManager::setFormats(QJsonObject jsonObject)
 {
+    this->playlistTitle = jsonObject["playlist_title"].toString();
+    this->entries = jsonObject["n_entries"].toInt();
+
     this->m_mediaFormats->clearClutter();
     this->m_mediaFormats->setTitle(jsonObject["title"].toString());
     this->m_mediaFormats->setThumbnail(jsonObject["thumbnail"].toString());
     this->m_mediaFormats->setDuration(jsonObject["duration_string"].toString());
+    this->m_mediaFormats->setUrl(jsonObject["id"].toString());
 
     qDebug() << "DownloadManager::setFormats(): Title:" << jsonObject["title"].toString();
 
@@ -100,7 +146,6 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
         this->m_mediaFormats->setResolutionItem(formatObject["resolution"].toString());
         this->m_mediaFormats->setVcodecItem(formatObject["vcodec"].toString().trimmed());
         this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
-        this->m_mediaFormats->setUrlItem(formatObject["url"].toString());
         this->m_mediaFormats->setFilesizeItem(formatObject["filesize"].toDouble()/1048576);
     }
     emit formatsUpdated();

@@ -33,12 +33,15 @@ LayoutsCustom {
     property alias videoTitle: titleBox.text
     property alias thumbnail: thumbnailContainer.source
     property string duration
+    property var formats: null
     property var sizeModel: null
-    property var mediaTypeModel: null
+    property var vcodec: null
+    property var acodec: null
     property var resolutionModel: null
-    property var downloadLinks: null
+    property string videoLink: null
+    property alias progress: progressBar.value
 
-    property var downloadUnavailable: resolutionModel === null && mediaTypeModel === null ? true : false
+    property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
     property var comboHeading: [ i18n.tr("select type"), i18n.tr("select resolution") ]
 
     function isDownloadValid(size, resolution) {
@@ -127,7 +130,6 @@ LayoutsCustom {
             CustomProgressBar {
                 id: progressBar
                 Layout.fillWidth: true
-                value: single.progress
             }
             Label {
                 text: progressBar.value * 100 + "%"
@@ -158,7 +160,7 @@ LayoutsCustom {
                 Layout.fillWidth: true
                 heading: comboHeading[0]
                 enabled: downloadUnavailable ? false : true
-                dropdownModel: mediaTypeModel
+                dropdownModel: vcodec
             }
 
             CustomComboPopup {
@@ -173,7 +175,7 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? single.download(downloadLinks[downloadLinks.length - 1]) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, formats[sizePopup.index]) : PopupUtils.open(invalidDownloadWarning)
             }
             SingleDownload {
                 id: single
