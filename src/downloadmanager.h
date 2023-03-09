@@ -38,7 +38,7 @@ public:
 
 public slots:
     void actionSubmit(QString url, int index);
-    void actionDownload(QString url, QString format);
+    void actionDownload(QString url, QString format, int indexID);
     void stopProcess();
     void setFormats(QJsonObject jsonObject);
     bool isValidUrl(QString url);
@@ -46,14 +46,14 @@ public slots:
     void checkJsonObject(QString value);
     void finishedFetching();
 
-    void debugInfo(QProcess *downloader);
+    void debugInfo(QProcess *downloader, int indexID);
 
 signals:
     void mediaFormatsChanged();
     void formatsUpdated();
     void invalidPlaylistUrl();
     void finished(QString playlistTitle, int entries);
-    void downloadProgress(QString value);
+    void downloadProgress(QString value, int indexID);
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();

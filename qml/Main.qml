@@ -40,7 +40,7 @@ MainView {
     property string playListTitle
     property string entry
     property bool isPlaylist
-    property var indecies
+    property int count: 0
 
     function urlHandler(url, index) {
         if (index) {
@@ -66,10 +66,6 @@ MainView {
         return downloadItemsModel.count - index - 1;
     }
 
-//    function reformIndex(index) {
-//        return downloadItemsModel.count - index - 1;
-//    }
-
     Connections {
         target: downloadManager
         onFormatsUpdated: {
@@ -87,9 +83,10 @@ MainView {
                                           aCodec: downloadManager.mediaFormats.acodeces,
                                           vResolution: downloadManager.mediaFormats.notes,
                                           vFormats: downloadManager.mediaFormats.formatIds,
-                                          vProgress: 0
+                                          vProgress: 0,
+                                          vIndex: count
                                       })
-
+            count = count + 1;
             downloadItemsModel.move(0, 1, downloadItems.count-1)
         }
         onFinished: {
@@ -101,7 +98,7 @@ MainView {
         }
 
         onDownloadProgress:{
-            downloadItemsModel.setProperty(0, "vProgress", value/100)
+            downloadItemsModel.setProperty(deformIndex(indexID), "vProgress", value/100)
         }
 
         onInvalidPlaylistUrl: {
@@ -281,6 +278,7 @@ MainView {
                             resolutionModel: vResolution
                             formats: vFormats
                             progress: vProgress
+                            indexID: vIndex
                         }
                     }
                 }

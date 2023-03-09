@@ -53,7 +53,7 @@ void DownloadManager::finishedFetching()
     this->entries = 0;
 }
 
-void DownloadManager::debugInfo(QProcess *downloader)
+void DownloadManager::debugInfo(QProcess *downloader, int indexID)
 {
     QString output = downloader->readAllStandardOutput();
     QRegExp rx("\\d+.\\d+%");
@@ -61,7 +61,7 @@ void DownloadManager::debugInfo(QProcess *downloader)
     QStringList f = rx.capturedTexts();
     qDebug() << f[0] << output ;
     if (!(f[0].isEmpty()))
-        emit downloadProgress(f[0].replace("%",""));
+        emit downloadProgress(f[0].replace("%",""), indexID);
 }
 
 MediaFormat *DownloadManager::getMediaFormats()
@@ -102,7 +102,7 @@ void DownloadManager::actionSubmit(QString url, int index)
     this->ytdl->fetchSingleFormats(this->ytdl->extractSingleVideoUrl(url));
 }
 
-void DownloadManager::actionDownload(QString url, QString format)
+void DownloadManager::actionDownload(QString url, QString format, int indexID)
 {
     qDebug() << Q_FUNC_INFO;
 //    qDebug() << "appDataPath:" << this->appDataPath;
@@ -111,7 +111,7 @@ void DownloadManager::actionDownload(QString url, QString format)
     arguments << "-f" << format << url;
     downloader->setWorkingDirectory(this->appDataPath);
     downloader->start("yt-dlp", arguments);
-    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader] {debugInfo(downloader);} );
+    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {debugInfo(downloader, indexID);} );
     qDebug() << "Finished" << arguments;
 }
 

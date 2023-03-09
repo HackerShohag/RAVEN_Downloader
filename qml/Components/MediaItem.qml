@@ -40,6 +40,7 @@ LayoutsCustom {
     property var resolutionModel: null
     property string videoLink: null
     property alias progress: progressBar.value
+    property int indexID
 
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
     property var comboHeading: [ i18n.tr("select type"), i18n.tr("select resolution") ]
@@ -175,7 +176,7 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, formats[sizePopup.index]) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, formats[sizePopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
             }
             SingleDownload {
                 id: single
