@@ -108,46 +108,25 @@ MainView {
 
     Component {
         id: invalidPlayListURLWarning
-        Dialog {
-            id: dialogue
+        WarningDialog {
             title: i18n.tr("Invalid Playlist URL!")
             text: i18n.tr("Please provide a link with valid list argument.")
-            Keys.onPressed: PopupUtils.close(dialogue)
-            Button {
-                text: i18n.tr("OK")
-                onClicked: PopupUtils.close(dialogue)
-            }
         }
     }
 
     Component {
         id: finishedPopup
-        Dialog {
-            id: dialogue
+        WarningDialog {
             title: i18n.tr("Download Complete!")
             text: i18n.tr(root.entry + " video(s) from \"" + root.playListTitle + "\" playlist have been added.")
-            Keys.onPressed: PopupUtils.close(dialogue)
-            Button {
-                text: i18n.tr("OK")
-                onClicked: PopupUtils.close(dialogue)
-            }
         }
     }
 
     Component {
         id: invalidURLWarning
-        Dialog {
-            id: dialogue
+        WarningDialog {
             title: i18n.tr("Invalid URL!")
             text: i18n.tr("Please provide a valid video link.")
-//            theme: ThemeSettings {
-//                name: "Ubuntu.Components.Themes.SuruDark"
-//            }
-            Keys.onPressed: PopupUtils.close(dialogue)
-            Button {
-                text: i18n.tr("OK")
-                onClicked: PopupUtils.close(dialogue)
-            }
         }
     }
 

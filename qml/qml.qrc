@@ -4,8 +4,8 @@
         <file>Components/MediaItem.qml</file>
         <file>Components/InfoButton.qml</file>
         <file>Components/CustomComboPopup.qml</file>
-        <file>Components/IndeterminateProgressBar.qml</file>
         <file>Components/CustomProgressBar.qml</file>
         <file>Components/LayoutsCustom.qml</file>
+        <file>Components/WarningDialog.qml</file>
     </qresource>
 </RCC>

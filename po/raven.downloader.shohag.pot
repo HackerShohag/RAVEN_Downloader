@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-09 14:33+0600\n"
+"POT-Creation-Date: 2023-03-09 15:46+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,63 +41,63 @@ msgstr ""
 msgid "Download"
 msgstr ""
 
-#: ../qml/Main.qml:113
-msgid "Invalid Playlist URL!"
-msgstr ""
-
-#: ../qml/Main.qml:114
-msgid "Please provide a link with valid list argument."
-msgstr ""
-
-#: ../qml/Main.qml:117 ../qml/Main.qml:131 ../qml/Main.qml:148
+#: ../qml/Components/WarningDialog.qml:27
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:127
+#: ../qml/Main.qml:112
+msgid "Invalid Playlist URL!"
+msgstr ""
+
+#: ../qml/Main.qml:113
+msgid "Please provide a link with valid list argument."
+msgstr ""
+
+#: ../qml/Main.qml:120
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:128
+#: ../qml/Main.qml:121
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:141
+#: ../qml/Main.qml:128
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:142
+#: ../qml/Main.qml:129
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:218
+#: ../qml/Main.qml:197
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:223
+#: ../qml/Main.qml:202
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:225
+#: ../qml/Main.qml:204
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:225
+#: ../qml/Main.qml:204
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:230
+#: ../qml/Main.qml:209
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:248
+#: ../qml/Main.qml:227
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:308
+#: ../qml/Main.qml:287
 msgid "No Downloads!"
 msgstr ""
 
-#: ../qml/Main.qml:321
+#: ../qml/Main.qml:300
 msgid "Spwipe"
 msgstr ""
 
