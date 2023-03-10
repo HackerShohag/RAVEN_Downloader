@@ -25,7 +25,10 @@ import Lomiri.Components.Popups 1.3
 Button {
     id: dropdown
 
-    property var dropdownModel
+    property var dropdownModel: null
+    property var dropdownModel2: null
+    property var dropdownModel3: null
+    property bool multipleModel: false
     property string heading
     property int index
     property bool defaultValue: false
@@ -43,9 +46,9 @@ Button {
             Repeater {
                 model: dropdownModel
                 Button {
-                    text: modelData
+                    text: multipleModel ? dropdownModel3 == null ? modelData + " (" + dropdownModel2[index] + ")" : modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
                     onClicked: {
-                        dropdown.text = text;
+                        dropdown.text = modelData;
                         dropdown.index = index
                         onClicked: PopupUtils.close(dialogue)
                     }

@@ -27,64 +27,64 @@ void MediaFormat::setTitle(QString value)
     emit titleChanged(value);
 }
 
-QStringList MediaFormat::getFormatId() const
+QStringList MediaFormat::getVideoFormatIds() const
 {
-    return this->m_formatId;
+    return this->m_formatIds;
 }
 
-void MediaFormat::setFormatIdItem(QString value)
+void MediaFormat::setVideoFormatItem(QString value)
 {
-    this->m_formatId << value;
+    this->m_formatIds << value;
 }
 
-QStringList MediaFormat::getExtension() const
+QStringList MediaFormat::getVideoExtensions() const
 {
-    return this->m_extension;
+    return this->m_extensions;
 }
 
-void MediaFormat::setExtensionItem(QString value)
+void MediaFormat::setVideoExtensionItem(QString value)
 {
-    this->m_extension << value;
+    this->m_extensions << value;
 }
 
-QStringList MediaFormat::getResolution() const
+QStringList MediaFormat::getResolutions() const
 {
-    return this->m_resolution;
+    return this->m_resolutions;
 }
 
 void MediaFormat::setResolutionItem(QString value)
 {
-    this->m_resolution << value;
+    this->m_resolutions << value;
 }
 
-QStringList MediaFormat::getQuality() const
+QStringList MediaFormat::getQualities() const
 {
-    return this->m_quality;
+    return this->m_qualities;
 }
 
 void MediaFormat::setQualityItem(QString value)
 {
-    this->m_quality << value;
+    this->m_qualities << value;
 }
 
-QStringList MediaFormat::getNote() const
+QStringList MediaFormat::getNotes() const
 {
-    return this->m_note;
+    return this->m_notes;
 }
 
 void MediaFormat::setNoteItem(QString value)
 {
-    this->m_note << value;
+    this->m_notes << value;
 }
 
-QStringList MediaFormat::getFormat() const
+QStringList MediaFormat::getFormats() const
 {
-    return this->m_format;
+    return this->m_formats;
 }
 
 void MediaFormat::setFormatItem(QString value)
 {
-    this->m_format << value;
+    this->m_formats << value;
 }
 
 QStringList MediaFormat::getAcodec() const
@@ -128,14 +128,14 @@ void MediaFormat::setThumbnail(QString value)
     emit thumbnailChanged(value);
 }
 
-QList<double> MediaFormat::getFilesize() const
+QList<double> MediaFormat::getFilesizes() const
 {
-    return this->m_filesize;
+    return this->m_filesizes;
 }
 
 void MediaFormat::setFilesizeItem(double value)
 {
-    this->m_filesize << value;
+    this->m_filesizes << value;
 }
 
 void MediaFormat::clearClutter()
@@ -143,16 +143,16 @@ void MediaFormat::clearClutter()
     this->m_title.clear();
     this->m_thumbnail.clear();
     this->m_duration.clear();
-    this->m_formatId.clear();
-    this->m_format.clear();
-    this->m_extension.clear();
-    this->m_resolution.clear();
-    this->m_quality.clear();
-    this->m_note.clear();
+    this->m_formatIds.clear();
+    this->m_formats.clear();
+    this->m_extensions.clear();
+    this->m_resolutions.clear();
+    this->m_qualities.clear();
+    this->m_notes.clear();
     this->m_acodec.clear();
     this->m_vcodec.clear();
     this->m_videoUrl.clear();
-    this->m_filesize.clear();
+    this->m_filesizes.clear();
 }
 
 QString MediaFormat::getDuration() const
@@ -164,4 +164,24 @@ void MediaFormat::setDuration(QString value)
 {
     this->m_duration = value;
     emit durationChanged(value);
+}
+
+QStringList MediaFormat::getAudioExt() const
+{
+    return m_audioExt;
+}
+
+void MediaFormat::setAudioExtItem(QString value)
+{
+    this->m_audioExt << value;
+}
+
+QStringList MediaFormat::getAudioFormatIds() const
+{
+    return m_audioFormatIds;
+}
+
+void MediaFormat::setAudioFormatItem(QString value)
+{
+    this->m_audioFormatIds << value;
 }

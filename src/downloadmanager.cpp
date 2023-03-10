@@ -105,10 +105,10 @@ void DownloadManager::actionSubmit(QString url, int index)
 void DownloadManager::actionDownload(QString url, QString format, int indexID)
 {
     qDebug() << Q_FUNC_INFO;
-//    qDebug() << "appDataPath:" << this->appDataPath;
     QProcess *downloader = new QProcess();
     QStringList arguments;
     arguments << "-f" << format << url;
+    qDebug() << "Arguments:" << arguments;
     downloader->setWorkingDirectory(this->appDataPath);
     downloader->start("yt-dlp", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {debugInfo(downloader, indexID);} );
@@ -139,14 +139,24 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
     for (i = jsonFormats.begin(); i != jsonFormats.end(); ++i) {
         QJsonValue value = *i;
         QJsonObject formatObject = value.toObject();
-        this->m_mediaFormats->setFormatIdItem(formatObject["format_id"].toString());
-        this->m_mediaFormats->setFormatItem(formatObject["format"].toString());
-        this->m_mediaFormats->setExtensionItem(formatObject["ext"].toString());
-        this->m_mediaFormats->setNoteItem(formatObject["format_note"].toString());
-        this->m_mediaFormats->setResolutionItem(formatObject["resolution"].toString());
-        this->m_mediaFormats->setVcodecItem(formatObject["vcodec"].toString().trimmed());
-        this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
-        this->m_mediaFormats->setFilesizeItem(formatObject["filesize"].toDouble()/1048576);
+
+        // audio formats
+        if (formatObject["resolution"].toString().contains("audio")) {
+            this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
+            this->m_mediaFormats->setAudioExtItem(formatObject["audio_ext"].toString());
+            this->m_mediaFormats->setAudioFormatItem(formatObject["format_id"].toString());
+        }
+
+        //video formats
+        if (formatObject["vcodec"].toString() != "none") {
+            this->m_mediaFormats->setVcodecItem(formatObject["vcodec"].toString().trimmed());
+            this->m_mediaFormats->setNoteItem(formatObject["format_note"].toString());
+            this->m_mediaFormats->setResolutionItem(formatObject["resolution"].toString());
+            this->m_mediaFormats->setVideoExtensionItem(formatObject["ext"].toString());
+            this->m_mediaFormats->setVideoFormatItem(formatObject["format_id"].toString());
+            this->m_mediaFormats->setFormatItem(formatObject["format"].toString());
+            this->m_mediaFormats->setFilesizeItem(formatObject["filesize"].toDouble()/1048576);
+        }
     }
     emit formatsUpdated();
 }
@@ -163,3 +173,13 @@ bool DownloadManager::isValidUrl(QString url)
     }
     return YoutubeDL::isValidUrl(url);
 }
+
+//void listModelToString() {
+//  QJsonArray datamodel = [];
+//  for (var i = 0; i < downloadItemsModel.count; ++i){
+//    datamodel.push(downloadItemsModel.get(i));
+//  }
+//  var keysList = JSON.stringify(datamodel);
+//  console.log(keysList[0]);
+//  downloadManager.saveJson(datamodel, "/home/shohag/data3.json");
+//}

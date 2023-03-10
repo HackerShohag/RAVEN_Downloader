@@ -33,17 +33,23 @@ LayoutsCustom {
     property alias videoTitle: titleBox.text
     property alias thumbnail: thumbnailContainer.source
     property string duration
-    property var formats: null
-    property var sizeModel: null
-    property var vcodec: null
-    property var acodec: null
-    property var resolutionModel: null
     property string videoLink: null
+
+    property var vcodec: null
+    property var resolutionModel: null
+    property var videoExts: null
+    property var videoFormats: null
+
+    property var acodec: null
+    property var audioExts: null
+    property var audioFormats: null
+
+    property var sizeModel: null
     property alias progress: progressBar.value
     property int indexID
 
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
-    property var comboHeading: [ i18n.tr("select type"), i18n.tr("select resolution") ]
+    property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select resolution") ]
 
     function isDownloadValid(size, resolution) {
         console.log("Size: " + size);
@@ -66,19 +72,10 @@ LayoutsCustom {
 
     height: gridLayout.height
     width: gridLayout.width
+    animationEnabled: true
 
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
-
-    background: Rectangle {
-        y: parent.topPadding - parent.bottomPadding
-        width: parent.width
-        height: parent.height - parent.topPadding + parent.bottomPadding
-        color: "transparent"
-        border.color: "transparent"
-        radius: units.gu(1)
-    }
-
 
     GridLayout {
         id: gridLayout
@@ -157,11 +154,13 @@ LayoutsCustom {
             }
 
             CustomComboPopup {
-                id: typePopup
+                id: audioPopup
                 Layout.fillWidth: true
                 heading: comboHeading[0]
                 enabled: downloadUnavailable ? false : true
-                dropdownModel: vcodec
+                multipleModel: true
+                dropdownModel: audioExts
+                dropdownModel2: acodec
             }
 
             CustomComboPopup {
@@ -169,14 +168,17 @@ LayoutsCustom {
                 Layout.fillWidth: true
                 heading: comboHeading[1]
                 enabled: downloadUnavailable ? false : true
+                multipleModel: true
                 dropdownModel: resolutionModel
+                dropdownModel2: videoExts
+                dropdownModel3: vcodec
             }
 
             Button {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(typePopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, formats[sizePopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: isDownloadValid(audioPopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, audioFormats[audioPopup.index] + "+" + videoFormats[sizePopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
             }
             SingleDownload {
                 id: single

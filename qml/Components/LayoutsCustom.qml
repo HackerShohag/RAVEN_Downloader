@@ -2,15 +2,16 @@ import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
 import QtQuick.Controls 2.2
-import Lomiri.Components 1.1
+import Lomiri.Components 1.3
 
 GroupBox {
     id: boderShadow
     property string buttonValue
     property int serialNumber
+    property bool animationEnabled: false
 
     visible: true
-    opacity: 1
+    opacity: animationEnabled ? 0 : 1
 
     background: Rectangle {
         y: boderShadow.topPadding - boderShadow.bottomPadding
@@ -20,24 +21,24 @@ GroupBox {
         border.color: "transparent"
         radius: units.gu(0)
     }
-//    NumberAnimation on y {
-//        running: true
-//        from: -units.gu(10);
-//    }
+    NumberAnimation on y {
+        running: animationEnabled
+        from: -units.gu(5);
+        to: units.gu(1);
+    }
 
-//    OpacityAnimator {
-//        target: boderShadow;
-//        from: 0;
-//        to: 1;
-//        duration: 1000
-//        running: true
-//    }
+    OpacityAnimator {
+        running: animationEnabled
+        target: boderShadow;
+        from: 0;
+        to: 1;
+        duration: 1000
+    }
 
     Item {
         anchors.fill: parent
         layer.enabled: true
-        Rectangle
-        {
+        Rectangle {
             id:img
             anchors.centerIn: parent
             height: parent.height
@@ -47,29 +48,21 @@ GroupBox {
             border.color: "white"
             border.width: units.gu(1.75)
             visible: false
-
         }
 
-        FastBlur
-        {
+        FastBlur {
             anchors.fill: parent
             source: img
             radius: units.gu(2)
         }
 
-        Rectangle
-        {
+        Rectangle {
             id:rect
             height: parent.height - units.gu(3)
             width: parent.width - units.gu(3)
             anchors.centerIn: parent
             color:"white"
             radius: units.gu(1)
-            Text {
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                text: buttonValue
-            }
         }
     }
 }

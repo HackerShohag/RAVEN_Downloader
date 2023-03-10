@@ -23,7 +23,7 @@ import Qt.labs.settings 1.0
 import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
-import Ubuntu.Content 1.1
+import Lomiri.Content 1.1
 
 import "Components"
 
@@ -41,6 +41,21 @@ MainView {
     property string entry
     property bool isPlaylist
     property int count: 0
+
+//    theme: ThemeSettings {
+//        name: "Ubuntu.Components.Themes.SuruDark"
+//    }
+
+//    function listModelToString(){
+//      var datamodel = []
+//      for (var i = 0; i < downloadItemsModel.count; ++i){
+//        datamodel.push(downloadItemsModel.get(i))
+//      }
+//      var keysList = JSON.stringify(datamodel)
+//      keysList.replace("[","").replace("]","")
+//      console.log(keysList);
+////      console.log(keysList.replace(0,"").replace(keysList.length-1,"")/*, "/home/shohag/data3.json"*/);
+//    }
 
     function urlHandler(url, index) {
         if (index) {
@@ -71,18 +86,26 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-            console.log("formatsUpdated(): ID: " + downloadManager.mediaFormats.videoUrl)
-//            indecies[downloadItemsModel.count] = downloadManager.mediaFormats.videoUrl;
+            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
+            console.log("formatsUpdated(): audio_ext: " + downloadManager.mediaFormats.audioExtensions)
+            console.log("formatsUpdated(): audio_format: " + downloadManager.mediaFormats.audioFormatIds)
+
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
                                           vThumbnail: downloadManager.mediaFormats.thumbnail,
-                                          vID: downloadManager.mediaFormats.videoUrl,
                                           vDuration: downloadManager.mediaFormats.duration,
-                                          vSizeModel: downloadManager.mediaFormats.filesizes,
+                                          vID: downloadManager.mediaFormats.videoUrl,
+
                                           vCodec: downloadManager.mediaFormats.vcodeces,
+                                          vResolutions: downloadManager.mediaFormats.notes,
+                                          vVideoExts: downloadManager.mediaFormats.videoExtensions,
+                                          vVideoFormats: downloadManager.mediaFormats.videoFormatIds,
+
                                           aCodec: downloadManager.mediaFormats.acodeces,
-                                          vResolution: downloadManager.mediaFormats.notes,
-                                          vFormats: downloadManager.mediaFormats.formatIds,
+                                          vAudioExts: downloadManager.mediaFormats.audioExtensions,
+                                          vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
+
+                                          vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vProgress: 0,
                                           vIndex: count
                                       })
@@ -171,6 +194,7 @@ MainView {
             anchors.topMargin: header.height /*+ root.margin*/
             anchors.fill: parent
             anchors.margins: root.margin
+            anchors.bottom: bottomEdge.top
 
             Flickable {
                 id: mainScroll
@@ -207,7 +231,10 @@ MainView {
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: urlHandler(urlContainer.text, donwloadType.index)
+                            onClicked: {
+                                urlHandler(urlContainer.text, donwloadType.index)
+                                listModelToString();
+                            }
                         }
                     }
                 }
@@ -241,21 +268,30 @@ MainView {
                             right: parent.right
                             left: parent.left
                         }
-//                        clip: true
+
                         model: downloadItemsModel
                         delegate: MediaItem {
-                            anchors.left: parent.left
-                            anchors.right: parent.right
+                            anchors {
+                                left: parent.left
+                                right: parent.right
+                            }
                             height: units.gu(20)
+
                             videoTitle: vTitle
                             thumbnail: vThumbnail
-                            videoLink: "https://youtu.be/" + vID
                             duration: vDuration
-                            sizeModel: vSizeModel
+                            videoLink: "https://youtu.be/" + vID
+
                             vcodec: vCodec
+                            resolutionModel: vResolutions
+                            videoExts: vVideoExts
+                            videoFormats: vVideoFormats
+
                             acodec: aCodec
-                            resolutionModel: vResolution
-                            formats: vFormats
+                            audioExts: vAudioExts
+                            audioFormats: vAudioFormats
+
+                            sizeModel: vSizeModel
                             progress: vProgress
                             indexID: vIndex
                         }
@@ -293,28 +329,20 @@ MainView {
             }
         }
 
-
         BottomEdge {
             id: bottomEdge
-            height: parent.height - units.gu(20)
-            hint.text: i18n.tr("Spwipe")
+            height: parent.height
+            hint.text: "Sample collapse"
             contentComponent: Rectangle {
                 width: bottomEdge.width
                 height: bottomEdge.height
-//                color: bottomEdge.activeRegion ? bottomEdge.activeRegion.color : LomiriColors.green
-            }
-            regions: [
-                BottomEdgeRegion {
-                    from: 0.4
-                    to: 0.6
-                    property color color: LomiriColors.red
-                },
-                BottomEdgeRegion {
-                    from: 0.6
-                    to: 1.0
-                    property color color: LomiriColors.silk
+                color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
+                Button {
+                    text: "Collapse"
+                    onClicked: bottomEdge.collapse()
                 }
-            ]
+            }
         }
+
     }
 }

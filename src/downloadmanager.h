@@ -23,6 +23,7 @@
 #include <youtubedl.h>
 #include <mediaformat.h>
 #include <QStandardPaths>
+#include <QJsonDocument>
 
 class DownloadManager : public QObject
 {
@@ -33,8 +34,6 @@ public:
     explicit DownloadManager(QObject *parent = nullptr);
     ~DownloadManager();
     MediaFormat *getMediaFormats();
-    QJsonDocument loadJson(QString fileName);
-    void saveJson(QJsonDocument document, QString fileName);
 
 public slots:
     void actionSubmit(QString url, int index);
@@ -45,6 +44,9 @@ public slots:
     bool isValidPlayListUrl(QString url);
     void checkJsonObject(QString value);
     void finishedFetching();
+
+    QJsonDocument loadJson(QString fileName);
+    void saveJson(QJsonDocument document, QString fileName);
 
     void debugInfo(QProcess *downloader, int indexID);
 
