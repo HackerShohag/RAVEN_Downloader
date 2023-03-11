@@ -46,16 +46,17 @@ MainView {
 //        name: "Ubuntu.Components.Themes.SuruDark"
 //    }
 
-//    function listModelToString(){
-//      var datamodel = []
-//      for (var i = 0; i < downloadItemsModel.count; ++i){
-//        datamodel.push(downloadItemsModel.get(i))
-//      }
-//      var keysList = JSON.stringify(datamodel)
-//      keysList.replace("[","").replace("]","")
-//      console.log(keysList);
-////      console.log(keysList.replace(0,"").replace(keysList.length-1,"")/*, "/home/shohag/data3.json"*/);
-//    }
+    function listModelToString(){
+        var datamodel = []
+        for (var i = 0; i < downloadItemsModel.count; ++i){
+            datamodel.push(downloadItemsModel.get(i))
+        }
+        var keysList = JSON.stringify(datamodel)
+        keysList.replace("[","").replace("]","")
+        console.log(keysList);
+        downloadManager.saveJson(keysList, "/home/shohag/data3.json");
+//        console.log(keysList.replace(0,"").replace(keysList.length-1,"")/*, "/home/shohag/data3.json"*/);
+    }
 
     function urlHandler(url, index) {
         if (index) {
@@ -88,7 +89,7 @@ MainView {
                 mainPage.toggleBlankPage();
             console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
             console.log("formatsUpdated(): audio_ext: " + downloadManager.mediaFormats.audioExtensions)
-            console.log("formatsUpdated(): audio_format: " + downloadManager.mediaFormats.audioFormatIds)
+            console.log("formatsUpdated(): audio_bitrate: " + downloadManager.mediaFormats.audioBitrates)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -104,6 +105,7 @@ MainView {
                                           aCodec: downloadManager.mediaFormats.acodeces,
                                           vAudioExts: downloadManager.mediaFormats.audioExtensions,
                                           vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
+                                          vABR: downloadManager.mediaFormats.audioBitrates,
 
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vProgress: 0,
@@ -290,6 +292,7 @@ MainView {
                             acodec: aCodec
                             audioExts: vAudioExts
                             audioFormats: vAudioFormats
+                            audioBitrate: vABR
 
                             sizeModel: vSizeModel
                             progress: vProgress

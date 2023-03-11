@@ -1,4 +1,4 @@
-/* youtube-dl-qt is Free Software: You can use, study share
+﻿/* youtube-dl-qt is Free Software: You can use, study share
  * and improve it at your will. Specifically you can redistribute
  * and/or modify it under the terms of the GNU General Public
  * License as published by the Free Software Foundation, either
@@ -128,14 +128,14 @@ void MediaFormat::setThumbnail(QString value)
     emit thumbnailChanged(value);
 }
 
-QList<double> MediaFormat::getFilesizes() const
+QStringList MediaFormat::getFilesizes() const
 {
     return this->m_filesizes;
 }
 
 void MediaFormat::setFilesizeItem(double value)
 {
-    this->m_filesizes << value;
+    this->m_filesizes << QString::number(qRound(value)) + "MB";
 }
 
 void MediaFormat::clearClutter()
@@ -143,6 +143,8 @@ void MediaFormat::clearClutter()
     this->m_title.clear();
     this->m_thumbnail.clear();
     this->m_duration.clear();
+    this->m_videoUrl.clear();
+
     this->m_formatIds.clear();
     this->m_formats.clear();
     this->m_extensions.clear();
@@ -151,8 +153,11 @@ void MediaFormat::clearClutter()
     this->m_notes.clear();
     this->m_acodec.clear();
     this->m_vcodec.clear();
-    this->m_videoUrl.clear();
     this->m_filesizes.clear();
+
+    this->m_audioExt.clear();
+    this->m_audioFormatIds.clear();
+    this->m_audioBitrates.clear();
 }
 
 QString MediaFormat::getDuration() const
@@ -184,4 +189,14 @@ QStringList MediaFormat::getAudioFormatIds() const
 void MediaFormat::setAudioFormatItem(QString value)
 {
     this->m_audioFormatIds << value;
+}
+
+QStringList MediaFormat::getAudioBitrates() const
+{
+    return m_audioBitrates;
+}
+
+void MediaFormat::setAudioBitrateItem(double value)
+{
+    this->m_audioBitrates << QString::number(qRound(value)) + "Kbps";
 }

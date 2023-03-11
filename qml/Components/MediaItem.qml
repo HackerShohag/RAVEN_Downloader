@@ -43,6 +43,7 @@ LayoutsCustom {
     property var acodec: null
     property var audioExts: null
     property var audioFormats: null
+    property var audioBitrate: null
 
     property var sizeModel: null
     property alias progress: progressBar.value
@@ -149,7 +150,7 @@ LayoutsCustom {
                 id: sizeButton
                 Layout.fillWidth: true
                 buttonID: 1
-                text: sizeModel ? Math.round(sizeModel[sizePopup.index] * 10) / 10 + "MB" : i18n.tr("unknown")
+                text: sizeModel && (resolutionPopup.text !== comboHeading[1]) ? sizeModel[resolutionPopup.index] : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }
 
@@ -161,10 +162,11 @@ LayoutsCustom {
                 multipleModel: true
                 dropdownModel: audioExts
                 dropdownModel2: acodec
+                dropdownModel3: audioBitrate
             }
 
             CustomComboPopup {
-                id: sizePopup
+                id: resolutionPopup
                 Layout.fillWidth: true
                 heading: comboHeading[1]
                 enabled: downloadUnavailable ? false : true
@@ -178,7 +180,7 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(audioPopup.text, sizePopup.text) ? downloadManager.actionDownload(videoLink, audioFormats[audioPopup.index] + "+" + videoFormats[sizePopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: isDownloadValid(audioPopup.text, resolutionPopup.text) ? downloadManager.actionDownload(videoLink, audioFormats[audioPopup.index] + "+" + videoFormats[resolutionPopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
             }
             SingleDownload {
                 id: single

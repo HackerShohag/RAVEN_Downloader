@@ -25,7 +25,7 @@ class MediaFormat : public QObject
     Q_PROPERTY(QString duration READ getDuration NOTIFY durationChanged)
     Q_PROPERTY(QString videoUrl READ getUrl NOTIFY urlChanged)
     Q_PROPERTY(QStringList qualities READ getQualities NOTIFY qualitiesChanged)
-    Q_PROPERTY(QList<double> filesizes READ getFilesizes NOTIFY filesizesChanged)
+    Q_PROPERTY(QStringList filesizes READ getFilesizes NOTIFY filesizesChanged)
 
     Q_PROPERTY(QStringList vcodeces READ getVcodec NOTIFY vcodecChanged)
     Q_PROPERTY(QStringList notes READ getNotes NOTIFY notesChanged)
@@ -37,6 +37,8 @@ class MediaFormat : public QObject
     Q_PROPERTY(QStringList acodeces READ getAcodec NOTIFY acodecChanged)
     Q_PROPERTY(QStringList audioExtensions READ getAudioExt NOTIFY audioExtChanged)
     Q_PROPERTY(QStringList audioFormatIds READ getAudioFormatIds NOTIFY audioFormatIdsChanged)
+    Q_PROPERTY(QStringList audioBitrates READ getAudioBitrates NOTIFY audioBitratesChanged)
+
 
 public:
     explicit MediaFormat(QObject *parent = nullptr);
@@ -77,7 +79,7 @@ public:
     QStringList getVcodec() const;
     void setVcodecItem(QString value);
 
-    QList<double> getFilesizes() const;
+    QStringList getFilesizes() const;
     void setFilesizeItem(double value);
 
     QStringList getAudioExt() const;
@@ -85,6 +87,9 @@ public:
 
     QStringList getAudioFormatIds() const;
     void setAudioFormatItem(QString value);
+
+    QStringList getAudioBitrates() const;
+    void setAudioBitrateItem(double value);
 
     void clearClutter();
 
@@ -101,9 +106,10 @@ signals:
     void notesChanged(const QStringList &value);
     void acodecChanged(const QStringList &value);
     void vcodecChanged(const QStringList &value);
-    void filesizesChanged(const QList<double> &value);
-    void audioExtChanged();
-    void audioFormatIdsChanged();
+    void filesizesChanged(const QStringList &value);
+    void audioExtChanged(const QStringList &value);
+    void audioFormatIdsChanged(const QStringList &value);
+    void audioBitratesChanged(const QStringList &value);
 
 private:
     QString m_title;
@@ -118,9 +124,10 @@ private:
     QStringList m_notes;
     QStringList m_acodec;
     QStringList m_vcodec;
-    QList<double> m_filesizes;
+    QStringList m_filesizes;
     QStringList m_audioExt;
     QStringList m_audioFormatIds;
+    QStringList m_audioBitrates;
 };
 
 #endif

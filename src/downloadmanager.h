@@ -46,9 +46,9 @@ public slots:
     void finishedFetching();
 
     QJsonDocument loadJson(QString fileName);
-    void saveJson(QJsonDocument document, QString fileName);
+    void saveJson(QString value, QString fileName);
 
-    void debugInfo(QProcess *downloader, int indexID);
+    void downloadProgressSlot(QProcess *downloader, int indexID);
 
 signals:
     void mediaFormatsChanged();

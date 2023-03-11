@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-11 02:13+0600\n"
+"POT-Creation-Date: 2023-03-11 22:08+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,27 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/MediaItem.qml:52
+#: ../qml/Components/MediaItem.qml:53
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:52
+#: ../qml/Components/MediaItem.qml:53
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:64
+#: ../qml/Components/MediaItem.qml:65
 msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:65
+#: ../qml/Components/MediaItem.qml:66
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:145 ../qml/Components/MediaItem.qml:152
+#: ../qml/Components/MediaItem.qml:146 ../qml/Components/MediaItem.qml:153
 msgid "unknown"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:180
+#: ../qml/Components/MediaItem.qml:182
 msgid "Download"
 msgstr ""
 
@@ -45,55 +45,55 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:135
+#: ../qml/Main.qml:137
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:136
+#: ../qml/Main.qml:138
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/Main.qml:143
+#: ../qml/Main.qml:145
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:144
+#: ../qml/Main.qml:146
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:151
+#: ../qml/Main.qml:153
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:152
+#: ../qml/Main.qml:154
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:221
+#: ../qml/Main.qml:223
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:226
+#: ../qml/Main.qml:228
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:228
+#: ../qml/Main.qml:230
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:228
+#: ../qml/Main.qml:230
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:233
+#: ../qml/Main.qml:235
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:254
+#: ../qml/Main.qml:256
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:323
+#: ../qml/Main.qml:326
 msgid "No Downloads!"
 msgstr ""
 

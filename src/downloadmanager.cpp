@@ -53,15 +53,15 @@ void DownloadManager::finishedFetching()
     this->entries = 0;
 }
 
-void DownloadManager::debugInfo(QProcess *downloader, int indexID)
+void DownloadManager::downloadProgressSlot(QProcess *downloader, int indexID)
 {
     QString output = downloader->readAllStandardOutput();
     QRegExp rx("\\d+.\\d+%");
-    int pos = rx.indexIn(output);
+    rx.indexIn(output);
     QStringList f = rx.capturedTexts();
-    qDebug() << f[0] << output ;
+    qDebug() << output;
     if (!(f[0].isEmpty()))
-        emit downloadProgress(f[0].replace("%",""), indexID);
+        emit downloadProgress(QString::number(qRound(f[0].replace("%","").toDouble())), indexID);
 }
 
 MediaFormat *DownloadManager::getMediaFormats()
@@ -76,8 +76,11 @@ QJsonDocument DownloadManager::loadJson(QString fileName)
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
-void DownloadManager::saveJson(QJsonDocument document, QString fileName)
+void DownloadManager::saveJson(QString value, QString fileName)
 {
+    qDebug() << value;
+    QJsonDocument document = QJsonDocument::fromJson(value.toUtf8());
+    qDebug() << document;
     QFile jsonFile(fileName);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(document.toJson());
@@ -111,7 +114,7 @@ void DownloadManager::actionDownload(QString url, QString format, int indexID)
     qDebug() << "Arguments:" << arguments;
     downloader->setWorkingDirectory(this->appDataPath);
     downloader->start("yt-dlp", arguments);
-    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {debugInfo(downloader, indexID);} );
+    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
     qDebug() << "Finished" << arguments;
 }
 
@@ -145,6 +148,7 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
             this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
             this->m_mediaFormats->setAudioExtItem(formatObject["audio_ext"].toString());
             this->m_mediaFormats->setAudioFormatItem(formatObject["format_id"].toString());
+            this->m_mediaFormats->setAudioBitrateItem(formatObject["abr"].toDouble());
         }
 
         //video formats

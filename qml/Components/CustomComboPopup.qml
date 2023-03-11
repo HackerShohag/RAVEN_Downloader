@@ -46,7 +46,7 @@ Button {
             Repeater {
                 model: dropdownModel
                 Button {
-                    text: multipleModel ? dropdownModel3 == null ? modelData + " (" + dropdownModel2[index] + ")" : modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
+                    text: multipleModel ? /*dropdownModel3 == null ? modelData + " (" + dropdownModel2[index] + ")" :*/ modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
                     onClicked: {
                         dropdown.text = modelData;
                         dropdown.index = index
