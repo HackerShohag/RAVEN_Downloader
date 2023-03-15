@@ -1,13 +1,11 @@
 /*
- * Copyright 2014-2016 Canonical Ltd.
+ * Copyright (C) 2022  Abdullah AL Shohag
  *
- * This file is part of morph-browser.
- *
- * morph-browser is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
- * morph-browser is distributed in the hope that it will be useful,
+ * raven.downloader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -21,7 +19,7 @@ import QtQuick.Controls 2.2
 
 ProgressBar {
     id: control
-    value: 0.5
+    value: 0
 
     background: Rectangle {
         implicitWidth: units.gu(20)

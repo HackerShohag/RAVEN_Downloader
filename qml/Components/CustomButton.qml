@@ -14,20 +14,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick.Layouts 1.3
+import QtQuick 2.7
 import Lomiri.Components 1.3
+import Lomiri.Components.Popups 1.3
 
-Button {
-    id: infoButtonContainer
-    
-    property int buttonID: 0
-    property var buttonIcons:  ["duration.png", "size.png"]
+LomiriShape {
+    property alias iconName: icon.name
 
-    Layout.maximumWidth: units.gu(15)
-    Layout.alignment: Qt.AlignLeft
+    width: units.gu(4)
+    height: units.gu(4)
+    anchors {
+        right: parent.right
+        margins: units.gu(1)
+        verticalCenter: parent.verticalCenter
+    }
 
-    // enabled: false
-    color: "white"
-    iconSource: "qrc:///assets/media/" + buttonIcons[buttonID]
-    opacity: 1
+    Icon {
+        id: icon
+        anchors.fill: parent
+        anchors.margins: units.gu(.5)
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: true
+        onClicked: {
+            settingsPageLoader.active = true
+            mainPage.active = false
+        }
+
+        onPressed: parent.color = "lightgrey";
+        onReleased: parent.color = "white";
+    }
 }

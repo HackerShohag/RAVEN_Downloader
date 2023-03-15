@@ -53,7 +53,7 @@ void DownloadManager::finishedFetching()
     this->entries = 0;
 }
 
-void DownloadManager::downloadProgressSlot(QProcess *downloader, int indexID)
+void DownloadManager::downloadProgressSlot(QProcess *downloader, qint64 indexID)
 {
     QString output = downloader->readAllStandardOutput();
     QRegExp rx("\\d+.\\d+%");
@@ -76,11 +76,22 @@ QJsonDocument DownloadManager::loadJson(QString fileName)
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
-void DownloadManager::saveJson(QString value, QString fileName)
+void DownloadManager::saveListModelData(QString value)
 {
-    qDebug() << value;
     QJsonDocument document = QJsonDocument::fromJson(value.toUtf8());
-    qDebug() << document;
+    saveJson(document, this->appDataPath + "/history.json");
+}
+
+bool DownloadManager::loadListModelData()
+{
+    QJsonDocument document = loadJson(this->appDataPath + "/history.json");
+    emit listModelDataLoaded(QString(document.toJson(QJsonDocument::Compact)));
+    if (document.isEmpty()) return false;
+    return true;
+}
+
+void DownloadManager::saveJson(QJsonDocument document, QString fileName)
+{
     QFile jsonFile(fileName);
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(document.toJson());

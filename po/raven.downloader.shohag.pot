@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-11 22:08+0600\n"
+"POT-Creation-Date: 2023-03-15 13:36+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,27 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/MediaItem.qml:53
+#: ../qml/Components/CustomBottomEdge.qml:24
+msgid "+"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:50
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:53
+#: ../qml/Components/MediaItem.qml:50
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:65
+#: ../qml/Components/MediaItem.qml:62
 msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:66
+#: ../qml/Components/MediaItem.qml:63
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:146 ../qml/Components/MediaItem.qml:153
+#: ../qml/Components/MediaItem.qml:144 ../qml/Components/MediaItem.qml:151
 msgid "unknown"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:182
+#: ../qml/Components/MediaItem.qml:180
 msgid "Download"
 msgstr ""
 
@@ -45,56 +49,72 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:137
+#: ../qml/Main.qml:181
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:138
+#: ../qml/Main.qml:182
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/Main.qml:145
+#: ../qml/Main.qml:189
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:146
+#: ../qml/Main.qml:190
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:153
+#: ../qml/Main.qml:197
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:154
+#: ../qml/Main.qml:198
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:223
+#: ../qml/Main.qml:271
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:228
+#: ../qml/Main.qml:276
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:230
+#: ../qml/Main.qml:278
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:230
+#: ../qml/Main.qml:278
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:235
+#: ../qml/Main.qml:283
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:256
+#: ../qml/Main.qml:304
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:326
+#: ../qml/Main.qml:374
 msgid "No Downloads!"
+msgstr ""
+
+#: ../qml/Main.qml:387
+msgid "Recent"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:33
+msgid "Settings"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:56
+msgid "Select download location"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:73
+msgid "/home/phablet/Downloads"
 msgstr ""
 
 #: raven.downloader.desktop.in.h:1

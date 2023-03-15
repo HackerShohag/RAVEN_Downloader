@@ -46,24 +46,25 @@ public slots:
     void finishedFetching();
 
     QJsonDocument loadJson(QString fileName);
-    void saveJson(QString value, QString fileName);
+    void saveJson(QJsonDocument document, QString fileName);
+    void saveListModelData(QString value);
+    bool loadListModelData();
 
-    void downloadProgressSlot(QProcess *downloader, int indexID);
-
+    void downloadProgressSlot(QProcess *downloader, qint64 indexID);
 signals:
     void mediaFormatsChanged();
     void formatsUpdated();
     void invalidPlaylistUrl();
-    void finished(QString playlistTitle, int entries);
-    void downloadProgress(QString value, int indexID);
+    void finished(QString playlistTitle, qint64 entries);
+    void downloadProgress(QString value, qint64 indexID);
+    void listModelDataLoaded(QString value);
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();
-//    QProcess *downloader;
     MediaFormat *m_mediaFormats = new MediaFormat();
     QString tempJSONDataHolder;
     QString playlistTitle;
-    int entries;
+    qint64 entries = 0;
     QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QString cachePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);

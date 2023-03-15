@@ -1,14 +1,11 @@
 /*
- * Copyright (C) 2022 Team RAVEN
+ * Copyright (C) 2022  Abdullah AL Shohag
  *
- * Authors:
- *  Abdullah AL Shohag <HackerShohag@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
- * This program is distributed in the hope that it will be useful,
+ * raven.downloader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -46,7 +43,7 @@ Button {
             Repeater {
                 model: dropdownModel
                 Button {
-                    text: multipleModel ? /*dropdownModel3 == null ? modelData + " (" + dropdownModel2[index] + ")" :*/ modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
+                    text: multipleModel ? modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
                     onClicked: {
                         dropdown.text = modelData;
                         dropdown.index = index

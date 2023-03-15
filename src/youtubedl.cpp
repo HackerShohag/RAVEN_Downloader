@@ -61,6 +61,8 @@ QString YoutubeDL::extractPlaylistUrl(QString url)
 
 QString YoutubeDL::extractSingleVideoUrl(QString url)
 {
+    if ((QUrl(url).host() == "youtu.be"))
+        return url;
     QString vValue = QUrlQuery(QUrl(url).query()).queryItemValue("v");
     return "https://www.youtube.com/watch?v="+ vValue;
 }

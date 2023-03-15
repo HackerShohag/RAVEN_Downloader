@@ -41,6 +41,8 @@ MainView {
     property string entry
     property bool isPlaylist
     property int count: 0
+    property var stringModel
+    property bool separator: false
 
 //    theme: ThemeSettings {
 //        name: "Ubuntu.Components.Themes.SuruDark"
@@ -54,7 +56,7 @@ MainView {
         var keysList = JSON.stringify(datamodel)
         keysList.replace("[","").replace("]","")
         console.log(keysList);
-        downloadManager.saveJson(keysList, "/home/shohag/data3.json");
+        downloadManager.saveListModelData(keysList);
 //        console.log(keysList.replace(0,"").replace(keysList.length-1,"")/*, "/home/shohag/data3.json"*/);
     }
 
@@ -78,6 +80,14 @@ MainView {
         PopupUtils.open(invalidURLWarning);
     }
 
+    function objectToList(object) {
+        stringModel = [];
+        for (var i = 0; i < object.count; ++i){
+            stringModel.push(object.get(i))
+        }
+        return stringModel;
+    }
+
     function deformIndex(index) {
         return downloadItemsModel.count - index - 1;
     }
@@ -87,9 +97,9 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
-            console.log("formatsUpdated(): audio_ext: " + downloadManager.mediaFormats.audioExtensions)
-            console.log("formatsUpdated(): audio_bitrate: " + downloadManager.mediaFormats.audioBitrates)
+//            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
+//            console.log("formatsUpdated(): audio_ext: " + downloadManager.mediaFormats.audioExtensions)
+            console.log("formatsUpdated(): audio_bitrate: " + downloadManager.mediaFormats.notes)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -101,19 +111,21 @@ MainView {
                                           vResolutions: downloadManager.mediaFormats.notes,
                                           vVideoExts: downloadManager.mediaFormats.videoExtensions,
                                           vVideoFormats: downloadManager.mediaFormats.videoFormatIds,
+                                          vVideoProgress: 0,
 
                                           aCodec: downloadManager.mediaFormats.acodeces,
                                           vAudioExts: downloadManager.mediaFormats.audioExtensions,
                                           vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
                                           vABR: downloadManager.mediaFormats.audioBitrates,
+                                          vAudioProgress: 0,
 
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
-                                          vProgress: 0,
                                           vIndex: count
                                       })
             count = count + 1;
             downloadItemsModel.move(0, 1, downloadItems.count-1)
         }
+
         onFinished: {
             console.log("playlistTitle: " + playlistTitle + " " + entries);
             root.playListTitle = playlistTitle;
@@ -122,8 +134,40 @@ MainView {
                 PopupUtils.open(finishedPopup);
         }
 
-        onDownloadProgress:{
-            downloadItemsModel.setProperty(deformIndex(indexID), "vProgress", value/100)
+        onListModelDataLoaded: {
+            var jsonObject = JSON.parse(value);
+            for (var i = 0; i < jsonObject.length - 1; i++) {
+//                console.log(jsonObject[i]);
+                downloadItemsModel.append({
+                                              vTitle: jsonObject[i].vTitle,
+                                              vThumbnail: jsonObject[i].vThumbnail,
+                                              vDuration: jsonObject[i].vDuration,
+                                              vID: jsonObject[i].vID,
+
+                                              vCodec: objectToList(jsonObject[i].vCodec),
+                                              vResolutions: objectToList(jsonObject[i].vResolutions),
+                                              vVideoExts: objectToList(jsonObject[i].vVideoExts),
+                                              vVideoFormats: objectToList(jsonObject[i].vVideoFormats),
+                                              vVideoProgress: objectToList(jsonObject[i].vVideoProgress),
+
+                                              aCodec: objectToList(jsonObject[i].aCodec),
+                                              vAudioExts: objectToList(jsonObject[i].vAudioExts),
+                                              vAudioFormats: objectToList(jsonObject[i].vAudioFormats),
+                                              vABR: objectToList(jsonObject[i].vABR),
+                                              vAudioProgress: objectToList(jsonObject[i].vAudioProgress),
+
+                                              vSizeModel: objectToList(jsonObject[i].vSizeModel),
+                                              vIndex: objectToList(jsonObject[i].vIndex)
+                                          })
+            }
+        }
+        onDownloadProgress: {
+            if (!separator) {
+                if (value == 100) separator = true;
+            } else {
+                downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
+                if (value == 100) separator = false;
+            }
         }
 
         onInvalidPlaylistUrl: {
@@ -155,23 +199,22 @@ MainView {
         }
     }
 
+    Loader {
+        id: settingsPageLoader
+        active: false
+        source: Qt.resolvedUrl("SettingsPage.qml")
+        asynchronous: true
+    }
+
     Page {
         id: mainPage
         anchors.fill: parent
+        StateSaver.properties: "title"
+        StateSaver.enabled: true
 
         header: PageHeader {
             id: header
             title: 'RAVEN Downloader'
-            Icon {
-                width: units.gu(4)
-                height: units.gu(4)
-                anchors {
-                    right: parent.right
-                    margins: units.gu(1)
-                    verticalCenter: parent.verticalCenter
-                }
-                name: 'settings'
-            }
         }
 
         function toggleBlankPage() {
@@ -187,9 +230,14 @@ MainView {
         Component.onCompleted: {
             width = searchBarLayout.implicitWidth + 2 * margin
             height = searchBarLayout.implicitHeight + 2 * margin
-            toggleBlankPage();
+            var isLoaded = downloadManager.loadListModelData();
+            if (isLoaded) toggleBlankPage();
         }
 
+        Component.onDestruction: {
+            listModelToString();
+            console.log('Destruction');
+        }
 
         ColumnLayout {
             id: searchBarLayout
@@ -234,7 +282,7 @@ MainView {
                             id: submitButton
                             text: i18n.tr("Submit")
                             onClicked: {
-                                urlHandler(urlContainer.text, donwloadType.index)
+                                urlHandler(urlContainer.text, donwloadType.index);
                                 listModelToString();
                             }
                         }
@@ -288,6 +336,7 @@ MainView {
                             resolutionModel: vResolutions
                             videoExts: vVideoExts
                             videoFormats: vVideoFormats
+                            videoProgress: vVideoProgress
 
                             acodec: aCodec
                             audioExts: vAudioExts
@@ -295,7 +344,6 @@ MainView {
                             audioBitrate: vABR
 
                             sizeModel: vSizeModel
-                            progress: vProgress
                             indexID: vIndex
                         }
                     }
@@ -332,20 +380,12 @@ MainView {
             }
         }
 
-        BottomEdge {
+        CustomBottomEdge {
             id: bottomEdge
-            height: parent.height
-            hint.text: "Sample collapse"
-            contentComponent: Rectangle {
-                width: bottomEdge.width
-                height: bottomEdge.height
-                color: Qt.rgba(0.5, 1, bottomEdge.dragProgress, 1);
-                Button {
-                    text: "Collapse"
-                    onClicked: bottomEdge.collapse()
-                }
-            }
+            enabled: true
+            height: root.height
+            hint.text: i18n.tr("Recent")
+            hint.visible: enabled
         }
-
     }
 }

@@ -1,14 +1,11 @@
 /*
- * Copyright (C) 2022 Team RAVEN
+ * Copyright (C) 2022  Abdullah AL Shohag
  *
- * Authors:
- *  Abdullah AL Shohag <HackerShohag@outlook.com>
- *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; version 3.
  *
- * This program is distributed in the hope that it will be useful,
+ * raven.downloader is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -46,7 +43,7 @@ LayoutsCustom {
     property var audioBitrate: null
 
     property var sizeModel: null
-    property alias progress: progressBar.value
+    property alias videoProgress: videoProgressBar.value
     property int indexID
 
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
@@ -126,12 +123,13 @@ LayoutsCustom {
         }
         RowLayout {
             Layout.fillWidth: true
+
             CustomProgressBar {
-                id: progressBar
+                id: videoProgressBar
                 Layout.fillWidth: true
             }
             Label {
-                text: progressBar.value * 100 + "%"
+                text: videoProgressBar.value * 100 + "%"
                 font.pixelSize: 18
                 font.bold: true
             }
@@ -181,10 +179,6 @@ LayoutsCustom {
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
                 onClicked: isDownloadValid(audioPopup.text, resolutionPopup.text) ? downloadManager.actionDownload(videoLink, audioFormats[audioPopup.index] + "+" + videoFormats[resolutionPopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
-            }
-            SingleDownload {
-                id: single
-                onFinished: console.log()
             }
         }
     }
