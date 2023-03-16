@@ -19,7 +19,7 @@ import Lomiri.Components 1.3
 
 Button {
     id: infoButtonContainer
-    
+
     property int buttonID: 0
     property var buttonIcons:  ["duration.png", "size.png"]
 

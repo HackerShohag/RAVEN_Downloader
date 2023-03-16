@@ -44,16 +44,4 @@ BottomEdge {
         property: "height"
         value: bottomEdge.height
     }
-
-    Binding {
-        target: bottomEdge.contentItem
-        property: "bottomEdgeCommitted"
-        value: bottomEdge.status === BottomEdge.Committed
-    }
-
-    Binding {
-        target: bottomEdge.contentItem
-        property: "bottomEdgeItem"
-        value: bottomEdge
-    }
 }

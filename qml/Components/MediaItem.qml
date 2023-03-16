@@ -42,12 +42,15 @@ LayoutsCustom {
     property var audioFormats: null
     property var audioBitrate: null
 
+    property var langs: null
+    property var langIds: null
+
     property var sizeModel: null
     property alias videoProgress: videoProgressBar.value
     property int indexID
 
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
-    property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select resolution") ]
+    property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
 
     function isDownloadValid(size, resolution) {
         console.log("Size: " + size);
@@ -148,7 +151,7 @@ LayoutsCustom {
                 id: sizeButton
                 Layout.fillWidth: true
                 buttonID: 1
-                text: sizeModel && (resolutionPopup.text !== comboHeading[1]) ? sizeModel[resolutionPopup.index] : i18n.tr("unknown")
+                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }
 
@@ -163,10 +166,19 @@ LayoutsCustom {
                 dropdownModel3: audioBitrate
             }
 
+//            CustomComboPopup {
+//                id: languagePopup
+//                Layout.fillWidth: true
+//                visible: langs.length != 0
+//                heading: comboHeading[1]
+//                enabled: downloadUnavailable ? false : true
+//                dropdownModel: langs
+//            }
+
             CustomComboPopup {
                 id: resolutionPopup
                 Layout.fillWidth: true
-                heading: comboHeading[1]
+                heading: comboHeading[2]
                 enabled: downloadUnavailable ? false : true
                 multipleModel: true
                 dropdownModel: resolutionModel

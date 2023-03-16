@@ -8,7 +8,7 @@
         <file>Components/LayoutsCustom.qml</file>
         <file>Components/WarningDialog.qml</file>
         <file>Components/CustomBottomEdge.qml</file>
-        <file>Components/CustomButton.qml</file>
+        <file>Components/LomiriButton.qml</file>
         <file>SettingsPage.qml</file>
     </qresource>
 </RCC>

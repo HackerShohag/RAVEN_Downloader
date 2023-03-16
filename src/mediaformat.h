@@ -40,6 +40,10 @@ class MediaFormat : public QObject
     Q_PROPERTY(QStringList audioBitrates READ getAudioBitrates NOTIFY audioBitratesChanged)
 
 
+    Q_PROPERTY(QStringList languages READ getLanguages NOTIFY languagesChanged)
+    Q_PROPERTY(QStringList languageIds READ getLanguageIds NOTIFY languagedsChanged)
+
+
 public:
     explicit MediaFormat(QObject *parent = nullptr);
 
@@ -89,27 +93,35 @@ public:
     void setAudioFormatItem(QString value);
 
     QStringList getAudioBitrates() const;
-    void setAudioBitrateItem(double value);
+    void setAudioBitrateItem(double value, QString lang = NULL);
+
+    QStringList getLanguages() const;
+    void setLanguageItem(QString value);
+
+    QStringList getLanguageIds() const;
+    void setLanguageIdItem(QString value);
 
     void clearClutter();
 
 signals:
-    void titleChanged(const QString &value);
-    void thumbnailChanged(const QString &value);
-    void durationChanged(const QString &value);
-    void urlChanged(const QString &value);
-    void videoFormatIdsChanged(const QStringList &value);
-    void formatsChanged(const QStringList &value);
-    void videoExtensionsChanged(const QStringList &value);
-    void resolutionsChanged(const QStringList &value);
-    void qualitiesChanged(const QStringList &value);
-    void notesChanged(const QStringList &value);
-    void acodecChanged(const QStringList &value);
-    void vcodecChanged(const QStringList &value);
-    void filesizesChanged(const QStringList &value);
-    void audioExtChanged(const QStringList &value);
-    void audioFormatIdsChanged(const QStringList &value);
-    void audioBitratesChanged(const QStringList &value);
+    void titleChanged(QString value);
+    void thumbnailChanged(QString value);
+    void durationChanged(QString value);
+    void urlChanged(QString value);
+    void videoFormatIdsChanged();
+    void formatsChanged();
+    void videoExtensionsChanged();
+    void resolutionsChanged();
+    void qualitiesChanged();
+    void notesChanged();
+    void acodecChanged();
+    void vcodecChanged();
+    void filesizesChanged();
+    void audioExtChanged();
+    void audioFormatIdsChanged();
+    void audioBitratesChanged();
+    void languagesChanged();
+    void languagedsChanged();
 
 private:
     QString m_title;
@@ -128,6 +140,8 @@ private:
     QStringList m_audioExt;
     QStringList m_audioFormatIds;
     QStringList m_audioBitrates;
+    QStringList m_languages;
+    QStringList m_languageIds;
 };
 
 #endif

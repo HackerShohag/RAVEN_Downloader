@@ -97,9 +97,10 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-//            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
-//            console.log("formatsUpdated(): audio_ext: " + downloadManager.mediaFormats.audioExtensions)
-            console.log("formatsUpdated(): audio_bitrate: " + downloadManager.mediaFormats.notes)
+            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
+            console.log("formatsUpdated(): audio_ids: " + downloadManager.mediaFormats.audioFormatIds)
+            console.log("formatsUpdated(): languages: " + downloadManager.mediaFormats.languages)
+            console.log("formatsUpdated(): language_id: " + downloadManager.mediaFormats.audioBitrates)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -118,6 +119,9 @@ MainView {
                                           vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
                                           vABR: downloadManager.mediaFormats.audioBitrates,
                                           vAudioProgress: 0,
+
+//                                          vLangs: downloadManager.mediaFormats.languages,
+//                                          vLangIds: downloadManager.mediaFormats.languageIds,
 
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vIndex: count
@@ -155,6 +159,9 @@ MainView {
                                               vAudioFormats: objectToList(jsonObject[i].vAudioFormats),
                                               vABR: objectToList(jsonObject[i].vABR),
                                               vAudioProgress: objectToList(jsonObject[i].vAudioProgress),
+
+                                              vLangs: objectToList(jsonObject[i].vLangs),
+                                              vLangIds: objectToList(jsonObject[i].vLangIds),
 
                                               vSizeModel: objectToList(jsonObject[i].vSizeModel),
                                               vIndex: objectToList(jsonObject[i].vIndex)
@@ -197,13 +204,6 @@ MainView {
             title: i18n.tr("Invalid URL!")
             text: i18n.tr("Please provide a valid video link.")
         }
-    }
-
-    Loader {
-        id: settingsPageLoader
-        active: false
-        source: Qt.resolvedUrl("SettingsPage.qml")
-        asynchronous: true
     }
 
     Page {
@@ -337,6 +337,9 @@ MainView {
                             videoExts: vVideoExts
                             videoFormats: vVideoFormats
                             videoProgress: vVideoProgress
+
+//                            langs: vLangs
+//                            langIds: vLangIds
 
                             acodec: aCodec
                             audioExts: vAudioExts

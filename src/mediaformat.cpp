@@ -158,6 +158,9 @@ void MediaFormat::clearClutter()
     this->m_audioExt.clear();
     this->m_audioFormatIds.clear();
     this->m_audioBitrates.clear();
+
+    this->m_languages.clear();
+    this->m_languageIds.clear();
 }
 
 QString MediaFormat::getDuration() const
@@ -173,7 +176,7 @@ void MediaFormat::setDuration(QString value)
 
 QStringList MediaFormat::getAudioExt() const
 {
-    return m_audioExt;
+    return this->m_audioExt;
 }
 
 void MediaFormat::setAudioExtItem(QString value)
@@ -183,7 +186,7 @@ void MediaFormat::setAudioExtItem(QString value)
 
 QStringList MediaFormat::getAudioFormatIds() const
 {
-    return m_audioFormatIds;
+    return this->m_audioFormatIds;
 }
 
 void MediaFormat::setAudioFormatItem(QString value)
@@ -193,10 +196,34 @@ void MediaFormat::setAudioFormatItem(QString value)
 
 QStringList MediaFormat::getAudioBitrates() const
 {
-    return m_audioBitrates;
+    return this->m_audioBitrates;
 }
 
-void MediaFormat::setAudioBitrateItem(double value)
+void MediaFormat::setAudioBitrateItem(double value, QString lang)
 {
+    if (!lang.isEmpty()) {
+        this->m_audioBitrates << QString::number(qRound(value)) + "Kbps" + ", " + lang;
+        return ;
+    }
     this->m_audioBitrates << QString::number(qRound(value)) + "Kbps";
+}
+
+QStringList MediaFormat::getLanguages() const
+{
+    return this->m_languages;
+}
+
+void MediaFormat::setLanguageItem(QString value)
+{
+    this->m_languages << value;
+}
+
+QStringList MediaFormat::getLanguageIds() const
+{
+    return this->m_languageIds;
+}
+
+void MediaFormat::setLanguageIdItem(QString value)
+{
+    this->m_languageIds << value;
 }

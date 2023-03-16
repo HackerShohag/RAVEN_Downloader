@@ -150,20 +150,30 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
     QJsonArray jsonFormats = jsonObject["formats"].toArray();
     QJsonArray::iterator i;
 
-    for (i = jsonFormats.begin(); i != jsonFormats.end(); ++i) {
+    for (i = jsonFormats.begin(); i != jsonFormats.end(); ++i)
+    {
         QJsonValue value = *i;
         QJsonObject formatObject = value.toObject();
 
+//        if (!this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString()) && !formatObject["language"].toString().isNull())
+//        {
+//            this->m_mediaFormats->setLanguageItem(formatObject["language"].toString());
+//            this->m_mediaFormats->setLanguageIdItem(formatObject["format_id"].toString().split(u'-').at(1));
+//            qDebug() << "hello" << formatObject["language"].toString();
+//        }
+
         // audio formats
-        if (formatObject["resolution"].toString().contains("audio")) {
+        if (formatObject["resolution"].toString().contains("audio") /*|| !this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString())*/)
+        {
             this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
             this->m_mediaFormats->setAudioExtItem(formatObject["audio_ext"].toString());
             this->m_mediaFormats->setAudioFormatItem(formatObject["format_id"].toString());
-            this->m_mediaFormats->setAudioBitrateItem(formatObject["abr"].toDouble());
+            this->m_mediaFormats->setAudioBitrateItem(formatObject["abr"].toDouble(), formatObject["language"].toString());
         }
 
         //video formats
-        if (formatObject["vcodec"].toString() != "none") {
+        if (formatObject["vcodec"].toString() != "none")
+        {
             this->m_mediaFormats->setVcodecItem(formatObject["vcodec"].toString().trimmed());
             this->m_mediaFormats->setNoteItem(formatObject["format_note"].toString());
             this->m_mediaFormats->setResolutionItem(formatObject["resolution"].toString());
