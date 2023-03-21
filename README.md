@@ -14,6 +14,12 @@ A simple youtube video downloader that can download entire playlist. This is Ubu
 
 N.B.: Please don't report these bugs right now. You may need to install some dependency manually. It's still in undergoing development. You can provide me testing data on telegram (t.me/HackerShohag).
 
+## Screenshots
+Download Page             |  Settings Page
+:-------------------------:|:-------------------------:
+![Playlist Download Page](https://user-images.githubusercontent.com/47150885/226753975-bbebf3b5-954c-4559-930b-64a08b04afc4.png) | ![Settings Page](https://user-images.githubusercontent.com/47150885/226754242-5008069e-ac7c-4e1e-8c0e-fba715de5ded.png)
+
+
 ## License
 
 Copyright (C) 2022  Abdullah AL Shohag
