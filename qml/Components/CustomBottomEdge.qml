@@ -20,8 +20,10 @@ import Lomiri.Components 1.3
 BottomEdge {
     id: bottomEdge
 
+    property var settingsObject: null
+
     height: parent ? parent.height : 0
-    hint.text: i18n.tr("+")
+    hint.text: i18n.tr("Swipe for Settings")
     contentUrl: Qt.resolvedUrl("../SettingsPage.qml")
 
     preloadContent: false

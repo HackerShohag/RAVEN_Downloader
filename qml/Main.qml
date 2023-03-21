@@ -38,6 +38,7 @@ MainView {
 
     property int margin: units.gu(1)
     property string playListTitle
+
     property string entry
     property bool isPlaylist
     property int count: 0
@@ -48,6 +49,27 @@ MainView {
 //        name: "Ubuntu.Components.Themes.SuruDark"
 //    }
 
+    Settings {
+        id: generalSettings
+        objectName: "GeneralSettings"
+
+        property string myName
+
+        property alias x: root.x
+        property alias y: root.y
+        property alias width: root.width
+        property alias height: root.height
+
+        property alias model: downloadItemsModel
+
+        property bool setDownloadLocation: false
+        property string customDownloadLocation: null
+        property bool downloadSubtitle: false
+        property bool downloadCaption: false
+        property bool embeddedSubtitle: false
+        property bool autoDownload: false
+    }
+
     function listModelToString(){
         var datamodel = []
         for (var i = 0; i < downloadItemsModel.count; ++i){
@@ -57,7 +79,6 @@ MainView {
         keysList.replace("[","").replace("]","")
         console.log(keysList);
         downloadManager.saveListModelData(keysList);
-//        console.log(keysList.replace(0,"").replace(keysList.length-1,"")/*, "/home/shohag/data3.json"*/);
     }
 
     function urlHandler(url, index) {
@@ -97,10 +118,10 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
-            console.log("formatsUpdated(): audio_ids: " + downloadManager.mediaFormats.audioFormatIds)
-            console.log("formatsUpdated(): languages: " + downloadManager.mediaFormats.languages)
-            console.log("formatsUpdated(): language_id: " + downloadManager.mediaFormats.audioBitrates)
+//            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
+//            console.log("formatsUpdated(): audio_ids: " + downloadManager.mediaFormats.audioFormatIds)
+//            console.log("formatsUpdated(): languages: " + downloadManager.mediaFormats.languages)
+            console.log("formatsUpdated(): audioSizes: " + downloadManager.mediaFormats.audioSizes)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -118,6 +139,7 @@ MainView {
                                           vAudioExts: downloadManager.mediaFormats.audioExtensions,
                                           vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
                                           vABR: downloadManager.mediaFormats.audioBitrates,
+                                          vAudioSizes: downloadManager.mediaFormats.audioSizes,
                                           vAudioProgress: 0,
 
 //                                          vLangs: downloadManager.mediaFormats.languages,
@@ -159,6 +181,7 @@ MainView {
                                               vAudioFormats: objectToList(jsonObject[i].vAudioFormats),
                                               vABR: objectToList(jsonObject[i].vABR),
                                               vAudioProgress: objectToList(jsonObject[i].vAudioProgress),
+                                              vAudioSizes: objectToList(jsonObject[i].vAudioSizes),
 
                                               vLangs: objectToList(jsonObject[i].vLangs),
                                               vLangIds: objectToList(jsonObject[i].vLangIds),
@@ -232,6 +255,7 @@ MainView {
             height = searchBarLayout.implicitHeight + 2 * margin
             var isLoaded = downloadManager.loadListModelData();
             if (isLoaded) toggleBlankPage();
+            console.log("sizes: " + downloadManager.mediaFormats.sizes)
         }
 
         Component.onDestruction: {
@@ -345,6 +369,7 @@ MainView {
                             audioExts: vAudioExts
                             audioFormats: vAudioFormats
                             audioBitrate: vABR
+                            audioSizes: vAudioSizes
 
                             sizeModel: vSizeModel
                             indexID: vIndex
@@ -387,8 +412,10 @@ MainView {
             id: bottomEdge
             enabled: true
             height: root.height
-            hint.text: i18n.tr("Recent")
+            hint.text: i18n.tr("Swipe for Settings")
             hint.visible: enabled
+
+            settingsObject: generalSettings
         }
     }
 }

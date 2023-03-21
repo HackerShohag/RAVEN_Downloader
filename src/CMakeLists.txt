@@ -29,7 +29,7 @@ set_target_properties(${DOWNLOADER} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${DOWNLO
 qt5_use_modules(${YOUTUBEDL} Qml Quick DBus)
 qt5_use_modules(${DOWNLOADER} Core)
 
-target_link_libraries(${DOWNLOADER} Qt5::Core)
+target_link_libraries(${DOWNLOADER} Qt5::Core Qt5::Quick)
 
 target_include_directories(${YOUTUBEDL} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
 target_include_directories(${DOWNLOADER} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")

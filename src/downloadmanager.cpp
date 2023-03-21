@@ -19,7 +19,7 @@
 #include <QUrl>
 #include <QUrlQuery>
 #include <QJsonDocument>
-#include <QJsonArray>
+//#include <QQuickItem>
 #include "downloadmanager.h"
 
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
@@ -116,17 +116,32 @@ void DownloadManager::actionSubmit(QString url, int index)
     this->ytdl->fetchSingleFormats(this->ytdl->extractSingleVideoUrl(url));
 }
 
-void DownloadManager::actionDownload(QString url, QString format, int indexID)
+void DownloadManager::actionDownload(QString url, QJsonObject data)
 {
     qDebug() << Q_FUNC_INFO;
+
     QProcess *downloader = new QProcess();
     QStringList arguments;
-    arguments << "-f" << format << url;
+    qint64 indexID = data.value("indexID").toInt();
+
+    if (!data.value("downloadLocation").isUndefined())
+        this->downloadPath = data.value("downloadLocation").toString();
+    if (!data.value("subtitle").isUndefined())
+    {
+        arguments << "--all-subs";
+        if (!data.value("strConvert").isUndefined())
+            arguments << "--convert-subs=srt";
+        if (!data.value("embedded").isUndefined())
+            arguments << "--embed-subs";
+    } else if (!data.value("caption").isUndefined())
+        arguments << "--write-auto-sub";
+
+    arguments << "-f" << data.value("format").toString() << url;
+
     qDebug() << "Arguments:" << arguments;
-    downloader->setWorkingDirectory(this->appDataPath);
+    downloader->setWorkingDirectory(this->appDataPath);/*this->downloadPath.isEmpty() ? this->appDataPath : this->downloadPath);*/
     downloader->start("yt-dlp", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
-    qDebug() << "Finished" << arguments;
 }
 
 void DownloadManager::stopProcess()
@@ -169,6 +184,7 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
             this->m_mediaFormats->setAudioExtItem(formatObject["audio_ext"].toString());
             this->m_mediaFormats->setAudioFormatItem(formatObject["format_id"].toString());
             this->m_mediaFormats->setAudioBitrateItem(formatObject["abr"].toDouble(), formatObject["language"].toString());
+            this->m_mediaFormats->setAudioSizeItem(formatObject["filesize"].toDouble()/1048576);
         }
 
         //video formats

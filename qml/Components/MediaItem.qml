@@ -41,6 +41,7 @@ LayoutsCustom {
     property var audioExts: null
     property var audioFormats: null
     property var audioBitrate: null
+    property var audioSizes: null
 
     property var langs: null
     property var langIds: null
@@ -52,10 +53,41 @@ LayoutsCustom {
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
     property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
 
+    minimumWidth: childrenRect.width
+
     function isDownloadValid(size, resolution) {
         console.log("Size: " + size);
         console.log("Res: " + resolution)
         return true
+    }
+
+    function getSettings() {
+        var jsonObject = {
+            "format" : audioFormats[audioPopup.index] + "+" + videoFormats[resolutionPopup.index],
+            "indexID" : indexID
+        }
+
+        if (generalSettings.setDownloadLocation) jsonObject["downloadLocation"] = generalSettings.customDownloadLocation;
+        if (generalSettings.downloadSubtitle) {
+            jsonObject["subtitle"] = true;
+            if (videoExts[resolutionPopup.index] == "mp4") jsonObject["strConvert"] = true;
+            if (generalSettings.embeddedSubtitle) jsonObject["embedded"] = true;
+        }
+        if (generalSettings.downloadCaption)
+            jsonObject["caption"] = true;
+        return jsonObject;
+    }
+
+    Component.onCompleted: {
+        if (generalSettings.autoDownload)
+            if (isDownloadValid(audioPopup.text, resolutionPopup.text))
+            {
+                var jsonObject = getSettings();
+                jsonObject["format"] = "bestaudio+bestvideo";
+                downloadManager.actionDownload(videoLink, jsonObject)
+            }
+            else
+                PopupUtils.open(invalidDownloadWarning)
     }
 
     Component {
@@ -140,24 +172,29 @@ LayoutsCustom {
         RowLayout {
             Layout.fillWidth: true
 
-            InfoButton {
-                id: durationButton
-                Layout.fillWidth: true
-                buttonID: 0
-                text: duration ? duration : i18n.tr("unknown")
-            }
+//            InfoButton {
+//                id: durationButton
+//                Layout.fillWidth: true
+//                buttonID: 0
+//                text: duration ? duration : i18n.tr("unknown")
+//            }
 
-            InfoButton {
+            Button {
                 id: sizeButton
+                iconName: "media-flash-symbolic"
+                Layout.preferredWidth: units.gu(10)
+                Layout.minimumWidth: units.gu(10)
                 Layout.fillWidth: true
-                buttonID: 1
-                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] : i18n.tr("unknown")
+                color: LomiriColors.lightGrey
+//                buttonID: 1
+                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MB" : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }
 
             CustomComboPopup {
                 id: audioPopup
                 Layout.fillWidth: true
+                Layout.minimumWidth: units.gu(10)
                 heading: comboHeading[0]
                 enabled: downloadUnavailable ? false : true
                 multipleModel: true
@@ -169,6 +206,7 @@ LayoutsCustom {
 //            CustomComboPopup {
 //                id: languagePopup
 //                Layout.fillWidth: true
+//                Layout.minimumWidth: units.gu(10)
 //                visible: langs.length != 0
 //                heading: comboHeading[1]
 //                enabled: downloadUnavailable ? false : true
@@ -178,6 +216,7 @@ LayoutsCustom {
             CustomComboPopup {
                 id: resolutionPopup
                 Layout.fillWidth: true
+                Layout.minimumWidth: units.gu(10)
                 heading: comboHeading[2]
                 enabled: downloadUnavailable ? false : true
                 multipleModel: true
@@ -190,7 +229,11 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
-                onClicked: isDownloadValid(audioPopup.text, resolutionPopup.text) ? downloadManager.actionDownload(videoLink, audioFormats[audioPopup.index] + "+" + videoFormats[resolutionPopup.index], indexID) : PopupUtils.open(invalidDownloadWarning)
+                onClicked: {
+                    isDownloadValid(audioPopup.text, resolutionPopup.text) ?
+                                downloadManager.actionDownload(videoLink, getSettings()) :
+                                PopupUtils.open(invalidDownloadWarning)
+                }
             }
         }
     }

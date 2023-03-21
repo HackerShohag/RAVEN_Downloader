@@ -28,7 +28,7 @@ set(DESKTOP_FILE_NAME ${PROJECT_NAME}.desktop)
 if(DEFINED ENV{SDK_FRAMEWORK})
     set(CLICK_FRAMEWORK "$ENV{SDK_FRAMEWORK}")
 else()
-    set(CLICK_FRAMEWORK "ubuntu-sdk-16.04.3")
+    set(CLICK_FRAMEWORK "ubuntu-sdk-20.04")
 endif()
 
 # This figures out the target architecture for use in the manifest file.
@@ -74,6 +74,7 @@ add_executable(${PROJECT_NAME} main.cpp ${QT_RESOURCES})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE -s)
 target_link_libraries(${PROJECT_NAME} DownloadManager YoutubeDL Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2)
+
 #target_link_libraries(${PROJECT_NAME} PRIVATE DownloadManager YoutubeDL)
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
 

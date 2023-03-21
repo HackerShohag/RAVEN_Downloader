@@ -128,14 +128,14 @@ void MediaFormat::setThumbnail(QString value)
     emit thumbnailChanged(value);
 }
 
-QStringList MediaFormat::getFilesizes() const
+QList<int> MediaFormat::getFilesizes() const
 {
     return this->m_filesizes;
 }
 
 void MediaFormat::setFilesizeItem(double value)
 {
-    this->m_filesizes << QString::number(qRound(value)) + "MB";
+    this->m_filesizes << qRound(value);
 }
 
 void MediaFormat::clearClutter()
@@ -226,4 +226,14 @@ QStringList MediaFormat::getLanguageIds() const
 void MediaFormat::setLanguageIdItem(QString value)
 {
     this->m_languageIds << value;
+}
+
+QList<int> MediaFormat::getAudioSizes() const
+{
+    return m_audioSizes;
+}
+
+void MediaFormat::setAudioSizeItem(double value)
+{
+    this->m_audioSizes << qRound(value);
 }

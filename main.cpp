@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     app->setApplicationName("raven.downloader.shohag");
 
     QQuickView *view = new QQuickView();
-    DownloadManager *dm = new DownloadManager();
+    DownloadManager *dm = new DownloadManager(view);
 
     qDebug() << "Starting app from main.cpp";
 

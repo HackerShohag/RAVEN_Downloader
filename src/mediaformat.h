@@ -25,7 +25,7 @@ class MediaFormat : public QObject
     Q_PROPERTY(QString duration READ getDuration NOTIFY durationChanged)
     Q_PROPERTY(QString videoUrl READ getUrl NOTIFY urlChanged)
     Q_PROPERTY(QStringList qualities READ getQualities NOTIFY qualitiesChanged)
-    Q_PROPERTY(QStringList filesizes READ getFilesizes NOTIFY filesizesChanged)
+    Q_PROPERTY(QList<int> filesizes READ getFilesizes NOTIFY filesizesChanged)
 
     Q_PROPERTY(QStringList vcodeces READ getVcodec NOTIFY vcodecChanged)
     Q_PROPERTY(QStringList notes READ getNotes NOTIFY notesChanged)
@@ -38,7 +38,7 @@ class MediaFormat : public QObject
     Q_PROPERTY(QStringList audioExtensions READ getAudioExt NOTIFY audioExtChanged)
     Q_PROPERTY(QStringList audioFormatIds READ getAudioFormatIds NOTIFY audioFormatIdsChanged)
     Q_PROPERTY(QStringList audioBitrates READ getAudioBitrates NOTIFY audioBitratesChanged)
-
+    Q_PROPERTY(QList<int> audioSizes READ getAudioSizes NOTIFY audioSizesChanged)
 
     Q_PROPERTY(QStringList languages READ getLanguages NOTIFY languagesChanged)
     Q_PROPERTY(QStringList languageIds READ getLanguageIds NOTIFY languagedsChanged)
@@ -83,7 +83,7 @@ public:
     QStringList getVcodec() const;
     void setVcodecItem(QString value);
 
-    QStringList getFilesizes() const;
+    QList<int> getFilesizes() const;
     void setFilesizeItem(double value);
 
     QStringList getAudioExt() const;
@@ -100,6 +100,9 @@ public:
 
     QStringList getLanguageIds() const;
     void setLanguageIdItem(QString value);
+
+    QList<int> getAudioSizes() const;
+    void setAudioSizeItem(double value);
 
     void clearClutter();
 
@@ -122,6 +125,7 @@ signals:
     void audioBitratesChanged();
     void languagesChanged();
     void languagedsChanged();
+    void audioSizesChanged();
 
 private:
     QString m_title;
@@ -136,12 +140,13 @@ private:
     QStringList m_notes;
     QStringList m_acodec;
     QStringList m_vcodec;
-    QStringList m_filesizes;
+    QList<int> m_filesizes;
     QStringList m_audioExt;
     QStringList m_audioFormatIds;
     QStringList m_audioBitrates;
     QStringList m_languages;
     QStringList m_languageIds;
+    QList<int> m_audioSizes;
 };
 
 #endif

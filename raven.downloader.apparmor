@@ -1,6 +1,6 @@
 {
+    "policy_version": 20.04
     "policy_groups": [
     	"location"
     ],
-    "policy_version": 20.04
 }

@@ -19,11 +19,12 @@
 
 #include <QObject>
 #include <QVector>
+#include <QJsonArray>
 #include <QJsonObject>
+#include <QJsonDocument>
+#include <QStandardPaths>
 #include <youtubedl.h>
 #include <mediaformat.h>
-#include <QStandardPaths>
-#include <QJsonDocument>
 
 class DownloadManager : public QObject
 {
@@ -37,7 +38,7 @@ public:
 
 public slots:
     void actionSubmit(QString url, int index);
-    void actionDownload(QString url, QString format, int indexID);
+    void actionDownload(QString url, QJsonObject data);
     void stopProcess();
     void setFormats(QJsonObject jsonObject);
     bool isValidUrl(QString url);
@@ -68,7 +69,7 @@ private:
     QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QString cachePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-
+    QString downloadPath;
 };
 
 #endif
