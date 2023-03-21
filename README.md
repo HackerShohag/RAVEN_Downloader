@@ -1,6 +1,18 @@
 # RAVEN Downloader
 
-A simple youtube batch downloader
+A simple youtube video downloader that can download entire playlist. This is Ubuntu Touch application based on qt framework.
+
+### Requirements:
+        youtube-dl (currently not using due to bug)
+        python3-pip
+        ffmpeg
+        yt-dlp (alternative of youtube-dl)
+
+### Doesn't work (or hasn't fixed):
+        Theme Management
+        Download Location (currently using appData path (~/.local/share/raven.downloader.shohag))
+
+N.B.: Please don't report these bugs right now. You may need to install some dependency manually. It's still in undergoing development. You can provide me testing data on telegram (t.me/HackerShohag).
 
 ## License
 
