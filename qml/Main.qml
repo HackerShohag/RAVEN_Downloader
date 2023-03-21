@@ -145,6 +145,9 @@ MainView {
 //                                          vLangs: downloadManager.mediaFormats.languages,
 //                                          vLangIds: downloadManager.mediaFormats.languageIds,
 
+                                          videoIndex: null,
+                                          audioIndex: null,
+
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vIndex: count
                                       })
@@ -162,7 +165,7 @@ MainView {
 
         onListModelDataLoaded: {
             var jsonObject = JSON.parse(value);
-            for (var i = 0; i < jsonObject.length - 1; i++) {
+            for (var i = 0; i < jsonObject.length; i++) {
 //                console.log(jsonObject[i]);
                 downloadItemsModel.append({
                                               vTitle: jsonObject[i].vTitle,
@@ -192,12 +195,7 @@ MainView {
             }
         }
         onDownloadProgress: {
-            if (!separator) {
-                if (value == 100) separator = true;
-            } else {
-                downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
-                if (value == 100) separator = false;
-            }
+            downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
         }
 
         onInvalidPlaylistUrl: {

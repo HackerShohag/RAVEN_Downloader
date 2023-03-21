@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-21 21:10+0600\n"
+"POT-Creation-Date: 2023-03-22 02:11+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,35 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:415
+#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:413
 msgid "Swipe for Settings"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:57
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:57
 msgid "select language"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:57
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:97
+#: ../qml/Components/MediaItem.qml:101
 msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:98
+#: ../qml/Components/MediaItem.qml:102
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:190
+#: ../qml/Components/MediaItem.qml:194
 msgid "unknown"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:231
+#: ../qml/Components/MediaItem.qml:235
 msgid "Download"
 msgstr ""
 
@@ -53,55 +53,55 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:211
+#: ../qml/Main.qml:209
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:212
+#: ../qml/Main.qml:210
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/Main.qml:219
+#: ../qml/Main.qml:217
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:220
+#: ../qml/Main.qml:218
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:227
+#: ../qml/Main.qml:225
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:228
+#: ../qml/Main.qml:226
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:295
+#: ../qml/Main.qml:293
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:300
+#: ../qml/Main.qml:298
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:302
+#: ../qml/Main.qml:300
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:302
+#: ../qml/Main.qml:300
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:307
+#: ../qml/Main.qml:305
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:328
+#: ../qml/Main.qml:326
 msgid "        Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:402
+#: ../qml/Main.qml:400
 msgid "No Downloads!"
 msgstr ""
 

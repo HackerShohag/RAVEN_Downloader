@@ -50,18 +50,19 @@ LayoutsCustom {
     property alias videoProgress: videoProgressBar.value
     property int indexID
 
+    property alias videoIndex: resolutionPopup.index
+    property alias audioIndex: audioPopup.index
+
     property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
     property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
 
     minimumWidth: childrenRect.width
 
     function isDownloadValid(size, resolution) {
-        console.log("Size: " + size);
-        console.log("Res: " + resolution)
         return true
     }
 
-    function getSettings() {
+    function getFormats() {
         var jsonObject = {
             "format" : audioFormats[audioPopup.index] + "+" + videoFormats[resolutionPopup.index],
             "indexID" : indexID
@@ -79,15 +80,18 @@ LayoutsCustom {
     }
 
     Component.onCompleted: {
-        if (generalSettings.autoDownload)
+        if (generalSettings.autoDownload) {
             if (isDownloadValid(audioPopup.text, resolutionPopup.text))
             {
-                var jsonObject = getSettings();
+                var jsonObject = getFormats();
                 jsonObject["format"] = "bestaudio+bestvideo";
                 downloadManager.actionDownload(videoLink, jsonObject)
             }
             else
                 PopupUtils.open(invalidDownloadWarning)
+            downloadItems.itemAt(indexID).videoIndex = downloadItems.itemAt(indexID).vcodec.length - 1;
+            downloadItems.itemAt(indexID).audioIndex = downloadItems.itemAt(indexID).acodec.length - 1;
+        }
     }
 
     Component {
@@ -231,7 +235,7 @@ LayoutsCustom {
                 text: i18n.tr("Download")
                 onClicked: {
                     isDownloadValid(audioPopup.text, resolutionPopup.text) ?
-                                downloadManager.actionDownload(videoLink, getSettings()) :
+                                downloadManager.actionDownload(videoLink, getFormats()) :
                                 PopupUtils.open(invalidDownloadWarning)
                 }
             }
