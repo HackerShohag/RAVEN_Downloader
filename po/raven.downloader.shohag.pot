@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-21 21:26+0000\n"
+"POT-Creation-Date: 2023-03-22 18:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:413
+#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:414
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -77,31 +77,31 @@ msgstr ""
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:293
+#: ../qml/Main.qml:294
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:298
+#: ../qml/Main.qml:299
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:300
+#: ../qml/Main.qml:301
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:300
+#: ../qml/Main.qml:301
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:305
+#: ../qml/Main.qml:306
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:326
-msgid "        Downloaded Files"
+#: ../qml/Main.qml:327
+msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:400
+#: ../qml/Main.qml:401
 msgid "No Downloads!"
 msgstr ""
 

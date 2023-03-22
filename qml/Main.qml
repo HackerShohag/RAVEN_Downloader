@@ -272,6 +272,7 @@ MainView {
                 id: mainScroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                contentY: units.gu(1)
                 contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin + units.gu(3)
                 ScrollBar.vertical: ScrollBar { }
 
@@ -279,13 +280,13 @@ MainView {
                     id: inputPanel
                     Layout.fillWidth: true
 
-                    height:  units.gu(14)
+                    height:  units.gu(10)
                     width: parent.width
 
                     RowLayout {
                         id: rowLayout
                         anchors.fill: parent
-                        anchors.margins: units.gu(3)
+                        anchors.margins: units.gu(1)
                         width: parent.width
                         TextField {
                             id: urlContainer
@@ -316,15 +317,15 @@ MainView {
 
                     width: parent.width
                     anchors.top: inputPanel.bottom
-                    spacing: -units.gu(3)
+                    spacing: units.gu(1)
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.topMargin: units.gu(1)
 
                     Label {
                         id: downloadContainerHeading
-                        text: i18n.tr("        Downloaded Files")
-                        height: units.gu(5)
+                        text: i18n.tr("   Downloaded Files")
+                        height: units.gu(3)
                         font.bold: true
                     }
                     ListModel {
@@ -347,7 +348,7 @@ MainView {
                                 left: parent.left
                                 right: parent.right
                             }
-                            height: units.gu(20)
+                            height: units.gu(15)
 
                             videoTitle: vTitle
                             thumbnail: vThumbnail

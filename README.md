@@ -1,4 +1,5 @@
 # RAVEN Downloader
+[![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
 
 A simple youtube video downloader that can download entire playlist. This is Ubuntu Touch application based on qt framework.
 
@@ -11,6 +12,7 @@ A simple youtube video downloader that can download entire playlist. This is Ubu
 ### Doesn't work (or hasn't fixed):
         Theme Management
         Download Location (currently using appData path (~/.local/share/raven.downloader.shohag))
+        History (It doesn't save previous entries currently)
 
 N.B.: Please don't report these bugs right now. You may need to install some dependency manually. It's still in undergoing development. You can provide me testing data on telegram (t.me/HackerShohag).
 

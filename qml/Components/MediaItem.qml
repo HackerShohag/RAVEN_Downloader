@@ -119,7 +119,7 @@ LayoutsCustom {
         rows: 3
         flow: GridLayout.TopToBottom
         anchors.fill: parent
-        anchors.margins: units.gu(3)
+        anchors.margins: units.gu(1)
 
         Image {
             id: thumbnailContainer

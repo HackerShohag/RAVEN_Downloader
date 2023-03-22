@@ -45,7 +45,6 @@ GroupBox {
     NumberAnimation on y {
         running: animationEnabled
         from: -units.gu(5);
-        to: units.gu(1);
     }
 
     OpacityAnimator {
@@ -59,8 +58,9 @@ GroupBox {
     Item {
         anchors.fill: parent
         layer.enabled: true
+        anchors.margins: -units.gu(2)
         Rectangle {
-            id:img
+            id: blurryShadowRect
             Layout.minimumWidth: minimumWidth
             anchors.centerIn: parent
             height: parent.height
@@ -74,7 +74,7 @@ GroupBox {
 
         FastBlur {
             anchors.fill: parent
-            source: img
+            source: blurryShadowRect
             radius: units.gu(2)
         }
 
