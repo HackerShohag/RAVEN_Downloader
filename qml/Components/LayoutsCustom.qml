@@ -44,14 +44,14 @@ GroupBox {
 
     NumberAnimation on y {
         running: animationEnabled
-        from: -units.gu(5);
+        from: -units.gu(5)
     }
 
     OpacityAnimator {
+        target: boderShadow
         running: animationEnabled
-        target: boderShadow;
-        from: 0;
-        to: 1;
+        from: 0
+        to: 1
         duration: 1000
     }
 
@@ -67,24 +67,24 @@ GroupBox {
             width: parent.width
             radius: units.gu(2)
             color: "grey"
-            border.color: "white"
+            border.color: theme.palette.normal.background
             border.width: units.gu(1.75)
             visible: false
         }
 
         FastBlur {
             anchors.fill: parent
+            visible: theme.name == "Lomiri.Components.Themes.Ambiance" ? true : false
             source: blurryShadowRect
             radius: units.gu(2)
         }
 
         Rectangle {
-            id:rect
             Layout.minimumWidth: minimumWidth
             height: parent.height - units.gu(3)
             width: parent.width - units.gu(3)
             anchors.centerIn: parent
-            color:"white"
+            color: theme.palette.normal.foreground
             radius: units.gu(1)
         }
     }

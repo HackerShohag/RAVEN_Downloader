@@ -30,7 +30,7 @@ Button {
     property int index
     property bool defaultValue: false
 
-    color: "white"
+    color: theme.palette.normal.background
     text: defaultValue ? dropdownModel[0] : heading
     onClicked: PopupUtils.open(invalidURLWarning)
 

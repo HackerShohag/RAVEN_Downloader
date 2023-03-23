@@ -20,6 +20,7 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
+import Qt.labs.platform 1.0
 import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
@@ -45,9 +46,10 @@ MainView {
     property var stringModel
     property bool separator: false
 
-//    theme: ThemeSettings {
-//        name: "Ubuntu.Components.Themes.SuruDark"
-//    }
+    theme: ThemeSettings {
+        id: appTheme
+        name: "Lomiri.Components.Themes.Ambiance"
+    }
 
     Settings {
         id: generalSettings
@@ -60,7 +62,7 @@ MainView {
         property alias width: root.width
         property alias height: root.height
 
-        property alias model: downloadItemsModel
+        property alias theme: appTheme.name
 
         property bool setDownloadLocation: false
         property string customDownloadLocation: null

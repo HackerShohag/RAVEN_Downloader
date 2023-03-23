@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-22 18:20+0000\n"
+"POT-Creation-Date: 2023-03-23 11:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:414
+#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:416
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -41,11 +41,11 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:194
+#: ../qml/Components/MediaItem.qml:195
 msgid "unknown"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:235
+#: ../qml/Components/MediaItem.qml:236
 msgid "Download"
 msgstr ""
 
@@ -53,55 +53,55 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:209
+#: ../qml/Main.qml:211
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:210
+#: ../qml/Main.qml:212
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/Main.qml:217
+#: ../qml/Main.qml:219
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:218
+#: ../qml/Main.qml:220
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:225
+#: ../qml/Main.qml:227
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:226
+#: ../qml/Main.qml:228
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:294
+#: ../qml/Main.qml:296
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:299
+#: ../qml/Main.qml:301
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:301
+#: ../qml/Main.qml:303
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:301
+#: ../qml/Main.qml:303
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:306
+#: ../qml/Main.qml:308
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:327
+#: ../qml/Main.qml:329
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:401
+#: ../qml/Main.qml:403
 msgid "No Downloads!"
 msgstr ""
 
@@ -145,7 +145,7 @@ msgstr ""
 msgid "Select app theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:270
+#: ../qml/SettingsPage.qml:274
 msgid "Clear All History"
 msgstr ""
 

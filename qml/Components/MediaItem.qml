@@ -156,6 +156,7 @@ LayoutsCustom {
             Label {
                 id: titleBox
                 font.bold: true
+                color: theme.palette.normal.backgroundText
                 elide: Label.ElideRight
                 Layout.fillWidth: true
             }
@@ -169,6 +170,7 @@ LayoutsCustom {
             }
             Label {
                 text: videoProgressBar.value * 100 + "%"
+                color: theme.palette.normal.backgroundText
                 font.pixelSize: 18
                 font.bold: true
             }
@@ -190,7 +192,6 @@ LayoutsCustom {
                 Layout.minimumWidth: units.gu(10)
                 Layout.fillWidth: true
                 color: LomiriColors.lightGrey
-//                buttonID: 1
                 text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MB" : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }

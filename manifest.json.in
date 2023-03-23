@@ -9,7 +9,7 @@
             "desktop":  "raven.downloader.desktop"
         }
     },
-    "version": "@BUILD_VERSION@",
+    "version": "1.0.2",
     "maintainer": "Abdullah AL Shohag <HackerShohag@outlook.com>",
     "framework" : "@CLICK_FRAMEWORK@"
 }

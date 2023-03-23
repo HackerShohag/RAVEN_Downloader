@@ -58,7 +58,7 @@ Page {
             id: rectRoot
             width: root.width
             height: {childrenRect.height+units.gu(4)}
-            color: theme.palette.normal.background
+            color: "transparent"
 
             RowLayout {
                 id: donwloadLocationConatainer
@@ -253,6 +253,10 @@ Page {
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
+                }
+
+                onSelectedIndexChanged:  {
+                    generalSettings.theme = (themeModel[selectedIndex] == "Ambiance theme" ? "Lomiri.Components.Themes.Ambiance" : "Lomiri.Components.Themes.SuruDark")
                 }
             }
 
