@@ -10,26 +10,15 @@
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
  */
 
-#include <QGuiApplication>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonValueRef>
-#include <QJsonValue>
 #include <QRegExpValidator>
-#include <QString>
-#include <QStringList>
-#include <QProcess>
 #include <QDebug>
-#include <QUrl>
 #include <QUrlQuery>
 
 #include "youtubedl.h"
 
 YoutubeDL::YoutubeDL()
 {
-    QObject *parent = QGuiApplication::instance();
-    this->ytdl = new QProcess(parent);
+    this->ytdl = new QProcess();
     this->program = "yt-dlp"; // "youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title

@@ -14,19 +14,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <QDebug>
 #include <QFile>
-#include <QUrl>
+#include <QDebug>
 #include <QUrlQuery>
-#include <QJsonDocument>
-//#include <QQuickItem>
+#include <QJsonArray>
 #include "downloadmanager.h"
 
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
 {
     connect(this->ytdl, SIGNAL(updateQString(QString)), this, SLOT(checkJsonObject(QString)));
     connect(this->ytdl, SIGNAL(dataFetchFinished()), this, SLOT(finishedFetching()));
-    qDebug() << "Constructor of DownloadManager";
 }
 
 DownloadManager::~DownloadManager()
@@ -140,10 +137,10 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
 
     arguments << "-f" << data.value("format").toString() << url;
 
-    qDebug() << "Arguments:" << arguments;
     downloader->setWorkingDirectory(this->downloadPath);
     downloader->start("yt-dlp", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
+    qDebug() << "Arguments:" << arguments;
 }
 
 void DownloadManager::stopProcess()

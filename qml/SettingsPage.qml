@@ -1,11 +1,9 @@
 /*  ImgItem.qml */
 import QtQuick 2.7
-import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.0
-import Qt.labs.settings 1.0
 import Lomiri.Components 1.3
-import Lomiri.Components.Themes 1.3
-import Ubuntu.Components.ListItems 1.3
+import Lomiri.Components.ListItems 1.3
+
 import "Components"
 
 Page { 
@@ -256,7 +254,12 @@ Page {
                 }
 
                 onSelectedIndexChanged:  {
-                    generalSettings.theme = (themeModel[selectedIndex] == "Ambiance theme" ? "Lomiri.Components.Themes.Ambiance" : "Lomiri.Components.Themes.SuruDark")
+                    if (themeModel[selectedIndex] == "Ambiance theme")
+                        generalSettings.theme = "Lomiri.Components.Themes.Ambiance"
+                    if (themeModel[selectedIndex] == "Suru-dark theme")
+                        generalSettings.theme = "Lomiri.Components.Themes.SuruDark"
+                    else
+                        generalSettings.theme = ""
                 }
             }
 

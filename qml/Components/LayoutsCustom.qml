@@ -15,19 +15,17 @@
  */
 
 import QtQuick 2.5
-import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQuick.Controls 2.2
-import Lomiri.Components 1.3
 
 GroupBox {
     id: boderShadow
     property string buttonValue
-    property int serialNumber
-    property bool animationEnabled: false
-    property int minimumWidth: units.gu(10)
-    property int minimunHeight: units.gu(10)
+    property int    serialNumber
+    property bool   animationEnabled: false
+    property int    minimumWidth: units.gu(10)
+    property int    minimunHeight: units.gu(10)
 
     visible: true
     opacity: animationEnabled ? 0 : 1

@@ -16,15 +16,11 @@
 
 import QtQml 2.2
 import QtQuick 2.7
-import QtQuick.Window 2.2
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0
-import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
-import Lomiri.Components.Popups 1.3
-import Lomiri.Content 1.1
 
 import "Components"
 
@@ -37,14 +33,13 @@ MainView {
     width: units.gu(100)
     height: units.gu(100)
 
-    property int margin: units.gu(1)
+    property int    margin: units.gu(1)
     property string playListTitle
 
     property string entry
-    property bool isPlaylist
-    property int count: 0
-    property var stringModel
-    property bool separator: false
+    property bool   isPlaylist
+    property int    count: 0
+    property var    stringModel
 
     theme: ThemeSettings {
         id: appTheme
@@ -55,17 +50,17 @@ MainView {
         id: generalSettings
         objectName: "GeneralSettings"
 
-        property alias width: root.width
-        property alias height: root.height
+        property alias  width: root.width
+        property alias  height: root.height
 
-        property alias theme: appTheme.name
+        property alias  theme: appTheme.name
 
-        property bool setDownloadLocation: false
+        property bool   setDownloadLocation: false
         property string customDownloadLocation: null
-        property bool downloadSubtitle: false
-        property bool downloadCaption: false
-        property bool embeddedSubtitle: false
-        property bool autoDownload: false
+        property bool   downloadSubtitle: false
+        property bool   downloadCaption: false
+        property bool   embeddedSubtitle: false
+        property bool   autoDownload: false
     }
 
     function listModelToString(){
@@ -77,6 +72,14 @@ MainView {
         keysList.replace("[","").replace("]","")
         console.log(keysList);
         downloadManager.saveListModelData(keysList);
+    }
+
+    function objectToList(object) {
+        stringModel = [];
+        for (var i = 0; i < object.count; ++i){
+            stringModel.push(object.get(i))
+        }
+        return stringModel;
     }
 
     function urlHandler(url, index) {
@@ -97,14 +100,6 @@ MainView {
             return ;
         }
         PopupUtils.open(invalidURLWarning);
-    }
-
-    function objectToList(object) {
-        stringModel = [];
-        for (var i = 0; i < object.count; ++i){
-            stringModel.push(object.get(i))
-        }
-        return stringModel;
     }
 
     function deformIndex(index) {

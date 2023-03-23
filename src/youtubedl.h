@@ -13,11 +13,10 @@
 #ifndef YOUTUBEDL_H
 #define YOUTUBEDL_H
 
-#include <QJsonObject>
 #include <QProcess>
-#include <QVector>
 
-class YoutubeDL: public QObject {
+class YoutubeDL: public QObject
+{
     Q_OBJECT
 public:
     YoutubeDL();

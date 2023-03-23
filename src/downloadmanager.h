@@ -18,11 +18,10 @@
 #define DOWNLOADMANAGER_H
 
 #include <QObject>
-#include <QVector>
-#include <QJsonArray>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
+
 #include <youtubedl.h>
 #include <mediaformat.h>
 
@@ -63,12 +62,12 @@ signals:
 private:
     YoutubeDL *ytdl = new YoutubeDL();
     MediaFormat *m_mediaFormats = new MediaFormat();
-    QString tempJSONDataHolder;
-    QString playlistTitle;
-    qint64 entries = 0;
     QString configPath = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QString cachePath = QStandardPaths::writableLocation(QStandardPaths::CacheLocation);
     QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QString tempJSONDataHolder;
+    QString playlistTitle;
+    qint64 entries = 0;
     QString downloadPath;
 };
 

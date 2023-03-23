@@ -14,8 +14,6 @@
 #define MEDIAFORMAT_H
 
 #include <QObject>
-#include <QString>
-#include <QStringList>
 
 class MediaFormat : public QObject
 {

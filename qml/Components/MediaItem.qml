@@ -17,44 +17,41 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
-import QtQuick.Dialogs 1.1
 import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
-import Lomiri.Components.ListItems 1.3
-import Lomiri.DownloadManager 1.2
 
 LayoutsCustom {
     id: gridBox
 
-    property alias videoTitle: titleBox.text
-    property alias thumbnail: thumbnailContainer.source
+    property alias  videoTitle: titleBox.text
+    property alias  thumbnail: thumbnailContainer.source
     property string duration
     property string videoLink: null
 
-    property var vcodec: null
-    property var resolutionModel: null
-    property var videoExts: null
-    property var videoFormats: null
+    property var    vcodec: null
+    property var    resolutionModel: null
+    property var    videoExts: null
+    property var    videoFormats: null
 
-    property var acodec: null
-    property var audioExts: null
-    property var audioFormats: null
-    property var audioBitrate: null
-    property var audioSizes: null
+    property var    acodec: null
+    property var    audioExts: null
+    property var    audioFormats: null
+    property var    audioBitrate: null
+    property var    audioSizes: null
 
-    property var langs: null
-    property var langIds: null
+    property var    langs: null
+    property var    langIds: null
 
-    property var sizeModel: null
-    property alias videoProgress: videoProgressBar.value
-    property int indexID
+    property var    sizeModel: null
+    property alias  videoProgress: videoProgressBar.value
+    property int    indexID
 
-    property alias videoIndex: resolutionPopup.index
-    property alias audioIndex: audioPopup.index
+    property alias  videoIndex: resolutionPopup.index
+    property alias  audioIndex: audioPopup.index
 
-    property var downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
-    property var comboHeading: [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
+    property var    downloadUnavailable: resolutionModel === null && vcodec === null ? true : false
+    property var    comboHeading: [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
 
     minimumWidth: childrenRect.width
 
