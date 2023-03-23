@@ -55,10 +55,6 @@ MainView {
         id: generalSettings
         objectName: "GeneralSettings"
 
-        property string myName
-
-        property alias x: root.x
-        property alias y: root.y
         property alias width: root.width
         property alias height: root.height
 

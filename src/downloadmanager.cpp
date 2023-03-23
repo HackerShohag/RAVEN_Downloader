@@ -126,6 +126,8 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
 
     if (!data.value("downloadLocation").isUndefined())
         this->downloadPath = data.value("downloadLocation").toString();
+    else
+        this->downloadPath = this->appDataPath;
     if (!data.value("subtitle").isUndefined())
     {
         arguments << "--all-subs";
@@ -139,7 +141,7 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
     arguments << "-f" << data.value("format").toString() << url;
 
     qDebug() << "Arguments:" << arguments;
-    downloader->setWorkingDirectory(this->appDataPath);/*this->downloadPath.isEmpty() ? this->appDataPath : this->downloadPath);*/
+    downloader->setWorkingDirectory(this->downloadPath);
     downloader->start("yt-dlp", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
 }
