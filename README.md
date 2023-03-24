@@ -9,12 +9,11 @@ A simple youtube video downloader that can download entire playlist. This is Ubu
         ffmpeg
         yt-dlp (alternative of youtube-dl)
 
-### Doesn't work (or hasn't fixed):
+### Needs testing:
         Theme Management (might have some bugs)
         Download Location (default is appData path (~/.local/share/raven.downloader.shohag))
-        History (It doesn't save previous entries currently)
 
-N.B.: Please don't report these bugs right now. You may need to install some dependency manually. For example, yt-dlp pip package (`pip3 install yt-dlp`). It's still in undergoing development. You can provide me testing data on telegram (t.me/HackerShohag).
+N.B.: You may need to install some dependency manually. For example, yt-dlp pip package (`pip3 install yt-dlp`). You can provide me testing data on telegram (t.me/HackerShohag).
 
 ## Screenshots
 Download Page             |  Settings Page
