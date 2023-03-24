@@ -47,7 +47,7 @@ Button {
                     onClicked: {
                         dropdown.text = modelData;
                         dropdown.index = index
-                        onClicked: PopupUtils.close(dialogue)
+                        PopupUtils.close(dialogue)
                     }
                 }
             }

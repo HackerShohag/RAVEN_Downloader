@@ -81,9 +81,66 @@ void DownloadManager::saveListModelData(QString value)
 
 bool DownloadManager::loadListModelData()
 {
+    qDebug() << Q_FUNC_INFO;
     QJsonDocument document = loadJson(this->appDataPath + "/history.json");
-    emit listModelDataLoaded(QString(document.toJson(QJsonDocument::Compact)));
-    if (document.isEmpty()) return false;
+    if (document.isEmpty())
+        return false;
+
+    QJsonArray array = document.array();
+
+    for (QJsonArray::iterator i = array.begin(); i < array.end(); ++i)
+    {
+        QJsonObject jsonObject = (*i).toObject();
+
+        this->m_mediaFormats->clearClutter();
+        this->m_mediaFormats->setTitle(jsonObject["vTitle"].toString());
+        this->m_mediaFormats->setThumbnail(jsonObject["vThumbnail"].toString());
+        this->m_mediaFormats->setDuration(jsonObject["vDuration"].toString());
+        this->m_mediaFormats->setUrl(jsonObject["vID"].toString());
+
+        qDebug() << "DownloadManager::setFormats(QJsonObject): Title:" << jsonObject["vTitle"].toString();
+
+        for (QJsonArray::iterator value = jsonObject["aCodec"].toArray().begin(); value < jsonObject["aCodec"].toArray().end(); ++value) {
+            this->m_mediaFormats->setAcodecItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vAudioExts"].toArray().begin(); value < jsonObject["vAudioExts"].toArray().end(); ++value) {
+            this->m_mediaFormats->setAudioExtItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vAudioFormats"].toArray().begin(); value < jsonObject["vAudioFormats"].toArray().end(); ++value) {
+            this->m_mediaFormats->setAudioFormatItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vABR"].toArray().begin(); value < jsonObject["vABR"].toArray().end(); ++value) {
+            this->m_mediaFormats->setAudioBitrateItem(value->toInt());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vAudioSizes"].toArray().begin(); value < jsonObject["vAudioSizes"].toArray().end(); ++value) {
+            this->m_mediaFormats->setAudioSizeItem(value->toInt());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vCodec"].toArray().begin(); value < jsonObject["vCodec"].toArray().end(); ++value) {
+            this->m_mediaFormats->setVcodecItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vResolutions"].toArray().begin(); value < jsonObject["vResolutions"].toArray().end(); ++value) {
+            this->m_mediaFormats->setNoteItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vVideoExts"].toArray().begin(); value < jsonObject["vVideoExts"].toArray().end(); ++value) {
+            this->m_mediaFormats->setVideoExtensionItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vVideoFormats"].toArray().begin(); value < jsonObject["vVideoFormats"].toArray().end(); ++value) {
+            this->m_mediaFormats->setVideoFormatItem(value->toString());
+        }
+
+        for (QJsonArray::iterator value = jsonObject["vSizeModel"].toArray().begin(); value < jsonObject["vSizeModel"].toArray().end(); ++value) {
+            this->m_mediaFormats->setFilesizeItem(value->toInt());
+        }
+        emit formatsUpdated(true, jsonObject["videoIndex"].toInt(), jsonObject["audioIndex"].toInt(), jsonObject["vVideoProgress"].toInt());
+    }
     return true;
 }
 
@@ -159,7 +216,7 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
     this->m_mediaFormats->setDuration(jsonObject["duration_string"].toString());
     this->m_mediaFormats->setUrl(jsonObject["id"].toString());
 
-    qDebug() << "DownloadManager::setFormats(): Title:" << jsonObject["title"].toString();
+    qDebug() << "DownloadManager::setFormats(QJsonObject): Title:" << jsonObject["title"].toString();
 
     QJsonArray jsonFormats = jsonObject["formats"].toArray();
     QJsonArray::iterator i;
@@ -169,12 +226,12 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
         QJsonValue value = *i;
         QJsonObject formatObject = value.toObject();
 
-//        if (!this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString()) && !formatObject["language"].toString().isNull())
-//        {
-//            this->m_mediaFormats->setLanguageItem(formatObject["language"].toString());
-//            this->m_mediaFormats->setLanguageIdItem(formatObject["format_id"].toString().split(u'-').at(1));
-//            qDebug() << "hello" << formatObject["language"].toString();
-//        }
+        //        if (!this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString()) && !formatObject["language"].toString().isNull())
+        //        {
+        //            this->m_mediaFormats->setLanguageItem(formatObject["language"].toString());
+        //            this->m_mediaFormats->setLanguageIdItem(formatObject["format_id"].toString().split(u'-').at(1));
+        //            qDebug() << "hello" << formatObject["language"].toString();
+        //        }
 
         // audio formats
         if (formatObject["resolution"].toString().contains("audio") /*|| !this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString())*/)
@@ -198,7 +255,7 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
             this->m_mediaFormats->setFilesizeItem(formatObject["filesize"].toDouble()/1048576);
         }
     }
-    emit formatsUpdated();
+    emit formatsUpdated(false);
 }
 
 bool DownloadManager::isValidUrl(QString url)

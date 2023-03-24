@@ -77,6 +77,7 @@ LayoutsCustom {
     }
 
     Component.onCompleted: {
+//        console.log("Audio Sizes: " + audioSizes.get(0));
         if (generalSettings.autoDownload) {
             if (isDownloadValid(audioPopup.text, resolutionPopup.text))
             {
@@ -189,7 +190,7 @@ LayoutsCustom {
                 Layout.minimumWidth: units.gu(10)
                 Layout.fillWidth: true
                 color: LomiriColors.lightGrey
-                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MB" : i18n.tr("unknown")
+                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MiB" : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }
 

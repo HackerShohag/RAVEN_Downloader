@@ -49,15 +49,15 @@ public slots:
     void saveJson(QJsonDocument document, QString fileName);
     void saveListModelData(QString value);
     bool loadListModelData();
-
     void downloadProgressSlot(QProcess *downloader, qint64 indexID);
+
 signals:
     void mediaFormatsChanged();
-    void formatsUpdated();
+    void formatsUpdated(bool hasIndex, qint64 videoIndex = 0, qint64 audioIndex = 0, qint64 videoProgress = 0);
     void invalidPlaylistUrl();
     void finished(QString playlistTitle, qint64 entries);
     void downloadProgress(QString value, qint64 indexID);
-    void listModelDataLoaded(QString value);
+    void listModelDataLoaded();
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();

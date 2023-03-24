@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0
 import Lomiri.Components 1.3
+import Lomiri.Components.Popups 1.3
 
 import "Components"
 
@@ -39,7 +40,6 @@ MainView {
     property string entry
     property bool   isPlaylist
     property int    count: 0
-    property var    stringModel
 
     theme: ThemeSettings {
         id: appTheme
@@ -70,16 +70,7 @@ MainView {
         }
         var keysList = JSON.stringify(datamodel)
         keysList.replace("[","").replace("]","")
-        console.log(keysList);
         downloadManager.saveListModelData(keysList);
-    }
-
-    function objectToList(object) {
-        stringModel = [];
-        for (var i = 0; i < object.count; ++i){
-            stringModel.push(object.get(i))
-        }
-        return stringModel;
     }
 
     function urlHandler(url, index) {
@@ -114,7 +105,7 @@ MainView {
 //            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
 //            console.log("formatsUpdated(): audio_ids: " + downloadManager.mediaFormats.audioFormatIds)
 //            console.log("formatsUpdated(): languages: " + downloadManager.mediaFormats.languages)
-            console.log("formatsUpdated(): audioSizes: " + downloadManager.mediaFormats.audioSizes)
+            console.log("hasIndex: " + hasIndex +" audioIndex: " + audioIndex +" videoIndex: " + videoIndex +" videoProgress: " + videoProgress)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -126,20 +117,19 @@ MainView {
                                           vResolutions: downloadManager.mediaFormats.notes,
                                           vVideoExts: downloadManager.mediaFormats.videoExtensions,
                                           vVideoFormats: downloadManager.mediaFormats.videoFormatIds,
-                                          vVideoProgress: 0,
+                                          vVideoProgress: hasIndex ? videoProgress : 0,
 
                                           aCodec: downloadManager.mediaFormats.acodeces,
                                           vAudioExts: downloadManager.mediaFormats.audioExtensions,
                                           vAudioFormats: downloadManager.mediaFormats.audioFormatIds,
                                           vABR: downloadManager.mediaFormats.audioBitrates,
                                           vAudioSizes: downloadManager.mediaFormats.audioSizes,
-                                          vAudioProgress: 0,
 
 //                                          vLangs: downloadManager.mediaFormats.languages,
 //                                          vLangIds: downloadManager.mediaFormats.languageIds,
 
-                                          videoIndex: null,
-                                          audioIndex: null,
+                                          vVideoIndex: hasIndex ? videoIndex : null,
+                                          vAudioIndex: hasIndex ? audioIndex : null,
 
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vIndex: count
@@ -156,43 +146,20 @@ MainView {
                 PopupUtils.open(finishedPopup);
         }
 
-        onListModelDataLoaded: {
-            var jsonObject = JSON.parse(value);
-            for (var i = 0; i < jsonObject.length; i++) {
-//                console.log(jsonObject[i]);
-                downloadItemsModel.append({
-                                              vTitle: jsonObject[i].vTitle,
-                                              vThumbnail: jsonObject[i].vThumbnail,
-                                              vDuration: jsonObject[i].vDuration,
-                                              vID: jsonObject[i].vID,
-
-                                              vCodec: objectToList(jsonObject[i].vCodec),
-                                              vResolutions: objectToList(jsonObject[i].vResolutions),
-                                              vVideoExts: objectToList(jsonObject[i].vVideoExts),
-                                              vVideoFormats: objectToList(jsonObject[i].vVideoFormats),
-                                              vVideoProgress: objectToList(jsonObject[i].vVideoProgress),
-
-                                              aCodec: objectToList(jsonObject[i].aCodec),
-                                              vAudioExts: objectToList(jsonObject[i].vAudioExts),
-                                              vAudioFormats: objectToList(jsonObject[i].vAudioFormats),
-                                              vABR: objectToList(jsonObject[i].vABR),
-                                              vAudioProgress: objectToList(jsonObject[i].vAudioProgress),
-                                              vAudioSizes: objectToList(jsonObject[i].vAudioSizes),
-
-                                              vLangs: objectToList(jsonObject[i].vLangs),
-                                              vLangIds: objectToList(jsonObject[i].vLangIds),
-
-                                              vSizeModel: objectToList(jsonObject[i].vSizeModel),
-                                              vIndex: objectToList(jsonObject[i].vIndex)
-                                          })
-            }
-        }
         onDownloadProgress: {
             downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
         }
 
         onInvalidPlaylistUrl: {
             PopupUtils.open(invalidPlayListURLWarning);
+        }
+    }
+
+    Connections {
+        target: Qt.application
+        onAboutToQuit: {
+            console.log("Quiting " + root.applicationName)
+            listModelToString()
         }
     }
 
@@ -242,11 +209,14 @@ MainView {
         }
 
         Component.onCompleted: {
+            if (downloadItemsModel.count == 0)
+                toggleBlankPage()
             width = searchBarLayout.implicitWidth + 2 * margin
             height = searchBarLayout.implicitHeight + 2 * margin
-            var isLoaded = downloadManager.loadListModelData();
-            if (isLoaded) toggleBlankPage();
-            console.log("sizes: " + downloadManager.mediaFormats.sizes)
+            var isLoaded = downloadManager.loadListModelData()
+
+            if (!isLoaded)
+                toggleBlankPage()
         }
 
         Component.onDestruction: {
@@ -297,10 +267,7 @@ MainView {
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: {
-                                urlHandler(urlContainer.text, donwloadType.index);
-                                listModelToString();
-                            }
+                            onClicked: urlHandler(urlContainer.text, donwloadType.index)
                         }
                     }
                 }
@@ -353,6 +320,8 @@ MainView {
                             videoExts: vVideoExts
                             videoFormats: vVideoFormats
                             videoProgress: vVideoProgress
+                            videoIndex: vVideoIndex
+                            audioIndex: vAudioIndex
 
 //                            langs: vLangs
 //                            langIds: vLangIds
