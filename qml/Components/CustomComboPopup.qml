@@ -22,13 +22,13 @@ import Lomiri.Components.Popups 1.3
 Button {
     id: dropdown
 
-    property var    dropdownModel: null
-    property var    dropdownModel2: null
-    property var    dropdownModel3: null
-    property bool   multipleModel: false
+    property var    dropdownModel   : null
+    property var    dropdownModel2  : null
+    property var    dropdownModel3  : null
+    property bool   multipleModel   : false
     property string heading
     property int    index
-    property bool   defaultValue: false
+    property bool   defaultValue    : false
 
     color: theme.palette.normal.background
     text: defaultValue ? dropdownModel[0] : heading

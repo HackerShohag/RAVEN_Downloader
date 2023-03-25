@@ -31,15 +31,17 @@ MainView {
     applicationName: 'raven.downloader.shohag'
     automaticOrientation: true
 
+    OrientationHelper.orientationAngle: 90
+
     width: units.gu(100)
     height: units.gu(100)
 
-    property int    margin: units.gu(1)
+    property int    margin          : units.gu(1)
     property string playListTitle
 
     property string entry
     property bool   isPlaylist
-    property int    count: 0
+    property int    count           : 0
 
     theme: ThemeSettings {
         id: appTheme
@@ -50,17 +52,17 @@ MainView {
         id: generalSettings
         objectName: "GeneralSettings"
 
-        property alias  width: root.width
-        property alias  height: root.height
+        property alias  width                   : root.width
+        property alias  height                  : root.height
 
-        property alias  theme: appTheme.name
+        property alias  theme                   : appTheme.name
 
-        property bool   setDownloadLocation: false
-        property string customDownloadLocation: null
-        property bool   downloadSubtitle: false
-        property bool   downloadCaption: false
-        property bool   embeddedSubtitle: false
-        property bool   autoDownload: false
+        property bool   setDownloadLocation     : false
+        property string customDownloadLocation  : null
+        property bool   downloadSubtitle        : false
+        property bool   downloadCaption         : false
+        property bool   embeddedSubtitle        : false
+        property bool   autoDownload            : false
     }
 
     function listModelToString(){
@@ -102,10 +104,6 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
-//            console.log("formatsUpdated(): acodec: " + downloadManager.mediaFormats.acodeces)
-//            console.log("formatsUpdated(): audio_ids: " + downloadManager.mediaFormats.audioFormatIds)
-//            console.log("formatsUpdated(): languages: " + downloadManager.mediaFormats.languages)
-            console.log("hasIndex: " + hasIndex +" audioIndex: " + audioIndex +" videoIndex: " + videoIndex +" videoProgress: " + videoProgress)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,

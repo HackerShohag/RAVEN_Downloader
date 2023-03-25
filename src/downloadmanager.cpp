@@ -98,8 +98,6 @@ bool DownloadManager::loadListModelData()
         this->m_mediaFormats->setDuration(jsonObject["vDuration"].toString());
         this->m_mediaFormats->setUrl(jsonObject["vID"].toString());
 
-        qDebug() << "DownloadManager::setFormats(QJsonObject): Title:" << jsonObject["vTitle"].toString();
-
         for (QJsonArray::iterator value = jsonObject["aCodec"].toArray().begin(); value < jsonObject["aCodec"].toArray().end(); ++value) {
             this->m_mediaFormats->setAcodecItem(value->toString());
         }
