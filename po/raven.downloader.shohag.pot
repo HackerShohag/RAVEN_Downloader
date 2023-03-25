@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-25 00:52+0600\n"
+"POT-Creation-Date: 2023-03-25 17:36+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/Main.qml:372
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/Main.qml:372
 msgid "Swipe for Settings"
 msgstr ""
 

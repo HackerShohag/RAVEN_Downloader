@@ -31,8 +31,6 @@ MainView {
     applicationName: 'raven.downloader.shohag'
     automaticOrientation: true
 
-    OrientationHelper.orientationAngle: 90
-
     width: units.gu(100)
     height: units.gu(100)
 
@@ -373,8 +371,6 @@ MainView {
             height: root.height
             hint.text: i18n.tr("Swipe for Settings")
             hint.visible: enabled
-
-            settingsObject: generalSettings
         }
     }
 }
