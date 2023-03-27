@@ -151,4 +151,4 @@ msgstr "Alle geschiedenis wissen"
 
 #: raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
-msgstr "RAVEN-downloader"
+msgstr "RAVEN Downloader"
