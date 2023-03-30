@@ -8,9 +8,9 @@ A simple youtube video downloader that can download entire playlist. This is Ubu
         python3-pip
         ffmpeg
         yt-dlp (alternative of youtube-dl)
-For Xenial Releases, you need to download the `yt-dlp` binary release from [yt-dlp official repo](https://github.com/yt-dlp/yt-dlp/releases) named `yt-dlp_linux` and add it to binary path.
 
-For as a local path, copy the binary to `~/.local/bin/` and add `export PATH="$PATH:$HOME/.local/bin"` to `~/.bashrc` file.
+
+For Xenial Releases, you need to download the `yt-dlp` binary release from [yt-dlp official repo](https://github.com/yt-dlp/yt-dlp/releases) named `yt-dlp_linux` (`yt-dlp_linux_aarch64` for arm64 and `yt-dlp_linux_armv7l` for arm) and add it to binary path.
 
 ### Needs testing:
         Theme Management (might have some bugs)
