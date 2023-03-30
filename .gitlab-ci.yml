@@ -68,7 +68,7 @@ xenial_amd64_click:
 
 ###############################################################################
 
-xenial_armhf_click:
+focal_armhf_click:
 
   extends: '.build_click'
 
@@ -78,7 +78,7 @@ xenial_armhf_click:
 
     paths: *paths_armhf
 
-xenial_arm64_click:
+focal_arm64_click:
 
   extends: '.build_click'
 
@@ -88,7 +88,7 @@ xenial_arm64_click:
 
     paths: *paths_arm64
 
-xenial_amd64_click:
+focal_amd64_click:
 
   extends: '.build_click'
 
