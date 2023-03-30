@@ -6,9 +6,15 @@
   # `stage`
   stage_build: &stage_build 'build'
   # `image`
-  image_clickable_amd64: &image_clickable_amd64 'clickable/ci-16.04-amd64'
-  image_clickable_arm64: &image_clickable_arm64 'clickable/ci-16.04-arm64'
-  image_clickable_armhf: &image_clickable_armhf 'clickable/ci-16.04-armhf'
+  image_clickable_amd64_xenial: &image_clickable_amd64_xenial 'clickable/ci-16.04-amd64'
+  image_clickable_arm64_xenial: &image_clickable_arm64_xenial 'clickable/ci-16.04-arm64'
+  image_clickable_armhf_xenial: &image_clickable_armhf_xenial 'clickable/ci-16.04-armhf'
+  
+  image_clickable_amd64_focal: &image_clickable_amd64_focal 'clickable/ci-20.04-amd64'
+
+  image_clickable_arm64_focal: &image_clickable_arm64_focal 'clickable/ci-20.04-arm64'
+
+  image_clickable_armhf_focal: &image_clickable_armhf_focal 'clickable/ci-20.04-armhf'
   # `artifacts.paths`
   paths_amd64: &paths_amd64
     - 'build/x86_64-linux-gnu/app/*.click'
@@ -35,22 +41,59 @@ stages:
     expire_in: '1 week'
 
 ###############################################################################
-# `build` stage: build clicks for `armhf`, `arm64` & `amd64`
+# `build` stage: build clicks for `armhf`, `arm64` & `amd64` for xenial
 ###############################################################################
 xenial_armhf_click:
   extends: '.build_click'
-  image: *image_clickable_armhf
+  image: *image_clickable_armhf_xenial
   artifacts:
     paths: *paths_armhf
 
 xenial_arm64_click:
   extends: '.build_click'
-  image: *image_clickable_arm64
+  image: *image_clickable_arm64_xenial
   artifacts:
     paths: *paths_arm64
 
 xenial_amd64_click:
   extends: '.build_click'
-  image: *image_clickable_amd64
+  image: *image_clickable_amd64_xenial
   artifacts:
+    paths: *paths_amd64
+
+
+###############################################################################
+
+# `build` stage: build clicks for `armhf`, `arm64` & `amd64` for focal
+
+###############################################################################
+
+xenial_armhf_click:
+
+  extends: '.build_click'
+
+  image: *image_clickable_armhf_focal
+
+  artifacts:
+
+    paths: *paths_armhf
+
+xenial_arm64_click:
+
+  extends: '.build_click'
+
+  image: *image_clickable_arm64_focal
+
+  artifacts:
+
+    paths: *paths_arm64
+
+xenial_amd64_click:
+
+  extends: '.build_click'
+
+  image: *image_clickable_amd64_focal
+
+  artifacts:
+
     paths: *paths_amd64
