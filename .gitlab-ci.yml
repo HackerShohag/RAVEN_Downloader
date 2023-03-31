@@ -1,56 +1,63 @@
----
-###############################################################################
-# Define all YAML node anchors
-###############################################################################
-.node_anchors:
-  # `stage`
-  stage_build: &stage_build 'build'
-  # `image`
-  image_clickable_amd64: &image_clickable_amd64 'clickable/ci-16.04-amd64'
-  image_clickable_arm64: &image_clickable_arm64 'clickable/ci-16.04-arm64'
-  image_clickable_armhf: &image_clickable_armhf 'clickable/ci-16.04-armhf'
-  # `artifacts.paths`
-  paths_amd64: &paths_amd64
-    - 'build/x86_64-linux-gnu/app/*.click'
-  paths_arm64: &paths_arm64
-    - 'build/aarch64-linux-gnu/app/*.click'
-  paths_armhf: &paths_armhf
-    - 'build/arm-linux-gnueabihf/app/*.click'
-
-###############################################################################
-# Define stages
-###############################################################################
 stages:
-  - *stage_build
+    - build
+    - publish
 
-###############################################################################
-# Define `build` template
-###############################################################################
-.build_click:
-  stage: *stage_build
-  script:
-    - 'clickable build'
-    - 'clickable review'
-  artifacts:
-    expire_in: '1 week'
+variables:
+    GIT_SUBMODULE_STRATEGY: 'recursive'
+    DOCKER_DRIVER: overlay2
 
-###############################################################################
-# `build` stage: build clicks for `armhf`, `arm64` & `amd64`
-###############################################################################
-xenial_armhf_click:
-  extends: '.build_click'
-  image: *image_clickable_armhf
-  artifacts:
-    paths: *paths_armhf
+.armhf: &armhf
+    variables:
+        ARCH: "armhf"
+        ARCH_TRIPLET: "arm-linux-gnueabihf"
 
-xenial_arm64_click:
-  extends: '.build_click'
-  image: *image_clickable_arm64
-  artifacts:
-    paths: *paths_arm64
+.arm64: &arm64
+    variables:
+        ARCH: "arm64"
+        ARCH_TRIPLET: "aarch64-linux-gnu"
 
-xenial_amd64_click:
-  extends: '.build_click'
-  image: *image_clickable_amd64
-  artifacts:
-    paths: *paths_amd64
+.amd64: &amd64
+    variables:
+        ARCH: "amd64"
+        ARCH_TRIPLET: "x86_64-linux-gnu"
+
+.build:
+    image: "clickable/ci-20.04-$ARCH"
+    stage: build
+    script: 'clickable build --clean --all --arch $ARCH --accept-review-errors'
+    artifacts:
+        paths:
+            - "build/$ARCH_TRIPLET/app"
+        expire_in: 1 week
+
+build-armhf:
+    <<: *armhf
+    extends: .build
+
+build-arm64:
+    <<: *arm64
+    extends: .build
+
+build-amd64:
+    <<: *amd64
+    extends: .build
+
+publish:
+    stage: publish
+    image: "clickable/ci-20.04-armhf"
+    rules:
+        - if: $CI_COMMIT_TAG
+    script:
+        - 'clickable publish "$CI_COMMIT_MESSAGE"'
+        - 'clickable publish --arch arm64'
+        - 'clickable publish --arch amd64'
+    dependencies:
+        - build-armhf
+        - build-arm64
+        - build-amd64
+    artifacts:
+        paths:
+            - build/arm-linux-gnueabihf/app/*.click
+            - build/aarch64-linux-gnu/app/*.click
+            - build/x86_64-linux-gnu/app/*.click
+        expire_in: 30 days
