@@ -1,6 +1,6 @@
 {
     "name": "raven.downloader.shohag",
-    "description": "A simple youtube batch downloader",
+    "description": "A Simple YouTube Batch Downloader",
     "architecture": "@CLICK_ARCH@",
     "title": "RAVEN Downloader",
     "hooks": {

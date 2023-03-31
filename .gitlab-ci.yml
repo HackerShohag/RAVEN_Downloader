@@ -27,7 +27,7 @@ variables:
     script: 'clickable build --clean --all --arch $ARCH --accept-review-errors'
     artifacts:
         paths:
-            - "build/$ARCH_TRIPLET/app"
+            - "build/$ARCH_TRIPLET/app/*.click"
         expire_in: 1 week
 
 build-armhf:

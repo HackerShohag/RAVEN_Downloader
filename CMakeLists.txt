@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 1.2.0 LANGUAGES CXX)
+project(raven.downloader VERSION 1.2.1 LANGUAGES CXX)
 
 add_subdirectory(src)
 
