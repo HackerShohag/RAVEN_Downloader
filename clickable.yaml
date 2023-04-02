@@ -2,8 +2,17 @@ framework: ubuntu-sdk-20.04
 clickable_minimum_required: "7"
 builder: cmake
 kill: raven.downloader
+
+dependencies_host:
+    - curl
+
 dependencies_target:
-- python3-pip youtube-dl ffmpeg
-image_setup:
-  run:
-  - pip3 install yt-dlp
+    - ffmpeg
+
+postmake:
+    - cd $SRC_DIR/lib/x86_64-linux-gnu/bin && { curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux --output yt-dlp_linux ; cd -; }
+    - cd $SRC_DIR/lib/aarch64-linux-gnu/bin && { curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux_aarch64 --output yt-dlp_linux ; cd -; }
+    - cd $SRC_DIR/lib/arm-linux-gnueabihf/bin && { curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux_armv7l --output yt-dlp_linux ; cd -; }
+
+install_bin:
+    - lib/${ARCH_TRIPLET}/bin/yt-dlp_linux

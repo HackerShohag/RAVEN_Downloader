@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 1.2.1 LANGUAGES CXX)
+project(raven.downloader VERSION 2.0.2 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -30,6 +30,7 @@ if(DEFINED ENV{SDK_FRAMEWORK})
 else()
     set(CLICK_FRAMEWORK "ubuntu-sdk-20.04")
 endif()
+
 
 # This figures out the target architecture for use in the manifest file.
 if(DEFINED ENV{ARCH})
@@ -115,3 +116,17 @@ file(GLOB_RECURSE PROJECT_SRC_FILES
 )
 
 add_custom_target(${PROJECT_NAME}_FILES ALL SOURCES ${PROJECT_SRC_FILES})
+
+# sets YTDL_ARCH var depending on the architecture
+
+if(DEFINED ENV{YTDL_ARCH})
+    set(YTDL_ARCH "_$ENV{YTDL_ARCH}")
+    execute_process(
+        COMMAND echo yt-dl arch is ${YTDL_ARCH}
+    )
+else()
+    set(YTDL_ARCH "")
+    execute_process(
+        COMMAND echo yt-dl arch is ${YTDL_ARCH}
+    )
+endif()
