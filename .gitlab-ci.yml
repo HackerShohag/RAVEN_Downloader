@@ -48,9 +48,9 @@ publish:
     rules:
         - if: $CI_COMMIT_TAG
     script:
-        - 'clickable publish "$CI_COMMIT_MESSAGE"'
-        - 'clickable publish --arch arm64'
-        - 'clickable publish --arch amd64'
+        - 'clickable publish "$CI_COMMIT_MESSAGE" --apikey OPENSTORE_API_KEY'
+        - 'clickable publish --arch arm64 --apikey OPENSTORE_API_KEY'
+        - 'clickable publish --arch amd64 --apikey OPENSTORE_API_KEY'
     dependencies:
         - build-armhf
         - build-arm64
