@@ -19,7 +19,7 @@
 YoutubeDL::YoutubeDL()
 {
     this->ytdl = new QProcess();
-    this->program = "yt-dlp"; // "youtube-dl";
+    this->program = "yt-dlp";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
@@ -40,6 +40,7 @@ void YoutubeDL::fetchSingleFormats(QString url)
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     this->ytdl->start(this->program, this->arguments);
     this->resetArguments();
+//    emit qProcessError(this->ytdl->error());
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)

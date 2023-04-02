@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 1.2.1 LANGUAGES CXX)
+project(raven.downloader VERSION 2.0.2 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -30,6 +30,7 @@ if(DEFINED ENV{SDK_FRAMEWORK})
 else()
     set(CLICK_FRAMEWORK "ubuntu-sdk-20.04")
 endif()
+
 
 # This figures out the target architecture for use in the manifest file.
 if(DEFINED ENV{ARCH})
@@ -65,7 +66,7 @@ message(STATUS "Build version is: ${BUILD_VERSION}")
 configure_file(manifest.json.in ${CMAKE_CURRENT_BINARY_DIR}/manifest.json)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${PROJECT_NAME}.apparmor DESTINATION ${DATA_DIR})
-install(FILES assets/raven_downloader_logo_v3.png DESTINATION assets)
+install(FILES assets/raven_downloader_logo_v3.svg DESTINATION assets)
 
 qt5_add_resources(QT_RESOURCES qml/qml.qrc)
 qt5_add_resources(QT_RESOURCES assets/assets.qrc)
@@ -115,3 +116,7 @@ file(GLOB_RECURSE PROJECT_SRC_FILES
 )
 
 add_custom_target(${PROJECT_NAME}_FILES ALL SOURCES ${PROJECT_SRC_FILES})
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
