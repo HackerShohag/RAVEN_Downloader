@@ -3,5 +3,12 @@ clickable_minimum_required: "7"
 builder: cmake
 kill: raven.downloader
 
+dependencies_host:
+    - curl
+
 dependencies_target:
     - libpython-stdlib python-minimal python2.7 python2.7-minimal ffmpeg
+
+postbuild:
+    - mkdir $INSTALL_DIR/bin
+    - curl -L https://github.com/ytdl-patched/youtube-dl/releases/latest/download/youtube-dl -o $INSTALL_DIR/bin/yt-dlp_linux

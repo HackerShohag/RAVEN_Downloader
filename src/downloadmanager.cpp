@@ -24,6 +24,7 @@ DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
 {
     connect(this->ytdl, SIGNAL(updateQString(QString)), this, SLOT(checkJsonObject(QString)));
     connect(this->ytdl, SIGNAL(dataFetchFinished()), this, SLOT(finishedFetching()));
+    connect(this->ytdl, SIGNAL(qProcessError(QProcess::ProcessError)), this, SLOT(errorMessage(QProcess::ProcessError)));
 }
 
 DownloadManager::~DownloadManager()
@@ -59,6 +60,30 @@ void DownloadManager::downloadProgressSlot(QProcess *downloader, qint64 indexID)
     qDebug() << output;
     if (!(f[0].isEmpty()))
         emit downloadProgress(QString::number(qRound(f[0].replace("%","").toDouble())), indexID);
+}
+
+void DownloadManager::errorMessage(QProcess::ProcessError errorMessage)
+{
+    switch (errorMessage) {
+    case QProcess::FailedToStart:
+        emit generalMessage("Couldn't start yt-dlp Program.");
+        break;
+    case QProcess::Crashed:
+        emit generalMessage("yt-dlp crashed for some reason.");
+        break;
+    case QProcess::Timedout:
+        emit generalMessage("Timed Out for starting yt-dlp Program.");
+        break;
+    case QProcess::WriteError:
+        emit generalMessage("Couldn't Read yt-dlp Program.");
+        break;
+    case QProcess::ReadError:
+        emit generalMessage("Couldn't Write yt-dlp Program.");
+        break;
+    case QProcess::UnknownError:
+        emit generalMessage("UnknownError: Program not found.");
+        break;
+    }
 }
 
 MediaFormat *DownloadManager::getMediaFormats()
@@ -193,7 +218,7 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
     arguments << "-f" << data.value("format").toString() << url;
 
     downloader->setWorkingDirectory(this->downloadPath);
-    downloader->start("youtube-dl", arguments);
+    downloader->start("./bin/youtube-dl", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
     qDebug() << "Arguments:" << arguments;
 }

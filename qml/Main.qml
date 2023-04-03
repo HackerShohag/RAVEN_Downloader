@@ -142,13 +142,11 @@ MainView {
                 PopupUtils.open(finishedPopup);
         }
 
-        onDownloadProgress: {
-            downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
-        }
+        onDownloadProgress: downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
 
-        onInvalidPlaylistUrl: {
-            PopupUtils.open(invalidPlayListURLWarning);
-        }
+        onInvalidPlaylistUrl: PopupUtils.open(invalidPlayListURLWarning);
+
+        onGeneralMessage: PopupUtils.open(qProcessError, root, { text : message });
     }
 
     Connections {
@@ -156,6 +154,14 @@ MainView {
         onAboutToQuit: {
             console.log("Quiting " + root.applicationName)
             listModelToString()
+        }
+    }
+    
+    Component {
+        id: qProcessError
+        WarningDialog {
+            title: i18n.tr("Error Occurred!")
+            text: i18n.tr("An unknown error occured.")
         }
     }
 
@@ -205,19 +211,8 @@ MainView {
         }
 
         Component.onCompleted: {
-            if (downloadItemsModel.count == 0)
-                toggleBlankPage()
-            width = searchBarLayout.implicitWidth + 2 * margin
-            height = searchBarLayout.implicitHeight + 2 * margin
-            var isLoaded = downloadManager.loadListModelData()
-
-            if (!isLoaded)
-                toggleBlankPage()
-        }
-
-        Component.onDestruction: {
-            listModelToString();
-            console.log('Destruction');
+            toggleBlankPage();
+            downloadManager.loadListModelData()
         }
 
         ColumnLayout {

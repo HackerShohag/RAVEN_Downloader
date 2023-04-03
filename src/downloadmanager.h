@@ -50,6 +50,7 @@ public slots:
     void saveListModelData(QString value);
     bool loadListModelData();
     void downloadProgressSlot(QProcess *downloader, qint64 indexID);
+    void errorMessage(QProcess::ProcessError errorMessage);
 
 signals:
     void mediaFormatsChanged();
@@ -58,6 +59,7 @@ signals:
     void finished(QString playlistTitle, qint64 entries);
     void downloadProgress(QString value, qint64 indexID);
     void listModelDataLoaded();
+    void generalMessage(QString message);
 
 private:
     YoutubeDL *ytdl = new YoutubeDL();

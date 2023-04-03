@@ -19,7 +19,7 @@
 YoutubeDL::YoutubeDL()
 {
     this->ytdl = new QProcess();
-    this->program = "youtube-dl";
+    this->program = "./bin/youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
@@ -40,6 +40,30 @@ void YoutubeDL::fetchSingleFormats(QString url)
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     this->ytdl->start(this->program, this->arguments);
     this->resetArguments();
+
+    emit qProcessError(this->ytdl->error());
+    
+        switch (this->ytdl->error()) {
+    case QProcess::FailedToStart:
+        qDebug() << "QProcess Error:" << "Couldn't start yt-dlp Program.";
+        break;
+    case QProcess::Crashed:
+        qDebug() << "QProcess Error:" << "yt-dlp crashed for some reason.";
+        break;
+    case QProcess::Timedout:
+        qDebug() << "QProcess Error:" << "Timed Out for starting yt-dlp Program.";
+        break;
+    case QProcess::WriteError:
+        qDebug() << "QProcess Error:" << "Couldn't Read yt-dlp Program.";
+        break;
+    case QProcess::ReadError:
+        qDebug() << "QProcess Error:" << "Couldn't Write yt-dlp Program.";
+        break;
+    case QProcess::UnknownError:
+        qDebug() << "QProcess Error:" << "UnknownError: Program not found.";
+        break;
+    }
+    
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)
