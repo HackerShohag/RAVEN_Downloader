@@ -6,8 +6,5 @@ kill: raven.downloader
 dependencies_ppa:
     - ppa:tomtomtom/yt-dlp
 
-dependencies_host:
-    - curl
-
 dependencies_target:
     - yt-dlp ffmpeg

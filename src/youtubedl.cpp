@@ -40,7 +40,7 @@ void YoutubeDL::fetchSingleFormats(QString url)
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     this->ytdl->start(this->program, this->arguments);
     this->resetArguments();
-//    emit qProcessError(this->ytdl->error());
+    emit qProcessError(this->ytdl->error());
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)

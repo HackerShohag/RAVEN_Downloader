@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 2.1.0 LANGUAGES CXX)
+project(raven.downloader VERSION 2.2.1 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -66,7 +66,7 @@ message(STATUS "Build version is: ${BUILD_VERSION}")
 configure_file(manifest.json.in ${CMAKE_CURRENT_BINARY_DIR}/manifest.json)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${PROJECT_NAME}.apparmor DESTINATION ${DATA_DIR})
-install(FILES assets/raven_downloader_logo_v3.svg DESTINATION assets)
+install(FILES assets/raven_downloader_logo_v3.png DESTINATION assets)
 
 qt5_add_resources(QT_RESOURCES qml/qml.qrc)
 qt5_add_resources(QT_RESOURCES assets/assets.qrc)

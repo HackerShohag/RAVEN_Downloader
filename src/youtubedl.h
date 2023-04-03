@@ -44,7 +44,7 @@ public slots:
 signals:
     void updateQString(QString value);
     void dataFetchFinished();
-//    void qProcessError(QProcess::ProcessError error);
+    void qProcessError(QProcess::ProcessError error);
 
 private:
     QStringList arguments;

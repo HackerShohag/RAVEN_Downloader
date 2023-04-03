@@ -51,7 +51,7 @@ public slots:
     bool loadListModelData();
     void downloadProgressSlot(QProcess *downloader, qint64 indexID);
 
-//    void errorMessage(QProcess::ProcessError errorMessage);
+    void errorMessage(QProcess::ProcessError errorMessage);
 
 signals:
     void mediaFormatsChanged();
