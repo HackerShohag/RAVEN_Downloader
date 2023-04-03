@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 1.2.1 LANGUAGES CXX)
+project(raven.downloader VERSION 1.2.2 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -28,8 +28,9 @@ set(DESKTOP_FILE_NAME ${PROJECT_NAME}.desktop)
 if(DEFINED ENV{SDK_FRAMEWORK})
     set(CLICK_FRAMEWORK "$ENV{SDK_FRAMEWORK}")
 else()
-    set(CLICK_FRAMEWORK "ubuntu-sdk-20.04")
+    set(CLICK_FRAMEWORK "ubuntu-sdk-16.04.5")
 endif()
+
 
 # This figures out the target architecture for use in the manifest file.
 if(DEFINED ENV{ARCH})

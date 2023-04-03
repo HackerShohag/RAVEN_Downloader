@@ -18,8 +18,8 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.2
 import QtGraphicalEffects 1.0
-import Lomiri.Components 1.3
-import Lomiri.Components.Popups 1.3
+import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 
 LayoutsCustom {
     id: gridBox
@@ -189,7 +189,7 @@ LayoutsCustom {
                 Layout.preferredWidth: units.gu(10)
                 Layout.minimumWidth: units.gu(10)
                 Layout.fillWidth: true
-                color: LomiriColors.lightGrey
+                color: UbuntuColors.lightGrey
                 text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MiB" : i18n.tr("unknown")
                 enabled: sizeModel ? true : false
             }

@@ -15,14 +15,14 @@
  */
 
 import QtQuick 2.7
-import Lomiri.Components 1.3
+import Ubuntu.Components 1.3
 
-LomiriShape {
+UbuntuShape {
     signal clicked
     property string colorBut    : theme.palette.normal.base
     property string colorButText: theme.palette.selected.baseText
     property string radiusBorder:  "medium"
-    property var    aspectBorder:  LomiriShape.DropShadow
+    property var    aspectBorder:  UbuntuShape.DropShadow
     property alias  iconName    : icon.name
     property bool   iconOffset  : false
     property alias  text        : label.text

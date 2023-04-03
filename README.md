@@ -4,20 +4,16 @@
 A simple youtube video downloader that can download entire playlist. This is Ubuntu Touch application based on qt framework.
 
 ### Requirements:
-        youtube-dl (currently not using due to bug)
-        python3-pip
         ffmpeg
-        yt-dlp (alternative of youtube-dl)
+        yt-dlp
 
+It uses the the `yt-dlp` binary release from [yt-dlp official repo](https://github.com/yt-dlp/yt-dlp/releases) named `yt-dlp_linux` (`yt-dlp_linux_aarch64` for arm64 and `yt-dlp_linux_armv7l` for arm).
 
-For Xenial Releases, you need to download the `yt-dlp` binary release from [yt-dlp official repo](https://github.com/yt-dlp/yt-dlp/releases) named `yt-dlp_linux` (`yt-dlp_linux_aarch64` for arm64 and `yt-dlp_linux_armv7l` for arm) and add it to binary path.
-
-For as a local path, copy the binary to `~/.local/bin/` and add `export PATH="$PATH:$HOME/.local/bin"` to `~/.bashrc` file.
 ### Needs testing:
         Theme Management (might have some bugs)
-        Download Location (default is appData path (~/.local/share/raven.downloader.shohag))
+        Download Location (default is appData path: ~/.local/share/raven.downloader.shohag)
 
-N.B.: You may need to install some dependency manually. For example, yt-dlp pip package (`pip3 install yt-dlp`). You can provide me testing data on telegram (t.me/HackerShohag).
+N.B.: Testing data or reporting bug would be appreciated. 
 
 ## Screenshots
 Download Page             |  Settings Page

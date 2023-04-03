@@ -19,7 +19,7 @@
 YoutubeDL::YoutubeDL()
 {
     this->ytdl = new QProcess();
-    this->program = "yt-dlp"; // "youtube-dl";
+    this->program = "youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));

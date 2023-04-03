@@ -72,7 +72,7 @@ GroupBox {
 
         FastBlur {
             anchors.fill: parent
-            visible: theme.name == "Lomiri.Components.Themes.Ambiance" ? true : false
+            visible: theme.name == "Ubuntu.Components.Themes.Ambiance" ? true : false
             source: blurryShadowRect
             radius: units.gu(2)
         }
