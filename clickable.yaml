@@ -11,4 +11,4 @@ dependencies_target:
 
 postbuild:
     - mkdir $INSTALL_DIR/bin
-    - curl -L https://github.com/ytdl-patched/youtube-dl/releases/latest/download/youtube-dl -o $INSTALL_DIR/bin/yt-dlp_linux
+    - curl -L https://github.com/ytdl-patched/youtube-dl/releases/latest/download/youtube-dl -o $INSTALL_DIR/bin/youtube-dl

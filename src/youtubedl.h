@@ -40,6 +40,7 @@ public:
 public slots:
     void readyReadStandardOutput();
     void finishedSlot(int exitCode, QProcess::ExitStatus exitStatus);
+    void emitErrorMessage(QProcess::ProcessError error);
 
 signals:
     void updateQString(QString value);

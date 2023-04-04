@@ -19,12 +19,13 @@
 YoutubeDL::YoutubeDL()
 {
     this->ytdl = new QProcess();
-    this->program = "./bin/youtube-dl";
+    this->program = "youtube-dl";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
-    connect(this->ytdl,SIGNAL(readyRead()),this,SLOT(readyReadStandardOutput()));
-    connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)),this,SLOT(finishedSlot(int, QProcess::ExitStatus)));
+    connect(this->ytdl,SIGNAL(readyRead()), this, SLOT(readyReadStandardOutput()));
+    connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSlot(int, QProcess::ExitStatus)));
+    connect(this->ytdl, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(emitErrorMessage(QProcess::ProcessError)));
 }
 
 YoutubeDL::~YoutubeDL()
@@ -41,29 +42,7 @@ void YoutubeDL::fetchSingleFormats(QString url)
     this->ytdl->start(this->program, this->arguments);
     this->resetArguments();
 
-    emit qProcessError(this->ytdl->error());
-    
-        switch (this->ytdl->error()) {
-    case QProcess::FailedToStart:
-        qDebug() << "QProcess Error:" << "Couldn't start yt-dlp Program.";
-        break;
-    case QProcess::Crashed:
-        qDebug() << "QProcess Error:" << "yt-dlp crashed for some reason.";
-        break;
-    case QProcess::Timedout:
-        qDebug() << "QProcess Error:" << "Timed Out for starting yt-dlp Program.";
-        break;
-    case QProcess::WriteError:
-        qDebug() << "QProcess Error:" << "Couldn't Read yt-dlp Program.";
-        break;
-    case QProcess::ReadError:
-        qDebug() << "QProcess Error:" << "Couldn't Write yt-dlp Program.";
-        break;
-    case QProcess::UnknownError:
-        qDebug() << "QProcess Error:" << "UnknownError: Program not found.";
-        break;
-    }
-    
+    qDebug() << "Directory:" << this->ytdl->workingDirectory();
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)
@@ -138,6 +117,11 @@ void YoutubeDL::finishedSlot(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qDebug() << "exitCode:" << exitCode << "exitStatus:" << exitStatus;
     emit dataFetchFinished();
+}
+
+void YoutubeDL::emitErrorMessage(QProcess::ProcessError error)
+{
+    emit qProcessError(error);
 }
 
 void YoutubeDL::resetArguments()
