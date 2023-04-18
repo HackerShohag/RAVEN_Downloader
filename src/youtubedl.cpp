@@ -23,8 +23,9 @@ YoutubeDL::YoutubeDL()
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
-    connect(this->ytdl,SIGNAL(readyRead()),this,SLOT(readyReadStandardOutput()));
-    connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)),this,SLOT(finishedSlot(int, QProcess::ExitStatus)));
+    connect(this->ytdl,SIGNAL(readyRead()), this, SLOT(readyReadStandardOutput()));
+    connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSlot(int, QProcess::ExitStatus)));
+    connect(this->ytdl, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(emitErrorMessage(QProcess::ProcessError)));
 }
 
 YoutubeDL::~YoutubeDL()
@@ -40,7 +41,6 @@ void YoutubeDL::fetchSingleFormats(QString url)
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     this->ytdl->start(this->program, this->arguments);
     this->resetArguments();
-    emit qProcessError(this->ytdl->error());
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)
@@ -115,6 +115,11 @@ void YoutubeDL::finishedSlot(int exitCode, QProcess::ExitStatus exitStatus)
 {
     qDebug() << "exitCode:" << exitCode << "exitStatus:" << exitStatus;
     emit dataFetchFinished();
+}
+
+void YoutubeDL::emitErrorMessage(QProcess::ProcessError error)
+{
+    emit qProcessError(error);
 }
 
 void YoutubeDL::resetArguments()

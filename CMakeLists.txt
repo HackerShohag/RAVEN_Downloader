@@ -76,7 +76,6 @@ add_executable(${PROJECT_NAME} main.cpp ${QT_RESOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS_RELEASE -s)
 target_link_libraries(${PROJECT_NAME} DownloadManager YoutubeDL Qt5::Gui Qt5::Qml Qt5::Quick Qt5::QuickControls2)
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE DownloadManager YoutubeDL)
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
 
 # Translations

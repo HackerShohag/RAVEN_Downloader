@@ -64,24 +64,31 @@ void DownloadManager::downloadProgressSlot(QProcess *downloader, qint64 indexID)
 
 void DownloadManager::errorMessage(QProcess::ProcessError errorMessage)
 {
+    qDebug() << Q_FUNC_INFO;
     switch (errorMessage) {
     case QProcess::FailedToStart:
-        emit generalMessage("Couldn't start yt-dlp Program.");
+        emit generalMessage("Couldn't start youtube-dl Program.");
+        qDebug() << "QProcess Error: Couldn't start youtube-dl Program.";
         break;
-    case    QProcess::Crashed:
-        emit generalMessage("yt-dlp crashed for some reason.");
+    case QProcess::Crashed:
+        emit generalMessage("youtube-dl crashed for some reason.");
+        qDebug() << "QProcess Error: youtube-dl crashed for some reason.";
         break;
-    case    QProcess::Timedout:
-        emit generalMessage("Timed Out for starting yt-dlp Program.");
+    case QProcess::Timedout:
+        emit generalMessage("Timed Out for starting youtube-dl Program.");
+        qDebug() << "QProcess Error: Timed Out for starting youtube-dl Program.";
         break;
-    case    QProcess::WriteError:
-        emit generalMessage("Couldn't Read yt-dlp Program.");
+    case QProcess::WriteError:
+        emit generalMessage("Couldn't Read youtube-dl Program.");
+        qDebug() << "QProcess Error: Couldn't Read youtube-dl Program.";
         break;
-    case    QProcess::ReadError:
-        emit generalMessage("Couldn't Write yt-dlp Program.");
+    case QProcess::ReadError:
+        emit generalMessage("Couldn't Write youtube-dl Program.");
+        qDebug() << "QProcess Error: Couldn't Write youtube-dl Program.";
         break;
-    case    QProcess::UnknownError:
+    case QProcess::UnknownError:
         emit generalMessage("UnknownError: Program not found.");
+        qDebug() << "QProcess Error: UnknownError: Program not found.";
         break;
     }
 }
