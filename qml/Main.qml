@@ -102,6 +102,7 @@ MainView {
         onFormatsUpdated: {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
+            console.log("title: " + downloadManager.mediaFormats.title)
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -113,7 +114,8 @@ MainView {
                                           vResolutions: downloadManager.mediaFormats.notes,
                                           vVideoExts: downloadManager.mediaFormats.videoExtensions,
                                           vVideoFormats: downloadManager.mediaFormats.videoFormatIds,
-                                          vVideoProgress: hasIndex ? videoProgress : 0,
+//                                          vVideoProgress: hasIndex ? videoProgress : 0,
+                                          vVideoProgress: 0,
 
                                           aCodec: downloadManager.mediaFormats.acodeces,
                                           vAudioExts: downloadManager.mediaFormats.audioExtensions,
@@ -124,8 +126,8 @@ MainView {
 //                                          vLangs: downloadManager.mediaFormats.languages,
 //                                          vLangIds: downloadManager.mediaFormats.languageIds,
 
-                                          vVideoIndex: hasIndex ? videoIndex : null,
-                                          vAudioIndex: hasIndex ? audioIndex : null,
+//                                          vVideoIndex: hasIndex ? videoIndex : null,
+//                                          vAudioIndex: hasIndex ? audioIndex : null,
 
                                           vSizeModel: downloadManager.mediaFormats.filesizes,
                                           vIndex: count

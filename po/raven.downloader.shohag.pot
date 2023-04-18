@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-04 12:33+0000\n"
+"POT-Creation-Date: 2023-04-17 06:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/Main.qml:367
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/Main.qml:369
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -53,63 +53,63 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: ../qml/Main.qml:163
+#: ../qml/Main.qml:165
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/Main.qml:164
+#: ../qml/Main.qml:166
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/Main.qml:171
+#: ../qml/Main.qml:173
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/Main.qml:172
+#: ../qml/Main.qml:174
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/Main.qml:179
+#: ../qml/Main.qml:181
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Main.qml:180
+#: ../qml/Main.qml:182
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/Main.qml:187
+#: ../qml/Main.qml:189
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/Main.qml:188
+#: ../qml/Main.qml:190
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/Main.qml:248
+#: ../qml/Main.qml:250
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/Main.qml:253
+#: ../qml/Main.qml:255
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/Main.qml:255
+#: ../qml/Main.qml:257
 msgid "playlist"
 msgstr ""
 
-#: ../qml/Main.qml:255
+#: ../qml/Main.qml:257
 msgid "single video"
 msgstr ""
 
-#: ../qml/Main.qml:260
+#: ../qml/Main.qml:262
 msgid "Submit"
 msgstr ""
 
-#: ../qml/Main.qml:278
+#: ../qml/Main.qml:280
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/Main.qml:354
+#: ../qml/Main.qml:356
 msgid "No Downloads!"
 msgstr ""
 
