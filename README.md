@@ -1,4 +1,4 @@
-# RAVEN Downloader
+# RAVEN Downloader ![GitHub Workflow Status](https://github.com/HackerShohag/RAVEN_Downloader/actions/workflows/gitlab-mirror.yml/badge.svg?branch=focal&event=push)
 [![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
 
 A simple youtube video downloader that can download entire playlist. This is Ubuntu Touch application based on qt framework.
