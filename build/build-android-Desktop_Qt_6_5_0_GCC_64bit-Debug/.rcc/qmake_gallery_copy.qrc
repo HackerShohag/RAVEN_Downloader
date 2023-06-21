@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/gallery">
+    <file alias="qmldir">/home/shohag/Projects/android/build/build-android-Desktop_Qt_6_5_0_GCC_64bit-Debug/gallery/qmldir</file>
+  </qresource>
+</RCC>
+

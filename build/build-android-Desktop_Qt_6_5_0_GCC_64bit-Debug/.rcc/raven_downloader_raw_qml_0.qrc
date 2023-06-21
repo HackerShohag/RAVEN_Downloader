@@ -1,0 +1,38 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="qml/MainPage.qml">/home/shohag/Projects/android/qml/MainPage.qml</file>
+    <file alias="qml/Components/MediaItem.qml">/home/shohag/Projects/android/qml/Components/MediaItem.qml</file>
+    <file alias="qml/Components/LayoutsCustom.qml">/home/shohag/Projects/android/qml/Components/LayoutsCustom.qml</file>
+    <file alias="qml/Components/CustomProgressBar.qml">/home/shohag/Projects/android/qml/Components/CustomProgressBar.qml</file>
+    <file alias="qml/Components/CustomComboPopup.qml">/home/shohag/Projects/android/qml/Components/CustomComboPopup.qml</file>
+    <file alias="qml/Components/ToolBar.qml">/home/shohag/Projects/android/qml/Components/ToolBar.qml</file>
+    <file alias="icons/gallery/20x20/back.png">/home/shohag/Projects/android/icons/gallery/20x20/back.png</file>
+    <file alias="icons/gallery/20x20/drawer.png">/home/shohag/Projects/android/icons/gallery/20x20/drawer.png</file>
+    <file alias="icons/gallery/20x20/menu.png">/home/shohag/Projects/android/icons/gallery/20x20/menu.png</file>
+    <file alias="icons/gallery/20x20@2/back.png">/home/shohag/Projects/android/icons/gallery/20x20@2/back.png</file>
+    <file alias="icons/gallery/20x20@2/drawer.png">/home/shohag/Projects/android/icons/gallery/20x20@2/drawer.png</file>
+    <file alias="icons/gallery/20x20@2/menu.png">/home/shohag/Projects/android/icons/gallery/20x20@2/menu.png</file>
+    <file alias="icons/gallery/20x20@3/back.png">/home/shohag/Projects/android/icons/gallery/20x20@3/back.png</file>
+    <file alias="icons/gallery/20x20@3/drawer.png">/home/shohag/Projects/android/icons/gallery/20x20@3/drawer.png</file>
+    <file alias="icons/gallery/20x20@3/menu.png">/home/shohag/Projects/android/icons/gallery/20x20@3/menu.png</file>
+    <file alias="icons/gallery/20x20@4/back.png">/home/shohag/Projects/android/icons/gallery/20x20@4/back.png</file>
+    <file alias="icons/gallery/20x20@4/drawer.png">/home/shohag/Projects/android/icons/gallery/20x20@4/drawer.png</file>
+    <file alias="icons/gallery/20x20@4/menu.png">/home/shohag/Projects/android/icons/gallery/20x20@4/menu.png</file>
+    <file alias="icons/gallery/index.theme">/home/shohag/Projects/android/icons/gallery/index.theme</file>
+    <file alias="images/arrow.png">/home/shohag/Projects/android/images/arrow.png</file>
+    <file alias="images/arrow@2x.png">/home/shohag/Projects/android/images/arrow@2x.png</file>
+    <file alias="images/arrow@3x.png">/home/shohag/Projects/android/images/arrow@3x.png</file>
+    <file alias="images/arrow@4x.png">/home/shohag/Projects/android/images/arrow@4x.png</file>
+    <file alias="images/arrows.png">/home/shohag/Projects/android/images/arrows.png</file>
+    <file alias="images/arrows@2x.png">/home/shohag/Projects/android/images/arrows@2x.png</file>
+    <file alias="images/arrows@3x.png">/home/shohag/Projects/android/images/arrows@3x.png</file>
+    <file alias="images/arrows@4x.png">/home/shohag/Projects/android/images/arrows@4x.png</file>
+    <file alias="images/qt-logo.png">/home/shohag/Projects/android/images/qt-logo.png</file>
+    <file alias="images/qt-logo@2x.png">/home/shohag/Projects/android/images/qt-logo@2x.png</file>
+    <file alias="images/qt-logo@3x.png">/home/shohag/Projects/android/images/qt-logo@3x.png</file>
+    <file alias="images/qt-logo@4x.png">/home/shohag/Projects/android/images/qt-logo@4x.png</file>
+    <file alias="qmldir">/home/shohag/Projects/android/qmldir</file>
+    <file alias="qtquickcontrols2.conf">/home/shohag/Projects/android/qtquickcontrols2.conf</file>
+  </qresource>
+</RCC>
+

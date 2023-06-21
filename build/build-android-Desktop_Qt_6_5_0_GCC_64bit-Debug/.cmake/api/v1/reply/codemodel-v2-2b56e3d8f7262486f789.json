@@ -1,0 +1,169 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-14c08325392d97611976.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "raven.downloader",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-Debug-d9324e2e2b38bea41351.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-Debug-b134ad43e73749c8ec60.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-Debug-491c591fd5ee23359579.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-Debug-20ec46f8fe90125bb5be.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader-Debug-3835849cb2fa1548b07a.json",
+					"name" : "raven.downloader",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_autogen-Debug-255b630adb3e4a7bebb7.json",
+					"name" : "raven.downloader_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_autogen_timestamp_deps-Debug-d10da1d9673ddde60726.json",
+					"name" : "raven.downloader_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_qmlimportscan-Debug-a982127f2792b2322967.json",
+					"name" : "raven.downloader_qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_qmllint-Debug-2719f624ab790a88d120.json",
+					"name" : "raven.downloader_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_qmllint_json-Debug-19572e2e6981dfc4a600.json",
+					"name" : "raven.downloader_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_qmllint_module-Debug-889c9740776a02d57251.json",
+					"name" : "raven.downloader_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_qmltyperegistration-Debug-a6f6c071660f688cdfd4.json",
+					"name" : "raven.downloader_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "raven.downloader_tooling::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-raven.downloader_tooling-Debug-8dbabde83043e8d994d4.json",
+					"name" : "raven.downloader_tooling",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/shohag/Projects/android/build/build-android-Desktop_Qt_6_5_0_GCC_64bit-Debug",
+		"source" : "/home/shohag/Projects/android"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}
