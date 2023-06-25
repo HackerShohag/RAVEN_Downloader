@@ -77,7 +77,7 @@ if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/src/py_modules" "${CMAKE_CURRENT_BINARY_DIR}/py_modules"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/src/yt_dlp/yt_dlp" "${CMAKE_CURRENT_BINARY_DIR}/yt_dlp"
 )
 
 install(TARGETS raven.downloader

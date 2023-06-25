@@ -1,0 +1,3 @@
+[submodule "src/yt_dlp"]
+	path = src/yt_dlp
+	url = git@github.com:yt-dlp/yt-dlp.git
