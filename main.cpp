@@ -1,19 +1,47 @@
-// Copyright (C) 2017 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+/*
+ * Copyright (C) 2022  Abdullah AL Shohag
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; version 3.
+ *
+ * raven.downloader is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <QGuiApplication>
-#include <QQmlApplicationEngine>
+#include <QCoreApplication>
+#include <QUrl>
+#include <QString>
+#include <QQuickView>
+#include <QQmlEngine>
 #include <QQmlContext>
+
+#include <QQmlApplicationEngine>
 #include <QSettings>
 #include <QQuickStyle>
 #include <QIcon>
 
+
+
+#include <youtubedl.h>
+#include <downloadmanager.h>
+
 int main(int argc, char *argv[])
 {
-    QGuiApplication::setApplicationName("RAVEN Downloader");
+    QGuiApplication::setApplicationName("raven.downloader.shohag");
     QGuiApplication::setOrganizationName("QtProject");
 
     QGuiApplication app(argc, argv);
+
+    DownloadManager *dm = new DownloadManager();
+
+    qDebug() << "Starting app from main.cpp";
 
     QIcon::setThemeName("gallery");
 
@@ -42,6 +70,9 @@ int main(int argc, char *argv[])
 #endif
 
     engine.setInitialProperties({{ "builtInStyles", builtInStyles }});
+
+    engine.rootContext()->setContextProperty("downloadManager", dm);
+
     engine.load(QUrl("qrc:/qml/MainPage.qml"));
     if (engine.rootObjects().isEmpty())
         return -1;

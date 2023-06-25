@@ -1,6 +1,0 @@
-<RCC>
-  <qresource prefix="/">
-    <file alias="/">/home/shohag/Projects/android/build/build-android-Desktop_Qt_6_5_0_GCC_64bit-Debug/gallery</file>
-
-  </qresource>
-</RCC>

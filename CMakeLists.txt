@@ -4,6 +4,8 @@
 cmake_minimum_required(VERSION 3.16)
 project(raven.downloader LANGUAGES CXX)
 
+add_subdirectory(src)
+
 set(CMAKE_AUTOMOC ON)
 
 if(NOT DEFINED INSTALL_EXAMPLESDIR)
@@ -14,7 +16,7 @@ set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/quickcontrols/gallery")
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
-qt_add_executable(raven.downloader WIN32 MACOSX_BUNDLE
+qt_add_executable(raven.downloader
     main.cpp
 )
 
@@ -63,6 +65,8 @@ target_link_libraries(raven.downloader PUBLIC
     Qt::Gui
     Qt::Quick
     Qt::QuickControls2
+    DownloadManager
+    YoutubeDL
 )
 
 if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
@@ -71,6 +75,10 @@ if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
     # Work around QTBUG-86533
     target_link_libraries(raven.downloader PRIVATE Qt::QuickTemplates2)
 endif()
+
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/src/py_modules" "${CMAKE_CURRENT_BINARY_DIR}/py_modules"
+)
 
 install(TARGETS raven.downloader
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

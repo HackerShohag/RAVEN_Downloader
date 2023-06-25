@@ -15,6 +15,12 @@ ApplicationWindow {
     visible: true
     title: "shohag.raven.downloader"
 
+    property string playListTitle
+
+    property string entry
+    property bool   isPlaylist
+    property int    count           : 0
+
     Connections {
         target: downloadManager
         onFormatsUpdated: {
@@ -66,6 +72,27 @@ ApplicationWindow {
 
         onGeneralMessage: PopupUtils.open(qProcessError, root, { text: message });
     }
+
+    function urlHandler(url, index) {
+        if (index) {
+            root.isPlaylist = true;
+            if (!(downloadManager.isValidPlayListUrl(url))) {
+                PopupUtils.open(invalidPlayListURLWarning);
+                return ;
+            }
+            if (downloadItemsContainer.visible === false)
+                mainPage.toggleBlankPage();
+            downloadManager.actionSubmit(url, index);
+            return ;
+        }
+        window.isPlaylist = false;
+        if (downloadManager.isValidUrl(url)) {
+            downloadManager.actionSubmit(url, index);
+            return ;
+        }
+//        PopupUtils.open(invalidURLWarning);
+    }
+
 
     function help() {
         let displayingControl = listView.currentIndex !== -1
@@ -233,12 +260,17 @@ ApplicationWindow {
                 }
 
                 ComboBox {
+                    id: donwloadType
                     model: ["single", "playlist"]
                 }
 
                 Button {
                     id: submitButton
                     text: "Submit"
+                    onClicked: {
+                        console.log("Submit Clicked")
+                        urlHandler(urlContainer.text, donwloadType.index)
+                    }
                 }
             }
 
@@ -258,11 +290,16 @@ ApplicationWindow {
                     left: parent.left
                 }
 
+                ListModel {
+                    id: downloadItemsModel
+                    dynamicRoles: true
+                }
+
                 Repeater {
                     id: itemContainer
                     Layout.fillWidth: true
-                    model: 10
-                    MediaItem {
+                    model: downloadItemsModel
+                    delegate: MediaItem {
                         Layout.fillWidth: true
                         height: 100
                         width: parent.width
