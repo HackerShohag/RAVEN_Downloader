@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 1.2.2 LANGUAGES CXX)
+project(raven.downloader VERSION 3.0.1 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -31,6 +31,12 @@ else()
     set(CLICK_FRAMEWORK "ubuntu-sdk-16.04.5")
 endif()
 
+# This figures out the build direcory
+if(DEFINED ENV{BUILD_DIR})
+    set(BUILD_DIR "$ENV{BUILD_DIR}")
+else()
+    set(BUILD_DIR ${CMAKE_BINARY_DIR})
+endif()
 
 # This figures out the target architecture for use in the manifest file.
 if(DEFINED ENV{ARCH})
@@ -98,6 +104,20 @@ add_custom_target(${DESKTOP_FILE_NAME} ALL
 )
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME} DESTINATION ${DATA_DIR})
+
+# yt-dlp architecture dependend files downloads
+if(${CLICK_ARCH} STREQUAL "arm64")
+    set(TARGET_ARCH "_aarch64")
+elseif(${CLICK_ARCH} STREQUAL "armhf")
+    set(TARGET_ARCH "_armv7l")
+else()
+    set(TARGET_ARCH "")
+endif()
+
+message("Target architecture ${CLICK_ARCH} and link https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH}" )
+
+file (DOWNLOAD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH} ${BUILD_DIR}/bin/yt-dlp_linux SHOW_PROGRESS)
+install(FILES ${BUILD_DIR}/bin/yt-dlp_linux TYPE BIN PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
 
 add_subdirectory(po)
 add_subdirectory(plugins)

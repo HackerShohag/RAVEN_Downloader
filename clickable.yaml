@@ -3,8 +3,5 @@ clickable_minimum_required: "7"
 builder: cmake
 kill: raven.downloader
 
-dependencies_host:
-    - curl
-
 dependencies_target:
-    - youtube-dl ffmpeg
+    - ffmpeg
