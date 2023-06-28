@@ -225,7 +225,7 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
     arguments << "-f" << data.value("format").toString() << url;
 
     downloader->setWorkingDirectory(this->downloadPath);
-    downloader->start("yt-dlp", arguments);
+    downloader->start("bin/yt-dlp_linux", arguments);
     connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
     qDebug() << "Arguments:" << arguments;
 }
