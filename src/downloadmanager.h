@@ -21,9 +21,9 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
-
 #include <youtubedl.h>
-#include <mediaformat.h>
+
+#include "mediaformat.h"
 
 class DownloadManager : public QObject
 {
@@ -59,6 +59,7 @@ signals:
     void invalidPlaylistUrl();
     void finished(QString playlistTitle, qint64 entries);
     void downloadProgress(QString value, qint64 indexID);
+    void downloadFinished();
     void listModelDataLoaded();
     void generalMessage(QString message);
 

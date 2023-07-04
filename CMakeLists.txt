@@ -116,7 +116,7 @@ endif()
 
 message("Target architecture ${CLICK_ARCH} and link https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH}" )
 
-file (DOWNLOAD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH} ${BUILD_DIR}/bin/yt-dlp_linux SHOW_PROGRESS)
+#file (DOWNLOAD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH} ${BUILD_DIR}/bin/yt-dlp_linux SHOW_PROGRESS)
 install(FILES ${BUILD_DIR}/bin/yt-dlp_linux TYPE BIN PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
 
 add_subdirectory(po)

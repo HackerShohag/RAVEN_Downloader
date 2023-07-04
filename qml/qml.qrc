@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>Main.qml</file>
+        <file>MainPage.qml</file>
+        <file>ExportPage.qml</file>
+        <file>SettingsPage.qml</file>
         <file>Components/MediaItem.qml</file>
         <file>Components/CustomComboPopup.qml</file>
         <file>Components/CustomProgressBar.qml</file>
@@ -8,6 +10,5 @@
         <file>Components/WarningDialog.qml</file>
         <file>Components/CustomBottomEdge.qml</file>
         <file>Components/LomiriButton.qml</file>
-        <file>SettingsPage.qml</file>
     </qresource>
 </RCC>

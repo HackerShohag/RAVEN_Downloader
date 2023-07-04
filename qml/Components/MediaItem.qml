@@ -121,7 +121,7 @@ LayoutsCustom {
 
         Image {
             id: thumbnailContainer
-            Layout.preferredWidth: units.gu(10)
+            Layout.preferredWidth: units.gu(15)
 
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -146,7 +146,7 @@ LayoutsCustom {
             source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
-            Layout.minimumWidth: units.gu(20)
+            Layout.minimumWidth: units.gu(15)
             Layout.maximumWidth: units.gu(25)
         }
 
@@ -176,28 +176,10 @@ LayoutsCustom {
         RowLayout {
             Layout.fillWidth: true
 
-//            InfoButton {
-//                id: durationButton
-//                Layout.fillWidth: true
-//                buttonID: 0
-//                text: duration ? duration : i18n.tr("unknown")
-//            }
-
-            Button {
-                id: sizeButton
-                iconName: "media-flash-symbolic"
-                Layout.preferredWidth: units.gu(10)
-                Layout.minimumWidth: units.gu(10)
-                Layout.fillWidth: true
-                color: LomiriColors.lightGrey
-                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MiB" : i18n.tr("unknown")
-                enabled: sizeModel ? true : false
-            }
-
             CustomComboPopup {
                 id: audioPopup
                 Layout.fillWidth: true
-                Layout.minimumWidth: units.gu(10)
+                Layout.minimumWidth: units.gu(8)
                 heading: comboHeading[0]
                 enabled: downloadUnavailable ? false : true
                 multipleModel: true
@@ -206,20 +188,10 @@ LayoutsCustom {
                 dropdownModel3: audioBitrate
             }
 
-//            CustomComboPopup {
-//                id: languagePopup
-//                Layout.fillWidth: true
-//                Layout.minimumWidth: units.gu(10)
-//                visible: langs.length != 0
-//                heading: comboHeading[1]
-//                enabled: downloadUnavailable ? false : true
-//                dropdownModel: langs
-//            }
-
             CustomComboPopup {
                 id: resolutionPopup
                 Layout.fillWidth: true
-                Layout.minimumWidth: units.gu(10)
+                Layout.minimumWidth: units.gu(8)
                 heading: comboHeading[2]
                 enabled: downloadUnavailable ? false : true
                 multipleModel: true

@@ -40,6 +40,7 @@ MainView {
     property string entry
     property bool   isPlaylist
     property int    count           : 0
+    property var    pObj            : null
 
     theme: ThemeSettings {
         id: appTheme
@@ -142,6 +143,12 @@ MainView {
                 PopupUtils.open(finishedPopup);
         }
 
+        onDownloadFinished: {
+            pObj = PopupUtils.open(exportPage, root, {
+                                           popupObject: pObj
+                                       });
+        }
+
         onDownloadProgress: downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
 
         onInvalidPlaylistUrl: PopupUtils.open(invalidPlayListURLWarning);
@@ -170,6 +177,15 @@ MainView {
         WarningDialog {
             title: i18n.tr("Invalid Playlist URL!")
             text: i18n.tr("Please provide a link with valid list argument.")
+        }
+    }
+
+    Component {
+        id: exportPage
+        ExportPage {
+            id: exportPageComponent
+            contentType: ContentType.All
+            handler: ContentHandler.Source
         }
     }
 
@@ -258,7 +274,12 @@ MainView {
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: urlHandler(urlContainer.text, donwloadType.index)
+                            onClicked: {
+                                pObj = PopupUtils.open(exportPage, root, {
+                                                               popupObject: pObj
+                                                           });
+                                //urlHandler(urlContainer.text, donwloadType.index)
+                            }
                         }
                     }
                 }
