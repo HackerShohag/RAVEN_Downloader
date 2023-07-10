@@ -3,14 +3,5 @@
     "policy_groups": [
         "content_exchange",
         "usermetrics"
-    ],
-    "write_path": [
-        "@{HOME}/Downloads/",
-        "@{HOME}/Documents/",
-        "@{HOME}/Videos/",
-        "@{HOME}/.local/share/raven.downloader.shohag/"
-    ],
-    "read_path": [
-        "@{HOME}/.local/share/raven.downloader.shohag/"
     ]
 }
