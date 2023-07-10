@@ -20,6 +20,8 @@
 #include <QJsonArray>
 #include "downloadmanager.h"
 
+#include <QDir>
+
 DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
 {
     connect(this->ytdl, SIGNAL(updateQString(QString)), this, SLOT(checkJsonObject(QString)));
@@ -39,7 +41,7 @@ void DownloadManager::checkJsonObject(QString value)
     QJsonDocument jsonDocument = QJsonDocument::fromJson(tempJSONDataHolder.toUtf8());
 
     if (jsonDocument.isObject()) {
-        setFormats(jsonDocument.object());
+        this->setFormats(jsonDocument.object());
         this->tempJSONDataHolder.clear();
     }
 }
@@ -54,12 +56,36 @@ void DownloadManager::finishedFetching()
 void DownloadManager::downloadProgressSlot(QProcess *downloader, qint64 indexID)
 {
     QString output = downloader->readAllStandardOutput();
-    QRegExp rx("\\d+.\\d+%");
-    rx.indexIn(output);
-    QStringList f = rx.capturedTexts();
-    qDebug() << output;
+
+    QRegExp frx(".Merger. Merging formats into.*\n");
+    QRegExp dfrx(".download. .* has already been downloaded\n");
+    frx.indexIn(output);
+    dfrx.indexIn(output);
+    QStringList f = frx.capturedTexts();
+    QStringList df = dfrx.capturedTexts();
     if (!(f[0].isEmpty()))
-        emit downloadProgress(QString::number(qRound(f[0].replace("%","").toDouble())), indexID);
+    {
+      this->filename = f[0].split("\"")[1];
+      qDebug() << "Filename: " << "file://" + this->filename;
+    } else if (!(df[0].isEmpty())) {
+      this->filename = df[0].replace("[download] ", "").replace(" has already been downloaded\n", "");
+      qDebug() << "Filename: " << "file://" + this->filename;
+    }
+
+    QRegExp drx("\\d+.\\d+%");
+    drx.indexIn(output);
+    QStringList matchedTexts = drx.capturedTexts();
+    qDebug() << output;
+    if (!(matchedTexts[0].isEmpty()))
+        emit downloadProgress(QString::number(qRound(matchedTexts[0].replace("%","").toDouble())), indexID);
+}
+
+void DownloadManager::downloadFinishedSlot(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (exitStatus == QProcess::NormalExit)
+        emit downloadFinished(this->filename);
+    else
+        qDebug() << "Download failed due to unknown reason.";
 }
 
 void DownloadManager::errorMessage(QProcess::ProcessError errorMessage)
@@ -100,10 +126,8 @@ MediaFormat *DownloadManager::getMediaFormats()
 
 QJsonDocument DownloadManager::loadJson(QString fileName)
 {
-    qDebug() << Q_FUNC_INFO;
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
-    qDebug() << "File Opened.";
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
@@ -117,8 +141,6 @@ bool DownloadManager::loadListModelData()
 {
     qDebug() << Q_FUNC_INFO;
     QJsonDocument document = loadJson(this->appDataPath + "/history.json");
-    qDebug() << "File Read.";
-//    qDebug() << document;
     if (document.isEmpty())
         return false;
 
@@ -130,63 +152,41 @@ bool DownloadManager::loadListModelData()
 
         this->m_mediaFormats->clearClutter();
         this->m_mediaFormats->setTitle(jsonObject["vTitle"].toString());
-
         this->m_mediaFormats->setThumbnail(jsonObject["vThumbnail"].toString());
         this->m_mediaFormats->setDuration(jsonObject["vDuration"].toString());
         this->m_mediaFormats->setUrl(jsonObject["vID"].toString());
 
-
-        for (QJsonArray::iterator value = jsonObject["aCodec"].toArray().begin(); value < jsonObject["aCodec"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["aCodec"].toArray().begin(); value < jsonObject["aCodec"].toArray().end(); ++value)
             this->m_mediaFormats->setAcodecItem(value->toString());
-            this->m_mediaFormats->setAudioBitrateItem(120);
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vAudioExts"].toArray().begin(); value < jsonObject["vAudioExts"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vAudioExts"].toArray().begin(); value < jsonObject["vAudioExts"].toArray().end(); ++value)
             this->m_mediaFormats->setAudioExtItem(value->toString());
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vAudioFormats"].toArray().begin(); value < jsonObject["vAudioFormats"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vAudioFormats"].toArray().begin(); value < jsonObject["vAudioFormats"].toArray().end(); ++value)
             this->m_mediaFormats->setAudioFormatItem(value->toString());
-        }
 
-//        for (QJsonArray::iterator value = jsonObject["vABR"].toArray().begin(); value < jsonObject["vABR"].toArray().end(); ++value) {
-////            this->m_mediaFormats->setAudioBitrateItem(value->toInt());
-//            this->m_mediaFormats->setAudioBitrateItem(120);
-//            qDebug() << "Value: " << value->toString() << "120 value";
-//        }
+        for (QJsonArray::iterator value = jsonObject["vABR"].toArray().begin(); value < jsonObject["vABR"].toArray().end(); ++value)
+            this->m_mediaFormats->setAudioBitrateItem(value->toString().replace("Kbps","").toInt());
 
-        for (QJsonArray::iterator value = jsonObject["vAudioSizes"].toArray().begin(); value < jsonObject["vAudioSizes"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vAudioSizes"].toArray().begin(); value < jsonObject["vAudioSizes"].toArray().end(); ++value)
             this->m_mediaFormats->setAudioSizeItem(value->toInt());
-            qDebug() << "Value: " << value->toDouble();
-            qDebug() << "VCodec: " << this->m_mediaFormats->getAudioSizes();
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vCodec"].toArray().begin(); value < jsonObject["vCodec"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vCodec"].toArray().begin(); value < jsonObject["vCodec"].toArray().end(); ++value)
             this->m_mediaFormats->setVcodecItem(value->toString());
-            qDebug() << "Value: " << value->toString();
-            qDebug() << "VCodec: " << this->m_mediaFormats->getVcodec().join(",");
-        }
 
-        qDebug() << "title: " << this->m_mediaFormats->getTitle() << " Notes: " << this->m_mediaFormats->getVcodec().join(",");
-
-        for (QJsonArray::iterator value = jsonObject["vResolutions"].toArray().begin(); value < jsonObject["vResolutions"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vResolutions"].toArray().begin(); value < jsonObject["vResolutions"].toArray().end(); ++value)
             this->m_mediaFormats->setNoteItem(value->toString());
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vVideoExts"].toArray().begin(); value < jsonObject["vVideoExts"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vVideoExts"].toArray().begin(); value < jsonObject["vVideoExts"].toArray().end(); ++value)
             this->m_mediaFormats->setVideoExtensionItem(value->toString());
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vVideoFormats"].toArray().begin(); value < jsonObject["vVideoFormats"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vVideoFormats"].toArray().begin(); value < jsonObject["vVideoFormats"].toArray().end(); ++value)
             this->m_mediaFormats->setVideoFormatItem(value->toString());
-        }
 
-        for (QJsonArray::iterator value = jsonObject["vSizeModel"].toArray().begin(); value < jsonObject["vSizeModel"].toArray().end(); ++value) {
+        for (QJsonArray::iterator value = jsonObject["vSizeModel"].toArray().begin(); value < jsonObject["vSizeModel"].toArray().end(); ++value)
             this->m_mediaFormats->setFilesizeItem(value->toInt());
-        }
 
-//        emit formatsUpdated(true, jsonObject["videoIndex"].toInt(), jsonObject["audioIndex"].toInt(), jsonObject["vVideoProgress"].toInt());
-        emit formatsUpdated(false);
+        emit formatsUpdated(true, jsonObject["videoIndex"].toInt(), jsonObject["audioIndex"].toInt(), jsonObject["vVideoProgress"].toInt());
     }
     return true;
 }
@@ -200,15 +200,6 @@ void DownloadManager::saveJson(QJsonDocument document, QString fileName)
 
 bool DownloadManager::isValidPlayListUrl(QString url)
 {
-    QProcess* ping = new QProcess();
-    ping->setProcessChannelMode(QProcess::MergedChannels);
-    QStringList args;
-    args << "-c" << "4" << "8.8.8.8";
-    ping->start("ping", args);
-    ping->waitForFinished();
-    qDebug() << ping->readAll();
-    qDebug() << "Nothing is working";
-
     if (QUrlQuery(QUrl(url).query()).queryItemValue("list").isEmpty())
     {
         return false;
@@ -234,10 +225,6 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
     QStringList arguments;
     qint64 indexID = data.value("indexID").toInt();
 
-    if (!data.value("downloadLocation").isUndefined())
-        this->downloadPath = data.value("downloadLocation").toString();
-    else
-        this->downloadPath = this->appDataPath;
     if (!data.value("subtitle").isUndefined())
     {
         arguments << "--all-subs";
@@ -250,10 +237,15 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
 
     arguments << "-f" << data.value("format").toString() << url;
 
-    downloader->setWorkingDirectory(this->downloadPath);
+    arguments << "-o" << this->downloadPath + "/%(title)s";
+    qDebug() << "Download path: " << this->downloadPath;
     downloader->start("bin/yt-dlp_linux", arguments);
-    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
     qDebug() << "Arguments:" << arguments;
+    qDebug() << "Current working directory: " << QDir::currentPath();
+
+    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
+    connect(downloader, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorMessage(QProcess::ProcessError)));
+    connect(downloader, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(downloadFinishedSlot(int,QProcess::ExitStatus)));
 }
 
 void DownloadManager::stopProcess()
@@ -282,15 +274,8 @@ void DownloadManager::setFormats(QJsonObject jsonObject)
         QJsonValue value = *i;
         QJsonObject formatObject = value.toObject();
 
-        //        if (!this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString()) && !formatObject["language"].toString().isNull())
-        //        {
-        //            this->m_mediaFormats->setLanguageItem(formatObject["language"].toString());
-        //            this->m_mediaFormats->setLanguageIdItem(formatObject["format_id"].toString().split(u'-').at(1));
-        //            qDebug() << "hello" << formatObject["language"].toString();
-        //        }
-
         // audio formats
-        if (formatObject["resolution"].toString().contains("audio") /*|| !this->m_mediaFormats->getLanguages().contains(formatObject["language"].toString())*/)
+        if (formatObject["resolution"].toString().contains("audio"))
         {
             this->m_mediaFormats->setAcodecItem(formatObject["acodec"].toString().trimmed());
             this->m_mediaFormats->setAudioExtItem(formatObject["audio_ext"].toString());

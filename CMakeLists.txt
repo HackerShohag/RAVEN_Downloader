@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(raven.downloader VERSION 3.0.1 LANGUAGES CXX)
+project(raven.downloader VERSION 3.1.1 LANGUAGES CXX)
 
 add_subdirectory(src)
 
@@ -57,12 +57,9 @@ execute_process(
   ERROR_QUIET
   )
 if(NOT BUILD_VERSION_RAW)
-  execute_process(
-    COMMAND git describe --tags --abbrev=0
-    OUTPUT_VARIABLE LAST_VERSION_RAW
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    ERROR_QUIET
-    )
+  set(
+    LAST_VERSION_RAW " v${PROJECT_VERSION}-xenial"
+  )
   string(TIMESTAMP BUILD_VERSION_RAW "${LAST_VERSION_RAW}.%y%m%d%H%M%S" UTC)
 endif(NOT BUILD_VERSION_RAW)
 string(SUBSTRING ${BUILD_VERSION_RAW} 1 -1 BUILD_VERSION)

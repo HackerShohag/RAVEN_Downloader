@@ -21,9 +21,10 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QStandardPaths>
-
 #include <youtubedl.h>
-#include <mediaformat.h>
+#include <QProcess>
+
+#include "mediaformat.h"
 
 class DownloadManager : public QObject
 {
@@ -50,6 +51,8 @@ public slots:
     void saveListModelData(QString value);
     bool loadListModelData();
     void downloadProgressSlot(QProcess *downloader, qint64 indexID);
+    void downloadFinishedSlot(int exitCode, QProcess::ExitStatus exitStatus);
+
     void errorMessage(QProcess::ProcessError errorMessage);
 
 signals:
@@ -58,6 +61,7 @@ signals:
     void invalidPlaylistUrl();
     void finished(QString playlistTitle, qint64 entries);
     void downloadProgress(QString value, qint64 indexID);
+    void downloadFinished(QString fileName);
     void listModelDataLoaded();
     void generalMessage(QString message);
 
@@ -70,7 +74,9 @@ private:
     QString tempJSONDataHolder;
     QString playlistTitle;
     qint64 entries = 0;
-    QString downloadPath;
+    QString downloadPath = this->appDataPath;
+    QString filename;
+
 };
 
 #endif
