@@ -22,49 +22,59 @@ import Lomiri.Components.Popups 1.3
 
 Page {
     id: picker
-	property var activeTransfer
 
-	property string url
-	property var handler
-	property var contentType
+    property var activeTransfer
+
+    property string url
+    property var handler
+    property var contentType
+    property bool isExportPage: false
 
     property var popupObject:  null
 	
     signal cancel()
     signal imported(string fileUrl)
+    signal backPressed()
 
     header: PageHeader {
         title: i18n.tr("Install/Save with")
         contents: RowLayout {
             anchors.fill: parent
-            Rectangle {
-                id: backButtonContainer
-                height: units.gu(5)
-                width: units.gu(5)
-                radius: units.gu(1)
-                Icon {
-                    id: backButtonIcon
-                    Layout.fillWidth: true
-                    anchors.centerIn: parent
-                    width: units.gu(3)
-                    height: units.gu(3)
-                    name: 'back'
-                    color: "red"
-                    keyColor: "blue"
-                }
-
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        PopupUtils.close(popupObject)
-                        console.log("Back pressed")
-                    }
-
-                    onPressed: backButtonContainer.color = "lightgrey"
-                    onReleased: backButtonContainer.color = "white"
-                }
-            }
+//            Rectangle {
+//                id: backButtonContainer
+//                Layout.alignment: Qt.AlignLeft
+//                visible: isExportPage
+//
+//                height: units.gu(5)
+//                width: units.gu(5)
+//                radius: units.gu(1)
+//                Icon {
+//                    id: backButtonIcon
+//                    Layout.fillWidth: true
+//                    anchors.centerIn: parent
+//                    visible: isExportPage
+//                    width: units.gu(3)
+//                    height: units.gu(3)
+//                    name: 'back'
+//                    color: "red"
+//                    keyColor: "blue"
+//                }
+//
+//
+//                MouseArea {
+//                    anchors.fill: parent
+//                    visible: isExportPage
+//                    onClicked: {
+//                            PopupUtils.close(exportPageComponent)
+//                        picker.backPressed();
+//                        isExportPage = false;
+//                        console.log("Back pressed")
+//                    }
+//
+//                    onPressed: backButtonContainer.color = "lightgrey"
+//                    onReleased: backButtonContainer.color = "white"
+//                }
+//            }
 
             Label {
                 anchors.centerIn: parent

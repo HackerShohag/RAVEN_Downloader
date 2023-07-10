@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-04 06:56+0000\n"
+"POT-Creation-Date: 2023-07-10 16:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,8 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:388
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:397
 msgid "Swipe for Settings"
-msgstr ""
-
-#: ../qml/Components/ExportPage.qml:35 ../qml/ExportPage.qml:37
-msgid "Install/Save with"
 msgstr ""
 
 #: ../qml/Components/MediaItem.qml:54
@@ -51,6 +47,10 @@ msgstr ""
 
 #: ../qml/Components/WarningDialog.qml:27
 msgid "OK"
+msgstr ""
+
+#: ../qml/ExportPage.qml:40
+msgid "Install/Save with"
 msgstr ""
 
 #: ../qml/MainPage.qml:170
@@ -85,31 +85,35 @@ msgstr ""
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:264
+#: ../qml/MainPage.qml:230 raven.downloader.desktop.in.h:1
+msgid "RAVEN Downloader"
+msgstr ""
+
+#: ../qml/MainPage.qml:278
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:269
+#: ../qml/MainPage.qml:283
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:271
+#: ../qml/MainPage.qml:285
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:271
+#: ../qml/MainPage.qml:285
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:276
+#: ../qml/MainPage.qml:290
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:299
+#: ../qml/MainPage.qml:308
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:375
+#: ../qml/MainPage.qml:384
 msgid "No Downloads!"
 msgstr ""
 
@@ -127,10 +131,6 @@ msgstr ""
 
 #: ../qml/SettingsPage.qml:51
 msgid "Settings"
-msgstr ""
-
-#: ../qml/SettingsPage.qml:84
-msgid "Select download location"
 msgstr ""
 
 #: ../qml/SettingsPage.qml:136
@@ -155,8 +155,4 @@ msgstr ""
 
 #: ../qml/SettingsPage.qml:286
 msgid "Clear All History"
-msgstr ""
-
-#: raven.downloader.desktop.in.h:1
-msgid "RAVEN Downloader"
 msgstr ""

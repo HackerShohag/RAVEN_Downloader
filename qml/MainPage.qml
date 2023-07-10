@@ -20,6 +20,8 @@ import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
 import Qt.labs.settings 1.0
 import Qt.labs.platform 1.0
+
+import Lomiri.Content 1.1
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 
@@ -31,37 +33,20 @@ MainView {
     applicationName: 'raven.downloader.shohag'
     automaticOrientation: true
 
-    width: units.gu(100)
-    height: units.gu(100)
+    width: units.gu(50)
+    height: units.gu(75)
 
     property int    margin          : units.gu(1)
     property string playListTitle
 
     property string entry
-    property bool   isPlaylist
+    property bool   isPlaylist      : false
     property int    count           : 0
-    property var    pObj            : null
+    property bool   isExportPage    : false
 
     theme: ThemeSettings {
         id: appTheme
         name: "Lomiri.Components.Themes.Ambiance"
-    }
-
-    Settings {
-        id: generalSettings
-        objectName: "GeneralSettings"
-
-        property alias  width                   : root.width
-        property alias  height                  : root.height
-
-        property alias  theme                   : appTheme.name
-
-        property bool   setDownloadLocation     : false
-        property string customDownloadLocation  : null
-        property bool   downloadSubtitle        : false
-        property bool   downloadCaption         : false
-        property bool   embeddedSubtitle        : false
-        property bool   autoDownload            : false
     }
 
     function listModelToString(){
@@ -76,7 +61,6 @@ MainView {
 
     function urlHandler(url, index) {
         if (index) {
-            root.isPlaylist = true;
             if (!(downloadManager.isValidPlayListUrl(url))) {
                 PopupUtils.open(invalidPlayListURLWarning);
                 return ;
@@ -84,11 +68,14 @@ MainView {
             if (downloadItemsContainer.visible === false)
                 mainPage.toggleBlankPage();
             downloadManager.actionSubmit(url, index);
+//            pageBusyIndicator.running = true;
+            root.isPlaylist = true;
             return ;
         }
-        root.isPlaylist = false;
         if (downloadManager.isValidUrl(url)) {
             downloadManager.actionSubmit(url, index);
+//            pageBusyIndicator.running = true;
+            root.isPlaylist = false;
             return ;
         }
         PopupUtils.open(invalidURLWarning);
@@ -132,7 +119,8 @@ MainView {
                                           vIndex: count
                                       })
             count = count + 1;
-            downloadItemsModel.move(0, 1, downloadItems.count-1)
+            downloadItemsModel.move(0, 1, downloadItems.count-1);
+            pageBusyIndicator.running = false;
         }
 
         onFinished: {
@@ -144,9 +132,10 @@ MainView {
         }
 
         onDownloadFinished: {
+            console.log("filename received: " + fileName);
             pObj = PopupUtils.open(exportPage, root, {
-                                           popupObject: pObj
-                                       });
+                                       url: fileName
+                                   });
         }
 
         onDownloadProgress: downloadItemsModel.setProperty(deformIndex(indexID), "vVideoProgress", value/100);
@@ -162,6 +151,17 @@ MainView {
             console.log("Quiting " + root.applicationName)
             listModelToString()
         }
+    }
+
+    Settings {
+        id: generalSettings
+        objectName: "GeneralSettings"
+
+        property alias  theme                   : appTheme.name
+        property bool   downloadSubtitle        : false
+        property bool   downloadCaption         : false
+        property bool   embeddedSubtitle        : false
+        property bool   autoDownload            : false
     }
 
     Component {
@@ -205,6 +205,20 @@ MainView {
         }
     }
 
+    BusyIndicator {
+        id: pageBusyIndicator
+        padding: Math.min(root.width, root.height) / 3
+        anchors.fill: parent
+        anchors.centerIn: parent
+        background: Rectangle {
+            visible: pageBusyIndicator.running
+            anchors.fill: parent
+            color: "lightgrey"
+        }
+
+        running: false
+    }
+
     Page {
         id: mainPage
         anchors.fill: parent
@@ -213,7 +227,7 @@ MainView {
 
         header: PageHeader {
             id: header
-            title: 'RAVEN Downloader'
+            title: i18n.tr("RAVEN Downloader")
         }
 
         function toggleBlankPage() {
@@ -274,12 +288,7 @@ MainView {
                         Button {
                             id: submitButton
                             text: i18n.tr("Submit")
-                            onClicked: {
-                                pObj = PopupUtils.open(exportPage, root, {
-                                                               popupObject: pObj
-                                                           });
-                                //urlHandler(urlContainer.text, donwloadType.index)
-                            }
+                            onClicked: urlHandler(urlContainer.text, donwloadType.index);
                         }
                     }
                 }

@@ -69,62 +69,62 @@ Page {
             height: {childrenRect.height+units.gu(4)}
             color: "transparent"
 
-            RowLayout {
-                id: donwloadLocationConatainer
-                anchors{
-                    top: parent.top
-                    left: parent.left
-                    right: parent.right
-                    margins: units.gu(2)
-                }
-                Text {
-                    id: donwloadLocationLabel
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
-                    text: i18n.tr("Select download location")
-                    color: theme.palette.normal.backgroundText
-                    font.pixelSize: units.gu(2)
-                }
-                CheckBox {
-                    id: setDownloadLocationCheckbox
-                    Layout.alignment: Qt.AlignRight
-                    SlotsLayout.position: SlotsLayout.Trailing
-                    onTriggered: {
-                        generalSettings.setDownloadLocation = checked
-                        locationSelector.expanded = false
-                    }
-                }
-                Binding {
-                    target: setDownloadLocationCheckbox
-                    property: "checked"
-                    value: generalSettings.setDownloadLocation
-                }
-            }
+//            RowLayout {
+//                id: donwloadLocationConatainer
+//                anchors{
+//                    top: parent.top
+//                    left: parent.left
+//                    right: parent.right
+//                    margins: units.gu(2)
+//                }
+//                Text {
+//                    id: donwloadLocationLabel
+//                    elide: Text.ElideRight
+//                    Layout.fillWidth: true
+//                    text: i18n.tr("Select download location")
+//                    color: theme.palette.normal.backgroundText
+//                    font.pixelSize: units.gu(2)
+//                }
+//                CheckBox {
+//                    id: setDownloadLocationCheckbox
+//                    Layout.alignment: Qt.AlignRight
+//                    SlotsLayout.position: SlotsLayout.Trailing
+//                    onTriggered: {
+//                        generalSettings.setDownloadLocation = checked
+//                        locationSelector.expanded = false
+//                    }
+//                }
+//                Binding {
+//                    target: setDownloadLocationCheckbox
+//                    property: "checked"
+//                    value: generalSettings.setDownloadLocation
+//                }
+//            }
 
-            OptionSelector {
-                id: locationSelector
-                model: downloadLocationModel
-                enabled: setDownloadLocationCheckbox.checked
-                anchors{
-                    top: donwloadLocationConatainer.bottom
-                    topMargin: units.gu(1)
-                    left: parent.left
-                    leftMargin: units.gu(2)
-                    right: parent.right
-                    rightMargin: units.gu(2)
-                }
-                onSelectedIndexChanged: generalSettings.customDownloadLocation = getDownloadLocation(downloadLocationModel[locationSelector.selectedIndex]);
-            }
-            Binding {
-                target: locationSelector
-                property: "selectedIndex"
-                value: getIndexFromModel(generalSettings.customDownloadLocation)
-            }
+//            OptionSelector {
+//                id: locationSelector
+//                model: downloadLocationModel
+//                enabled: setDownloadLocationCheckbox.checked
+//                anchors{
+//                    top: donwloadLocationConatainer.bottom
+//                    topMargin: units.gu(1)
+//                    left: parent.left
+//                    leftMargin: units.gu(2)
+//                    right: parent.right
+//                    rightMargin: units.gu(2)
+//                }
+//                onSelectedIndexChanged: generalSettings.customDownloadLocation = getDownloadLocation(downloadLocationModel[locationSelector.selectedIndex]);
+//            }
+//            Binding {
+//                target: locationSelector
+//                property: "selectedIndex"
+//                value: getIndexFromModel(generalSettings.customDownloadLocation)
+//            }
 
             RowLayout {
                 id: subtitleCheckboxConatainer
                 anchors{
-                    top: locationSelector.bottom
+                    top: parent.top
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
