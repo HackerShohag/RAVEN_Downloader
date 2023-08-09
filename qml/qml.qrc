@@ -9,6 +9,6 @@
         <file>Components/LayoutsCustom.qml</file>
         <file>Components/WarningDialog.qml</file>
         <file>Components/CustomBottomEdge.qml</file>
-        <file>Components/LomiriButton.qml</file>
+        <file>Components/UbuntuButton.qml</file>
     </qresource>
 </RCC>
