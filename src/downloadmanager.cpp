@@ -128,12 +128,16 @@ QJsonDocument DownloadManager::loadJson(QString fileName)
 {
     QFile jsonFile(fileName);
     jsonFile.open(QFile::ReadOnly);
+    if (!jsonFile.exists())
+        return QJsonDocument();
     return QJsonDocument().fromJson(jsonFile.readAll());
 }
 
 void DownloadManager::saveListModelData(QString value)
 {
     QJsonDocument document = QJsonDocument::fromJson(value.toUtf8());
+    if (!QDir(this->appDataPath).exists())
+        QDir().mkdir(this->appDataPath);
     saveJson(document, this->appDataPath + "/history.json");
 }
 
