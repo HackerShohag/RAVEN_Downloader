@@ -5,17 +5,3 @@ kill: raven.downloader
 
 dependencies_target:
     - ffmpeg
-
-install_bin:
-    - ffmpeg
-
-install_lib:
-    - libavdevice.so*
-    - libavfilter.so*
-    - libavformat.so*
-    - libavcodec.so*
-    - libavresample.so*
-    - libpostproc.so*
-    - libswscale.so*
-    - libswresample.so*
-    - libavutil.so*
