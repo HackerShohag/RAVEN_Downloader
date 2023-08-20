@@ -1,10 +1,8 @@
-name: Build PR
+name: Build on Pull Requests
 on: [pull_request]
 concurrency:
   group: "${{ github.ref }}"
   cancel-in-progress: true
-env:
-  OPENSTORE_API_KEY: abf03802-0bee-4d80-9868-67f2cba25fda
 jobs:
   build-armhf:
     runs-on: ubuntu-latest
@@ -15,6 +13,7 @@ jobs:
       GIT_SUBMODULE_STRATEGY: recursive
       DOCKER_DRIVER: overlay2
     steps:
+    - run: apt-get update && apt-get install git-lfs
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 20
@@ -24,7 +23,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: success()
       with:
-        name: "${{ github.job }}"
+        name: "artifacts_${{ github.job }}"
         retention-days: 7
         path: build/arm-linux-gnueabihf/app/*.click
   build-arm64:
@@ -36,6 +35,7 @@ jobs:
       GIT_SUBMODULE_STRATEGY: recursive
       DOCKER_DRIVER: overlay2
     steps:
+    - run: apt-get update && apt-get install git-lfs
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 20
@@ -45,7 +45,7 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: success()
       with:
-        name: "${{ github.job }}"
+        name: "artifacts_${{ github.job }}"
         retention-days: 7
         path: build/aarch64-linux-gnu/app/*.click
   build-amd64:
@@ -57,6 +57,7 @@ jobs:
       GIT_SUBMODULE_STRATEGY: recursive
       DOCKER_DRIVER: overlay2
     steps:
+    - run: apt-get update && apt-get install git-lfs
     - uses: actions/checkout@v3.5.0
       with:
         fetch-depth: 20
@@ -66,6 +67,6 @@ jobs:
     - uses: actions/upload-artifact@v3.1.1
       if: success()
       with:
-        name: "${{ github.job }}"
+        name: "artifacts_${{ github.job }}"
         retention-days: 7
         path: build/x86_64-linux-gnu/app/*.click
