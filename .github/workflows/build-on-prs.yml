@@ -1,0 +1,72 @@
+name: Build on Pull Requests
+on: [pull_request]
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+jobs:
+  build-armhf:
+    runs-on: ubuntu-latest
+    container:
+      image: clickable/ci-20.04-armhf
+    timeout-minutes: 60
+    env:
+      GIT_SUBMODULE_STRATEGY: recursive
+      DOCKER_DRIVER: overlay2
+    steps:
+    - run: apt-get update && apt-get install git-lfs
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 20
+        lfs: true
+        submodules: recursive
+    - run: clickable build --clean --all --arch armhf --accept-review-errors
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "artifacts_${{ github.job }}"
+        retention-days: 7
+        path: build/arm-linux-gnueabihf/app/*.click
+  build-arm64:
+    runs-on: ubuntu-latest
+    container:
+      image: clickable/ci-20.04-arm64
+    timeout-minutes: 60
+    env:
+      GIT_SUBMODULE_STRATEGY: recursive
+      DOCKER_DRIVER: overlay2
+    steps:
+    - run: apt-get update && apt-get install git-lfs
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 20
+        lfs: true
+        submodules: recursive
+    - run: clickable build --clean --all --arch arm64 --accept-review-errors
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "artifacts_${{ github.job }}"
+        retention-days: 7
+        path: build/aarch64-linux-gnu/app/*.click
+  build-amd64:
+    runs-on: ubuntu-latest
+    container:
+      image: clickable/ci-20.04-amd64
+    timeout-minutes: 60
+    env:
+      GIT_SUBMODULE_STRATEGY: recursive
+      DOCKER_DRIVER: overlay2
+    steps:
+    - run: apt-get update && apt-get install git-lfs
+    - uses: actions/checkout@v3.5.0
+      with:
+        fetch-depth: 20
+        lfs: true
+        submodules: recursive
+    - run: clickable build --clean --all --arch amd64 --accept-review-errors
+    - uses: actions/upload-artifact@v3.1.1
+      if: success()
+      with:
+        name: "artifacts_${{ github.job }}"
+        retention-days: 7
+        path: build/x86_64-linux-gnu/app/*.click

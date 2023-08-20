@@ -22,7 +22,6 @@
 #include <QQmlEngine>
 #include <QQmlContext>
 
-#include <youtubedl.h>
 #include <downloadmanager.h>
 
 int main(int argc, char *argv[])
