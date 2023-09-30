@@ -10,9 +10,6 @@
  * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
  */
 
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
 #include <QDebug>
 #include <QUrlQuery>
 #include <QRegularExpressionValidator>
@@ -21,36 +18,15 @@
 
 YoutubeDL::YoutubeDL()
 {
-    qDebug() << "YTDL Constructor";
-    Py_Initialize();
-
-    PyRun_SimpleString("import sys");
-    PyRun_SimpleString("import os");
-    PyRun_SimpleString("sys.path.append(os.getcwd())");
-
-    PyObject *args=NULL;
-    qDebug() << "Py_Initialize() from ytdl";
-
-    PyObject* yt_dlp = PyImport_ImportModule("yt_dlp");
-    PyErr_Print();
-    PyObject* value = PyObject_GetAttrString(yt_dlp, "version.RELEASE_GIT_HEAD");
-//    PyObject* pvalue = PyObject_CallObject(pFunc, args);
-//    Py_XDECREF(pFunc);
-    PyRun_SimpleString("print(yt_dlp.version.RELEASE_GIT_HEAD)");
-
-    PyObject* repr = PyObject_Repr(value);
-    PyObject* str = PyUnicode_AsEncodedString(repr, "utf-8", "~E~");
-    qDebug() << "value from py: " << PyBytes_AS_STRING(str);
-
-    Py_FinalizeEx();
+    qDebug() << "YoutubeDL Constructor";
 
     this->ytdl = new QProcess();
-    this->program = "assets:/yt-dlp_linux";
+    this->program = "./bin/yt-dlp_linux";
     this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
     // playlist_title
     connect(this->ytdl, SIGNAL(readyReadStandardOutput()), this, SLOT(readyReadStandardOutput()));
     connect(this->ytdl, SIGNAL(readyRead()), this, SLOT(readyReadStandardOutput()));
-    connect(this->ytdl, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSlot(int, QProcess::ExitStatus)));
+    connect(this->ytdl, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finishedSlot(int,QProcess::ExitStatus)));
     connect(this->ytdl, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(emitErrorMessage(QProcess::ProcessError)));
 }
 

@@ -24,8 +24,8 @@ ApplicationWindow {
     Connections {
         target: downloadManager
         onFormatsUpdated: {
-            if (downloadItemsContainer.visible === false)
-                mainPage.toggleBlankPage();
+//            if (downloadItemsContainer.visible === false)
+//                mainPage.toggleBlankPage();
 
             downloadItemsModel.append({
                                           vTitle: downloadManager.mediaFormats.title,
@@ -45,9 +45,6 @@ ApplicationWindow {
                                           vABR: downloadManager.mediaFormats.audioBitrates,
                                           vAudioSizes: downloadManager.mediaFormats.audioSizes,
 
-//                                          vLangs: downloadManager.mediaFormats.languages,
-//                                          vLangIds: downloadManager.mediaFormats.languageIds,
-
                                           vVideoIndex: hasIndex ? videoIndex : null,
                                           vAudioIndex: hasIndex ? audioIndex : null,
 
@@ -60,9 +57,9 @@ ApplicationWindow {
 
         onFinished: {
             console.log("playlistTitle: " + playlistTitle + " " + entries);
-            root.playListTitle = playlistTitle;
-            root.entry = entries;
-            if (root.isPlaylist)
+            window.playListTitle = playlistTitle;
+            window.entry = entries;
+            if (window.isPlaylist)
                 PopupUtils.open(finishedPopup);
         }
 
@@ -70,14 +67,14 @@ ApplicationWindow {
 
         onInvalidPlaylistUrl: PopupUtils.open(invalidPlayListURLWarning);
 
-        onGeneralMessage: PopupUtils.open(qProcessError, root, { text: message });
+        onGeneralMessage: PopupUtils.open(qProcessError, window, { text: message });
     }
 
     function urlHandler(url, index) {
         if (index) {
-            root.isPlaylist = true;
+            window.isPlaylist = true;
             if (!(downloadManager.isValidPlayListUrl(url))) {
-                PopupUtils.open(invalidPlayListURLWarning);
+                invalidDownloadWarning.open();
                 return ;
             }
             if (downloadItemsContainer.visible === false)
@@ -90,9 +87,8 @@ ApplicationWindow {
             downloadManager.actionSubmit(url, index);
             return ;
         }
-//        PopupUtils.open(invalidURLWarning);
+        invalidDownloadWarning.open();
     }
-
 
     function help() {
         let displayingControl = listView.currentIndex !== -1
@@ -147,6 +143,12 @@ ApplicationWindow {
         onTriggered: optionsMenu.open()
     }
 
+    BusyIndicator {
+        anchors.fill: parent
+        padding: 10
+        running: false
+    }
+
     header: ToolBar {
         RowLayout {
             spacing: 20
@@ -184,7 +186,7 @@ ApplicationWindow {
                     }
                     Action {
                         text: "About"
-                        onTriggered: aboutDialog.open()
+                        onTriggered: aboutDialog.open() /*aboutDialog.open()*/
                     }
                 }
             }
@@ -296,7 +298,7 @@ ApplicationWindow {
                 }
 
                 Repeater {
-                    id: itemContainer
+                    id: downloadItems
                     Layout.fillWidth: true
                     model: downloadItemsModel
                     delegate: MediaItem {
@@ -305,11 +307,10 @@ ApplicationWindow {
                         width: parent.width
 
                         itemIndex: index
-
-                        videoTitle: "video title number " + (index + 1)
-                        thumbnail: "qrc:///images/qt-logo.png"
-                        duration: "10:04"
-                        videoLink: "https://youtu.be/" + "vID"
+                        videoTitle: vTitle
+                        thumbnail: vThumbnail
+                        duration: vDuration
+                        videoLink: vID
 
                         vcodec: vCodec
                         resolutionModel: vResolutions
@@ -318,9 +319,6 @@ ApplicationWindow {
                         videoProgress: 0.2
                         videoIndex: vVideoIndex
                         audioIndex: vAudioIndex
-
-                        langs: vLangs
-                        langIds: vLangIds
 
                         acodec: aCodec
                         audioExts: vAudioExts
@@ -420,6 +418,35 @@ ApplicationWindow {
                 wrapMode: Label.Wrap
                 font.pixelSize: 12
             }
+        }
+    }
+
+    Dialog {
+        id: invalidDownloadWarning
+        modal: true
+        focus: true
+        title: "Download Invalid!"
+        x: (window.width - width) / 2
+        y: window.height / 3
+        width: Math.min(window.width, window.height) / 3 * 2
+        contentHeight: warningLabel.height + 10
+
+        header: Label {
+            text: parent.title
+            topPadding: 10
+            font.pixelSize: 22
+            horizontalAlignment: Text.AlignHCenter
+        }
+
+        Label {
+            id: warningLabel
+            text: "Please refresh download link."
+        }
+        standardButtons: Dialog.Ok
+
+        footer: DialogButtonBox {
+//            anchors.left: parent.left
+            anchors.right: parent.right
         }
     }
 }

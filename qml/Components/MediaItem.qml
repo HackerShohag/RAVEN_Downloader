@@ -62,6 +62,10 @@ Rectangle {
 
     color: "#f5f7f7"
 
+    function isDownloadValid(size, resolution) {
+        return false
+    }
+
     GridLayout {
         id: gridLayout
         rows: 3
@@ -75,7 +79,7 @@ Rectangle {
 
             Layout.rowSpan: 3
             Layout.fillHeight: true
-            Layout.minimumWidth: 50
+            Layout.minimumWidth: 70
             Layout.maximumWidth: 100
 
             width: parent.width / 3
@@ -101,12 +105,13 @@ Rectangle {
             }
 
             source: "qrc:///images/qt-logo.png"
+            fillMode: Image.PreserveAspectCrop
         }
 
         RowLayout {
             Label {
                 id: titleBox
-                text: "Youtube Video Title 1"
+                text: "Youtube Video Title"
                 font.bold: true
                 elide: Label.ElideRight
                 Layout.fillWidth: true
@@ -119,11 +124,11 @@ Rectangle {
             CustomProgressBar {
                 id: videoProgressBar
                 Layout.fillWidth: true
-                value: .3
+                value: 0.3
             }
             Label {
                 text: videoProgressBar.value * 100 + "%"
-                // color: theme.palette.normal.backgroundText
+
                 font.pixelSize: 18
                 font.bold: true
             }
@@ -131,25 +136,6 @@ Rectangle {
 
         RowLayout {
             Layout.fillWidth: true
-
-//            InfoButton {
-//                id: durationButton
-//                Layout.fillWidth: true
-//                buttonID: 0
-//                text: duration ? duration : "unknown"
-//            }
-
-//            Button {
-//                id: sizeButton
-//                Layout.preferredWidth: 30
-//                Layout.minimumWidth: 30
-//                Layout.fillWidth: true
-////                color: LomiriColors.lightGrey
-////                text: sizeModel && (resolutionPopup.text !== comboHeading[2]) ? sizeModel[resolutionPopup.index] + audioSizes[audioPopup.index] + "MiB" : "unknown"
-//                text: "MiB"
-////                enabled: sizeModel ? true : false
-//                enabled: true
-//            }
 
             CustomComboPopup {
                 id: audioPopup
@@ -159,21 +145,10 @@ Rectangle {
                 text: comboHeading[0]
                 enabled: downloadUnavailable ? false : true
 
-//                multipleModel: true
-//                dropdownModel: audioExts
-//                dropdownModel2: acodec
-//                dropdownModel3: audioBitrate
+                itemModelOne: audioExts
+                itemModelTwo: acodec
+                itemModelThree: audioBitrate
             }
-
-//            CustomComboPopup {
-//                id: languagePopup
-//                Layout.fillWidth: true
-//                Layout.minimumWidth: 10
-//                visible: langs.length != 0
-//                heading: comboHeading[1]
-//                enabled: downloadUnavailable ? false : true
-//                dropdownModel: langs
-//            }
 
             CustomComboPopup {
                 id: resolutionPopup
@@ -182,10 +157,10 @@ Rectangle {
                 popupHeightIndex: itemIndex
                 text: comboHeading[2]
                 enabled: downloadUnavailable ? false : true
-//                multipleModel: true
-//                dropdownModel: resolutionModel
-//                dropdownModel2: videoExts
-//                dropdownModel3: vcodec
+
+                itemModelOne: resolutionModel
+                itemModelTwo: videoExts
+                itemModelThree: vcodec
             }
 
             Button {
@@ -195,7 +170,7 @@ Rectangle {
                 onClicked: {
                     isDownloadValid(audioPopup.text, resolutionPopup.text) ?
                                 downloadManager.actionDownload(videoLink, getFormats()) :
-                                PopupUtils.open(invalidDownloadWarning)
+                                invalidDownloadWarning.open()
                 }
             }
         }

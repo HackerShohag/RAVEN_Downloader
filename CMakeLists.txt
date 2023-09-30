@@ -14,6 +14,17 @@ endif()
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/quickcontrols/gallery")
 
+SET(YTDL_BINS
+  "${CMAKE_CURRENT_SOURCE_DIR}/bin/yt-dlp_linux"
+)
+
+SET_SOURCE_FILES_PROPERTIES(
+  ${YTDL_BINS}
+  PROPERTIES
+  EXTERNAL_OBJECT true
+  GENERATED true
+)
+
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick QuickControls2)
 
 qt_add_executable(raven.downloader
@@ -30,6 +41,7 @@ qt_add_qml_module(raven.downloader
         "qml/Components/CustomProgressBar.qml"
         "qml/Components/CustomComboPopup.qml"
         "qml/Components/ToolBar.qml"
+        "qml/Components/WarningDIalog.qml"
     RESOURCES
         "icons/gallery/20x20/back.png"
         "icons/gallery/20x20/drawer.png"
@@ -58,14 +70,15 @@ qt_add_qml_module(raven.downloader
         "images/qt-logo@4x.png"
         "qmldir"
         "qtquickcontrols2.conf"
+
+
 )
 
 target_link_libraries(raven.downloader PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::Quick
-    Qt::QuickControls2
-    DownloadManager
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Quick
+    Qt6::QuickControls2
     YoutubeDL
 )
 
@@ -76,9 +89,19 @@ if(UNIX AND NOT APPLE AND CMAKE_CROSSCOMPILING)
     target_link_libraries(raven.downloader PRIVATE Qt::QuickTemplates2)
 endif()
 
-add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/src/yt_dlp/yt_dlp" "${CMAKE_CURRENT_BINARY_DIR}/yt_dlp"
-)
+if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "aarch64")
+    set(TARGET_ARCH "_aarch64")
+elseif(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "armv7-a")
+    set(TARGET_ARCH "_armv7l")
+else()
+    set(TARGET_ARCH "")
+endif()
+
+message("Target architecture ${TARGET_ARCH} and link https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH}" )
+
+file(DOWNLOAD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH} ${CMAKE_BINARY_DIR}/bin/yt-dlp_linux SHOW_PROGRESS)
+file(CHMOD ${CMAKE_BINARY_DIR}/bin/yt-dlp_linux FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
+install(FILES ${CMAKE_BINARY_DIR}/bin/yt-dlp_linux TYPE BIN PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
 
 install(TARGETS raven.downloader
     RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"

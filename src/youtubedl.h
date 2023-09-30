@@ -13,6 +13,7 @@
 #ifndef YOUTUBEDL_H
 #define YOUTUBEDL_H
 
+#include <QObject>
 #include <QProcess>
 
 class YoutubeDL: public QObject

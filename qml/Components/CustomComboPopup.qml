@@ -24,6 +24,10 @@ Button {
     property int popupHeightIndex
     property int index
 
+    property var itemModelOne: null
+    property var itemModelTwo: null
+    property var itemModelThree: null
+
     text: "Codecs"
 
     onClicked: {
@@ -43,7 +47,7 @@ Button {
 
         x: -110 - dropdown.x + window.width * 0.1
         y: window.header.y - 130 - 100 * dropdown.popupHeightIndex + window.height * 0.1
-//        anchors.centerIn: window
+        anchors.centerIn: selectionDialog
         width: window.width * 0.8
         height: window.height * 0.8
         modal: true
@@ -64,12 +68,12 @@ Button {
 
                 Repeater {
                     width: parent.width
-                    model: 20
+                    model: itemModelOne.length
                     Button {
                         Layout.fillWidth: true
-                        text: "Y: " + popup.y
+                        text: itemModelOne[index] + " - " + itemModelTwo[index] + " (" + itemModelThree[index] + ")"
                         onClicked: {
-                            dropdown.text = text
+                            dropdown.text = itemModelOne[index]
                             popup.close()
                         }
                     }

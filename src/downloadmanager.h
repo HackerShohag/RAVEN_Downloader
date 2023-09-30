@@ -22,8 +22,8 @@
 #include <QJsonDocument>
 #include <QStandardPaths>
 
-#include <youtubedl.h>
-#include <mediaformat.h>
+#include "youtubedl.h"
+#include "mediaformat.h"
 
 class DownloadManager : public QObject
 {
