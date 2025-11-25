@@ -243,7 +243,7 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
 
     arguments << "-o" << this->downloadPath + "/%(title)s";
     qDebug() << "Download path: " << this->downloadPath;
-    downloader->start("bin/yt-dlp_linux", arguments);
+    downloader->start("yt-dlp_linux", arguments);
     qDebug() << "Arguments:" << arguments;
     qDebug() << "Current working directory: " << QDir::currentPath();
 

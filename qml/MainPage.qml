@@ -257,21 +257,22 @@ MainView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 contentY: units.gu(1)
-                contentHeight: downloadItemsContainer.height + rowLayout.height + downloadContainerHeading.height + root.margin + units.gu(3)
+                // contentHeight: downloadItemsContainer.height + colLayout.height + downloadContainerHeading.height + root.margin + blankDownloadPage.height + units.gu(20)
+                contentHeight: contentItem.childrenRect.height
                 ScrollBar.vertical: ScrollBar { }
 
                 LayoutsCustom {
                     id: inputPanel
                     Layout.fillWidth: true
-
-                    height:  units.gu(10)
+                    height: units.gu(20)
                     width: parent.width
 
-                    RowLayout {
-                        id: rowLayout
+                    ColumnLayout {
+                        id: colLayout
                         anchors.fill: parent
                         anchors.margins: units.gu(1)
-                        width: parent.width
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                         TextField {
                             id: urlContainer
                             Layout.fillWidth: true
@@ -280,6 +281,7 @@ MainView {
                         }
                         CustomComboPopup {
                             id: donwloadType
+                            Layout.fillWidth: true
                             heading: i18n.tr("Select download type")
                             defaultValue: true
                             dropdownModel: [i18n.tr("single video"), i18n.tr("playlist")]
@@ -287,6 +289,7 @@ MainView {
 
                         Button {
                             id: submitButton
+                            Layout.fillWidth: true
                             text: i18n.tr("Submit")
                             onClicked: urlHandler(urlContainer.text, donwloadType.index);
                         }
@@ -358,35 +361,29 @@ MainView {
                         }
                     }
                 }
-            }
-        }
+                // empty page while no downloads
+                ColumnLayout {
+                    id: blankDownloadPage
+                    visible: false
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    anchors {
+                        margins: units.gu(2)
+                        top: inputPanel.bottom
+                        left: parent.left
+                        right: parent.right
+                        bottom: parent.bottom
+                    }
 
-        // empty page while no downloads
-        ColumnLayout {
-            id: blankDownloadPage
-            visible: false
-            spacing: units.gu(2)
-            anchors {
-                margins: units.gu(2)
-                top: header.bottom
-                left: parent.left
-                right: parent.right
-                bottom: parent.bottom
-            }
-
-            Item {
-                Layout.fillHeight: true
-            }
-
-            Label {
-                id: label
-                Layout.alignment: Qt.AlignHCenter
-                text: i18n.tr('No Downloads!')
-                font.pixelSize: units.gu(3)
-            }
-
-            Item {
-                Layout.fillHeight: true
+                    Label {
+                        id: label
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignCenter
+                        text: i18n.tr("No downloads yet.")
+                        font.pixelSize: units.gu(2)
+                    }
+                }
             }
         }
 
