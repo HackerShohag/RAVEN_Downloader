@@ -107,14 +107,15 @@ LayoutsCustom {
     }
 
     Component {
-        id: downloadSuccessDialog
+        id: downloadFinishedDialog
         Dialog {
-            id: successDialog
-            title: i18n.tr("Download Started")
-            text: i18n.tr("Your download has been queued successfully!")
+            id: finishedDialog
+            property string fileName: ""
+            title: i18n.tr("Download Complete!")
+            text: i18n.tr("File downloaded successfully: ") + fileName
             Button {
                 text: "OK"
-                onClicked: PopupUtils.close(successDialog)
+                onClicked: PopupUtils.close(finishedDialog)
             }
         }
     }
@@ -232,21 +233,56 @@ LayoutsCustom {
                 id: downloadButton
                 enabled: downloadUnavailable ? false : true
                 text: i18n.tr("Download")
+                
+                property int pollDownloadId: -1
+                property var pollTimer: null
+                
                 onClicked: {
                     if (isDownloadValid(audioPopup.text, resolutionPopup.text)) {
                         python.call('download_manager.action_download', [videoLink, getFormats()], function(result) {
                             console.log('Download response:', JSON.stringify(result));
-                            if (result && result.success) {
-                                PopupUtils.open(downloadSuccessDialog);
-                            } else if (result && result.error) {
+                            if (result && result.success === false && result.error) {
                                 PopupUtils.open(downloadErrorDialog, gridBox, { 
                                     errorMessage: result.error 
                                 });
+                            } else if (result && result.download_id !== undefined) {
+                                // Start polling for download status
+                                pollDownloadId = result.download_id;
+                                startStatusPolling();
                             }
                         });
                     } else {
                         PopupUtils.open(invalidDownloadWarning);
                     }
+                }
+                
+                function startStatusPolling() {
+                    if (pollTimer) {
+                        pollTimer.stop();
+                    }
+                    pollTimer = Qt.createQmlObject('import QtQuick 2.7; Timer {}', downloadButton);
+                    pollTimer.interval = 1000; // Poll every second
+                    pollTimer.repeat = true;
+                    pollTimer.triggered.connect(function() {
+                        checkDownloadStatus();
+                    });
+                    pollTimer.start();
+                }
+                
+                function checkDownloadStatus() {
+                    python.call('download_manager.get_download_progress', [pollDownloadId], function(status) {
+                        if (status && status.status === 'finished') {
+                            pollTimer.stop();
+                            PopupUtils.open(downloadFinishedDialog, gridBox, {
+                                fileName: status.filename || 'Unknown'
+                            });
+                        } else if (status && status.status === 'error') {
+                            pollTimer.stop();
+                            PopupUtils.open(downloadErrorDialog, gridBox, { 
+                                errorMessage: status.error || 'Download failed'
+                            });
+                        }
+                    });
                 }
             }
         }
