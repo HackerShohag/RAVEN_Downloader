@@ -61,58 +61,39 @@ MainView {
     }
 
     function urlHandler(url, index) {
-        // Show loading indicator
         pageBusyIndicator.running = true;
         
-        if (index) {
-            python.call('download_manager.is_valid_playlist', [url], function(isValid) {
-                if (!isValid) {
-                    pageBusyIndicator.running = false;
-                    PopupUtils.open(invalidPlayListURLWarning);
-                    return;
-                }
-                if (downloadItemsContainer.visible === false)
-                    mainPage.toggleBlankPage();
-                python.call('download_manager.action_submit', [url, index], function(result) {
-                    console.log('[QML] action_submit returned:', JSON.stringify(result));
-                    if (result && result.error) {
-                        console.log('[QML] Error:', result.error);
-                        pageBusyIndicator.running = false;
-                        PopupUtils.open(qProcessError, root, { text: result.error });
-                    } else if (result && result.type === 'playlist') {
-                        pageBusyIndicator.running = false;
-                        handlePlaylistInfoExtracted(result.data);
-                    }
-                });
-                root.isPlaylist = true;
-            });
-            return;
-        }
-        console.log('[QML] Validating URL:', url);
-        python.call('download_manager.is_valid_video_url', [url], function(isValid) {
-            console.log('[QML] URL validation result:', isValid);
-            if (isValid) {
-                console.log('[QML] Calling action_submit with URL:', url, 'index:', index);
-                python.call('download_manager.action_submit', [url, index], function(result) {
-                    console.log('[QML] action_submit returned:', JSON.stringify(result));
-                    if (result && result.error) {
-                        console.log('[QML] Error:', result.error);
-                        pageBusyIndicator.running = false;
-                        if (result.error === 'playlist_as_video') {
-                            handleInvalidPlaylistUrl(result.url);
-                        } else {
-                            PopupUtils.open(qProcessError, root, { text: result.error });
-                        }
-                    } else if (result && result.type === 'video') {
-                        handleFormatsUpdated(result.data);
-                    }
-                });
-                root.isPlaylist = false;
+        var validationFunc = index ? 'is_valid_playlist' : 'is_valid_video_url';
+        var invalidWarning = index ? invalidPlayListURLWarning : invalidURLWarning;
+        
+        python.call('download_manager.' + validationFunc, [url], function(isValid) {
+            if (!isValid) {
+                pageBusyIndicator.running = false;
+                PopupUtils.open(invalidWarning);
                 return;
             }
-            console.log('[QML] URL is invalid, showing warning');
-            pageBusyIndicator.running = false;
-            PopupUtils.open(invalidURLWarning);
+            
+            if (downloadItemsContainer.visible === false)
+                mainPage.toggleBlankPage();
+                
+            python.call('download_manager.action_submit', [url, index], function(result) {
+                pageBusyIndicator.running = false;
+                
+                if (result && result.error) {
+                    if (result.error === 'playlist_as_video') {
+                        handleInvalidPlaylistUrl(result.url);
+                    } else {
+                        PopupUtils.open(qProcessError, root, { text: result.error });
+                    }
+                } else if (result && result.type === 'playlist') {
+                    handlePlaylistInfoExtracted(result.data);
+                } else if (result && result.type === 'video') {
+                    handleFormatsUpdated(result.data);
+                }
+                // console.log('Result from submit: ' + JSON.stringify(result));
+            });
+            
+            root.isPlaylist = index ? true : false;
         });
     }
 
@@ -124,7 +105,7 @@ MainView {
     property var mediaFormats: ({})
     
     function handleFormatsUpdated(formats) {
-        console.log('Formats updated for: ' + formats.title);
+        console.log("Formats updating for: " + formats.title);
         mediaFormats = formats;
         
         if (downloadItemsContainer.visible === false)
@@ -136,22 +117,22 @@ MainView {
             vDuration: formats.duration || '',
             vID: formats.videoUrl || '',
 
-            vCodec: formats.vcodeces || [],
-            vResolutions: formats.notes || [],
-            vVideoExts: formats.videoExtensions || [],
-            vVideoFormats: formats.videoFormatIds || [],
+            vCodec: JSON.stringify(formats.vcodeces || []),
+            vResolutions: JSON.stringify(formats.notes || []),
+            vVideoExts: JSON.stringify(formats.videoExtensions || []),
+            vVideoFormats: JSON.stringify(formats.videoFormatIds || []),
             vVideoProgress: 0,
 
-            aCodec: formats.acodeces || [],
-            vAudioExts: formats.audioExtensions || [],
-            vAudioFormats: formats.audioFormatIds || [],
-            vABR: formats.audioBitrates || [],
-            vAudioSizes: formats.audioSizes || [],
+            aCodec: JSON.stringify(formats.acodeces || []),
+            vAudioExts: JSON.stringify(formats.audioExtensions || []),
+            vAudioFormats: JSON.stringify(formats.audioFormatIds || []),
+            vABR: JSON.stringify(formats.audioBitrates || []),
+            vAudioSizes: JSON.stringify(formats.audioSizes || []),
 
-            vVideoIndex: null,
-            vAudioIndex: null,
+            vVideoIndex: 0,
+            vAudioIndex: 0,
 
-            vSizeModel: formats.filesizes || [],
+            vSizeModel: JSON.stringify(formats.filesizes || []),
             vIndex: count
         })
         count = count + 1;
@@ -409,7 +390,6 @@ MainView {
                     }
                     ListModel {
                         id: downloadItemsModel
-                        dynamicRoles: true
                     }
 
                     Repeater {
@@ -432,12 +412,12 @@ MainView {
                             videoTitle: vTitle
                             thumbnail: vThumbnail
                             duration: vDuration
-                            videoLink: "https://youtu.be/" + vID
+                            videoLink: vID
 
-                            vcodec: vCodec
-                            resolutionModel: vResolutions
-                            videoExts: vVideoExts
-                            videoFormats: vVideoFormats
+                            vcodec: JSON.parse(vCodec)
+                            resolutionModel: JSON.parse(vResolutions)
+                            videoExts: JSON.parse(vVideoExts)
+                            videoFormats: JSON.parse(vVideoFormats)
                             videoProgress: vVideoProgress
                             videoIndex: vVideoIndex
                             audioIndex: vAudioIndex
@@ -445,13 +425,13 @@ MainView {
 //                            langs: vLangs
 //                            langIds: vLangIds
 
-                            acodec: aCodec
-                            audioExts: vAudioExts
-                            audioFormats: vAudioFormats
-                            audioBitrate: vABR
-                            audioSizes: vAudioSizes
+                            acodec: JSON.parse(aCodec)
+                            audioExts: JSON.parse(vAudioExts)
+                            audioFormats: JSON.parse(vAudioFormats)
+                            audioBitrate: JSON.parse(vABR)
+                            audioSizes: JSON.parse(vAudioSizes)
 
-                            sizeModel: vSizeModel
+                            sizeModel: JSON.parse(vSizeModel)
                             indexID: vIndex
                         }
                     }

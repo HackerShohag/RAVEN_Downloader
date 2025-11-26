@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 04:37+0000\n"
+"POT-Creation-Date: 2025-11-26 15:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:489
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:469
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -33,15 +33,15 @@ msgstr ""
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:101
+#: ../qml/Components/MediaItem.qml:100
 msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:102
+#: ../qml/Components/MediaItem.qml:101
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:208
+#: ../qml/Components/MediaItem.qml:207
 msgid "Download"
 msgstr ""
 
@@ -53,67 +53,67 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:251
+#: ../qml/MainPage.qml:232
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/MainPage.qml:252
+#: ../qml/MainPage.qml:233
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/MainPage.qml:259
+#: ../qml/MainPage.qml:240
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:260
+#: ../qml/MainPage.qml:241
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/MainPage.qml:276
+#: ../qml/MainPage.qml:257
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/MainPage.qml:277
+#: ../qml/MainPage.qml:258
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:284
+#: ../qml/MainPage.qml:265
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:285
+#: ../qml/MainPage.qml:266
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:320 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:301 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:372
+#: ../qml/MainPage.qml:353
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:378
+#: ../qml/MainPage.qml:359
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:380
+#: ../qml/MainPage.qml:361
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:380
+#: ../qml/MainPage.qml:361
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:386
+#: ../qml/MainPage.qml:367
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:406
+#: ../qml/MainPage.qml:387
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:478
+#: ../qml/MainPage.qml:458
 msgid "No downloads yet."
 msgstr ""
 

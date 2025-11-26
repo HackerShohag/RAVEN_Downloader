@@ -263,6 +263,8 @@ class DownloadManager:
                 try:
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         ydl.download([video_url])
+                    # Mark as success after completion
+                    self.last_progress_time[download_id]['success'] = True
                 except Exception as e:
                     error_msg = str(e)
                     print(f"[action_download] Download thread error: {error_msg}")
@@ -270,7 +272,8 @@ class DownloadManager:
                         'progress': 0,
                         'status': 'error',
                         'error': error_msg,
-                        'timestamp': time.time()
+                        'timestamp': time.time(),
+                        'success': False
                     }
             
             thread = threading.Thread(target=download_thread, daemon=True)

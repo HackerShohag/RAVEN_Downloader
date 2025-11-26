@@ -77,7 +77,6 @@ LayoutsCustom {
     }
 
     Component.onCompleted: {
-//        console.log("Audio Sizes: " + audioSizes.get(0));
         if (generalSettings.autoDownload) {
             if (isDownloadValid(audioPopup.text, resolutionPopup.text))
             {
@@ -103,6 +102,33 @@ LayoutsCustom {
             Button {
                 text: "OK"
                 onClicked: PopupUtils.close(dialogue)
+            }
+        }
+    }
+
+    Component {
+        id: downloadSuccessDialog
+        Dialog {
+            id: successDialog
+            title: i18n.tr("Download Started")
+            text: i18n.tr("Your download has been queued successfully!")
+            Button {
+                text: "OK"
+                onClicked: PopupUtils.close(successDialog)
+            }
+        }
+    }
+
+    Component {
+        id: downloadErrorDialog
+        Dialog {
+            id: errorDialog
+            property string errorMessage: ""
+            title: i18n.tr("Download Failed")
+            text: errorMessage || i18n.tr("An error occurred while starting the download.")
+            Button {
+                text: "OK"
+                onClicked: PopupUtils.close(errorDialog)
             }
         }
     }
@@ -208,8 +234,15 @@ LayoutsCustom {
                 text: i18n.tr("Download")
                 onClicked: {
                     if (isDownloadValid(audioPopup.text, resolutionPopup.text)) {
-                        python.call('download_manager.action_download', [videoLink, getFormats()], function() {
-                            console.log('Download started');
+                        python.call('download_manager.action_download', [videoLink, getFormats()], function(result) {
+                            console.log('Download response:', JSON.stringify(result));
+                            if (result && result.success) {
+                                PopupUtils.open(downloadSuccessDialog);
+                            } else if (result && result.error) {
+                                PopupUtils.open(downloadErrorDialog, gridBox, { 
+                                    errorMessage: result.error 
+                                });
+                            }
                         });
                     } else {
                         PopupUtils.open(invalidDownloadWarning);
