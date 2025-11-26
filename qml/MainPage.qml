@@ -61,9 +61,13 @@ MainView {
     }
 
     function urlHandler(url, index) {
+        // Show loading indicator
+        pageBusyIndicator.running = true;
+        
         if (index) {
             python.call('download_manager.is_valid_playlist', [url], function(isValid) {
                 if (!isValid) {
+                    pageBusyIndicator.running = false;
                     PopupUtils.open(invalidPlayListURLWarning);
                     return;
                 }
@@ -73,8 +77,10 @@ MainView {
                     console.log('[QML] action_submit returned:', JSON.stringify(result));
                     if (result && result.error) {
                         console.log('[QML] Error:', result.error);
+                        pageBusyIndicator.running = false;
                         PopupUtils.open(qProcessError, root, { text: result.error });
                     } else if (result && result.type === 'playlist') {
+                        pageBusyIndicator.running = false;
                         handlePlaylistInfoExtracted(result.data);
                     }
                 });
@@ -91,6 +97,7 @@ MainView {
                     console.log('[QML] action_submit returned:', JSON.stringify(result));
                     if (result && result.error) {
                         console.log('[QML] Error:', result.error);
+                        pageBusyIndicator.running = false;
                         if (result.error === 'playlist_as_video') {
                             handleInvalidPlaylistUrl(result.url);
                         } else {
@@ -104,6 +111,7 @@ MainView {
                 return;
             }
             console.log('[QML] URL is invalid, showing warning');
+            pageBusyIndicator.running = false;
             PopupUtils.open(invalidURLWarning);
         });
     }
@@ -175,10 +183,12 @@ MainView {
     }
     
     function handleInvalidPlaylistUrl(url) {
+        pageBusyIndicator.running = false;
         PopupUtils.open(invalidPlayListURLWarning);
     }
     
     function handleGeneralMessage(message) {
+        pageBusyIndicator.running = false;
         PopupUtils.open(qProcessError, root, { text: message });
     }
 
@@ -276,18 +286,27 @@ MainView {
         }
     }
 
-    BusyIndicator {
-        id: pageBusyIndicator
-        padding: Math.min(root.width, root.height) / 3
+    Rectangle {
+        id: loadingOverlay
         anchors.fill: parent
-        anchors.centerIn: parent
-        background: Rectangle {
-            visible: pageBusyIndicator.running
+        visible: pageBusyIndicator.running
+        color: "#80000000"  // Semi-transparent black
+        z: 1000  // Ensure it's above all other content
+        
+        MouseArea {
             anchors.fill: parent
-            color: "lightgrey"
+            preventStealing: true
+            hoverEnabled: true
+            // Consume all mouse/touch events to prevent interaction with underlying UI
         }
-
-        running: false
+        
+        BusyIndicator {
+            id: pageBusyIndicator
+            anchors.centerIn: parent
+            width: units.gu(10)
+            height: units.gu(10)
+            running: false
+        }
     }
 
     Page {

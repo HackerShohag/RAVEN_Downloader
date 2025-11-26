@@ -34,9 +34,10 @@ postbuild: |
   pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-warn-script-location yt-dlp
   
   echo "Cleaning up some Cryptodome installing"
-  rm -rf "$TARGET_DIR/lib/python3/dist-packages/Cryptodome"
-  rm -rf "$TARGET_DIR/lib/python3/dist-packages/pycryptodome-3.23.0.dist-info"
-  rm -rf "$TARGET_DIR/lib/python3/dist-packages/pycryptodomex-3.23.0.dist-info"
-  
+  rm -rf $TARGET_DIR/lib/python3/dist-packages/Cryptodome*
+  rm -rf $TARGET_DIR/lib/python3/dist-packages/pycryptodome*
+  rm -rf $TARGET_DIR/lib/python3/dist-packages/pycryptodomex*
+  find "$TARGET_DIR/lib/python3/dist-packages" -name "*x86_64*.so" -delete
+
   echo "=== yt-dlp installed successfully to $TARGET_DIR/lib/python3/dist-packages ==="
-  ls -la "$TARGET_DIR/lib/python3/dist-packages/" | head -10
+  echo "=== Postbuild complete ==="

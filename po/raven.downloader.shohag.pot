@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 03:16+0000\n"
+"POT-Creation-Date: 2025-11-26 04:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:470
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:489
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -53,67 +53,67 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:241
+#: ../qml/MainPage.qml:251
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/MainPage.qml:242
+#: ../qml/MainPage.qml:252
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/MainPage.qml:249
+#: ../qml/MainPage.qml:259
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:250
+#: ../qml/MainPage.qml:260
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/MainPage.qml:266
+#: ../qml/MainPage.qml:276
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/MainPage.qml:267
+#: ../qml/MainPage.qml:277
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:274
+#: ../qml/MainPage.qml:284
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:275
+#: ../qml/MainPage.qml:285
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:301 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:320 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:353
+#: ../qml/MainPage.qml:372
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:359
+#: ../qml/MainPage.qml:378
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:380
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:380
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:367
+#: ../qml/MainPage.qml:386
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:387
+#: ../qml/MainPage.qml:406
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:459
+#: ../qml/MainPage.qml:478
 msgid "No downloads yet."
 msgstr ""
 
