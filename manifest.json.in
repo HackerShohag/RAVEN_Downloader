@@ -1,0 +1,15 @@
+{
+    "name": "raven.downloader.shohag",
+    "description": "A Simple YouTube Batch Downloader",
+    "architecture": "@CLICK_ARCH@",
+    "title": "RAVEN Downloader",
+    "hooks": {
+        "raven.downloader": {
+            "apparmor": "raven.downloader.apparmor",
+            "desktop":  "raven.downloader.desktop"
+        }
+    },
+    "version": "@BUILD_VERSION@",
+    "maintainer": "Abdullah AL Shohag <HackerShohag@outlook.com>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}

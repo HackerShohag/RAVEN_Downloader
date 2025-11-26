@@ -1,0 +1,47 @@
+---
+###############################################################################
+# Define defaults and template anchors
+###############################################################################
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  DOCKER_DRIVER: overlay2
+  CLICKABLE_VERSION: "7"
+  UT_VERSION: "20.04"
+
+default:
+  image: "clickable/ci-$UT_VERSION-amd64:$CLICKABLE_VERSION"
+
+###############################################################################
+# Define stages
+###############################################################################
+stages:
+- build
+- publish
+
+###############################################################################
+# `build` stage: build the click
+###############################################################################
+build:
+  stage: build
+  script:
+  - clickable build
+  artifacts:
+    paths:
+    - build/all/app/*.click
+    expire_in: 1 week
+
+###############################################################################
+# `release` stage: upload to OpenStore on tags
+###############################################################################
+publish:
+  stage: publish
+  rules:
+  - if: $CI_COMMIT_TAG
+  script:
+  - 'clickable publish --arch amd64 -- "$CI_COMMIT_MESSAGE"'
+  dependencies:
+  - build
+  artifacts:
+    paths:
+    - build/all/app/*.click
+    expire_in: 1 month

@@ -1,0 +1,42 @@
+clickable_minimum_required: 8.0.0
+builder: cmake
+kill: qmlscene
+
+ignore_review_warnings: true
+ignore_review_errors: true
+
+# Runtime dependencies for Ubuntu Touch
+dependencies_target:
+  - python3-minimal
+  - python3-setuptools
+  - python3-dev
+  - python3-pip
+
+# Post-build script to install yt-dlp as embedded Python library
+postbuild: |
+  set -ex
+  echo "=== Starting postbuild: Installing yt-dlp ==="
+  
+  # Find the install directory
+  if [ -n "$INSTALL_DIR" ]; then
+    TARGET_DIR="$INSTALL_DIR"
+  elif [ -n "$CMAKE_INSTALL_PREFIX" ]; then
+    TARGET_DIR="$CMAKE_INSTALL_PREFIX"
+  else
+    TARGET_DIR="./build/all/app/install"
+  fi
+  
+  echo "Target directory: $TARGET_DIR"
+  echo "Creating lib/python3/dist-packages directory..."
+  mkdir -p "$TARGET_DIR/lib/python3/dist-packages"
+  
+  echo "Installing yt-dlp..."
+  pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-warn-script-location yt-dlp
+  
+  echo "Cleaning up some Cryptodome installing"
+  rm -rf "$TARGET_DIR/lib/python3/dist-packages/Cryptodome"
+  rm -rf "$TARGET_DIR/lib/python3/dist-packages/pycryptodome-3.23.0.dist-info"
+  rm -rf "$TARGET_DIR/lib/python3/dist-packages/pycryptodomex-3.23.0.dist-info"
+  
+  echo "=== yt-dlp installed successfully to $TARGET_DIR/lib/python3/dist-packages ==="
+  ls -la "$TARGET_DIR/lib/python3/dist-packages/" | head -10

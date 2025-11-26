@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the raven.downloader.shohag package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: raven.downloader.shohag\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-26 03:02+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:470
+msgid "Swipe for Settings"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:54
+msgid "select audio"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:54
+msgid "select language"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:54
+msgid "select resolution"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:101
+msgid "Download Invalid!"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:102
+msgid "Please refresh download link."
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:208
+msgid "Download"
+msgstr ""
+
+#: ../qml/Components/WarningDialog.qml:27
+msgid "OK"
+msgstr ""
+
+#: ../qml/ExportPage.qml:40
+msgid "Install/Save with"
+msgstr ""
+
+#: ../qml/MainPage.qml:241
+msgid "Error Occurred!"
+msgstr ""
+
+#: ../qml/MainPage.qml:242
+msgid "An unknown error occured."
+msgstr ""
+
+#: ../qml/MainPage.qml:249
+msgid "Invalid Playlist URL!"
+msgstr ""
+
+#: ../qml/MainPage.qml:250
+msgid "Please provide a link with valid list argument."
+msgstr ""
+
+#: ../qml/MainPage.qml:266
+msgid "Download Complete!"
+msgstr ""
+
+#: ../qml/MainPage.qml:267
+msgid " video(s) from \""
+msgstr ""
+
+#: ../qml/MainPage.qml:274
+msgid "Invalid URL!"
+msgstr ""
+
+#: ../qml/MainPage.qml:275
+msgid "Please provide a valid video link."
+msgstr ""
+
+#: ../qml/MainPage.qml:301 raven.downloader.desktop.in.h:1
+msgid "RAVEN Downloader"
+msgstr ""
+
+#: ../qml/MainPage.qml:353
+msgid "Put YouTube video or playlist URL here"
+msgstr ""
+
+#: ../qml/MainPage.qml:359
+msgid "Select download type"
+msgstr ""
+
+#: ../qml/MainPage.qml:361
+msgid "playlist"
+msgstr ""
+
+#: ../qml/MainPage.qml:361
+msgid "single video"
+msgstr ""
+
+#: ../qml/MainPage.qml:367
+msgid "Submit"
+msgstr ""
+
+#: ../qml/MainPage.qml:387
+msgid "   Downloaded Files"
+msgstr ""
+
+#: ../qml/MainPage.qml:459
+msgid "No downloads yet."
+msgstr ""
+
+#: ../qml/SettingsPage.qml:34
+msgid "System theme"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:35
+msgid "Ambiance theme"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:36
+msgid "Suru-dark theme"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:51
+msgid "Settings"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:136
+msgid "Download available subtitles"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:178
+msgid "Download captions (If subtitle unavailable)"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:202
+msgid "Embed subtitles in files"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:231
+msgid "Auto Download (best format)"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:264
+msgid "Select app theme"
+msgstr ""
+
+#: ../qml/SettingsPage.qml:294
+msgid "Clear All History"
+msgstr ""
