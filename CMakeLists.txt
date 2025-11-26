@@ -70,6 +70,12 @@ if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/lib)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib DESTINATION ${DATA_DIR})
 endif()
 
+# Install bin directory if it exists (created by postbuild script with ffmpeg)
+if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/bin)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin DESTINATION ${DATA_DIR}
+            USE_SOURCE_PERMISSIONS)
+endif()
+
 # Translations
 file(GLOB_RECURSE I18N_SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/po qml/*.qml qml/*.js)
 list(APPEND I18N_SRC_FILES ${DESKTOP_FILE_NAME}.in.h)

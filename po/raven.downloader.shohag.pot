@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 15:59+0000\n"
+"POT-Creation-Date: 2025-11-26 21:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,7 +41,23 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:207
+#: ../qml/Components/MediaItem.qml:114 ../qml/MainPage.qml:257
+msgid "Download Complete!"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:115
+msgid "File downloaded successfully: "
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:128
+msgid "Download Failed"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:129
+msgid "An error occurred while starting the download."
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:235
 msgid "Download"
 msgstr ""
 
@@ -67,10 +83,6 @@ msgstr ""
 
 #: ../qml/MainPage.qml:241
 msgid "Please provide a link with valid list argument."
-msgstr ""
-
-#: ../qml/MainPage.qml:257
-msgid "Download Complete!"
 msgstr ""
 
 #: ../qml/MainPage.qml:258

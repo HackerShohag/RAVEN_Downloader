@@ -2,22 +2,23 @@ clickable_minimum_required: 8.0.0
 builder: cmake
 kill: qmlscene
 
+framework: ubuntu-touch-24.04-1.x
+
 ignore_review_warnings: true
 ignore_review_errors: true
 
 # Runtime dependencies for Ubuntu Touch
 dependencies_target:
-  - ffmpeg
   - python3-minimal
   - python3-setuptools
-  - python3-dev
   - python3-pip
+  - ffmpeg
 
-# Post-build script to install yt-dlp as embedded Python library
+# Post-build script to install yt-dlp as embedded Python library and ffmpeg
 postbuild: |
   set -ex
-  echo "=== Starting postbuild: Installing yt-dlp ==="
-  
+  echo "=== Starting postbuild: Installing yt-dlp and ffmpeg ==="
+
   # Find the install directory
   if [ -n "$INSTALL_DIR" ]; then
     TARGET_DIR="$INSTALL_DIR"
@@ -26,7 +27,7 @@ postbuild: |
   else
     TARGET_DIR="./build/all/app/install"
   fi
-  
+
   echo "Target directory: $TARGET_DIR"
   echo "Creating lib/python3/dist-packages directory..."
   mkdir -p "$TARGET_DIR/lib/python3/dist-packages"
@@ -34,11 +35,32 @@ postbuild: |
   echo "Installing yt-dlp..."
   pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-warn-script-location yt-dlp
   
-  echo "Cleaning up some Cryptodome installing"
-  rm -rf $TARGET_DIR/lib/python3/dist-packages/Cryptodome*
-  rm -rf $TARGET_DIR/lib/python3/dist-packages/pycryptodome*
-  rm -rf $TARGET_DIR/lib/python3/dist-packages/pycryptodomex*
-  find "$TARGET_DIR/lib/python3/dist-packages" -name "*x86_64*.so" -delete
+  echo "=== Setting up ffmpeg binary ==="
+  mkdir -p "$TARGET_DIR/bin"
+  
+  # Download static ffmpeg binary as fallback
+  echo "Downloading ffmpeg binary for ARM64 only. (armhf and i386 not supported currently)"
+  
+  FFMPEG_URL="https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-arm64-static.tar.xz"
+
+  echo "Downloading ffmpeg from: $FFMPEG_URL"
+  wget -q -O /tmp/ffmpeg.tar.xz "$FFMPEG_URL" || {
+    echo "WARNING: Failed to download ffmpeg binary"
+    echo "The app will try to use system ffmpeg at runtime"
+  }
+  
+  if [ -f /tmp/ffmpeg.tar.xz ]; then
+    tar -xJf /tmp/ffmpeg.tar.xz -C /tmp
+    find /tmp -name "ffmpeg" -type f -executable -exec cp {} "$TARGET_DIR/bin/ffmpeg" \;
+    chmod +x "$TARGET_DIR/bin/ffmpeg"
+    rm -rf /tmp/ffmpeg*.tar.xz /tmp/ffmpeg-*
+    echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
+  fi
+  
+  # Verify ffmpeg
+  if [ -f "$TARGET_DIR/bin/ffmpeg" ]; then
+    "$TARGET_DIR/bin/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
+  fi
 
   echo "=== yt-dlp installed successfully to $TARGET_DIR/lib/python3/dist-packages ==="
   echo "=== Postbuild complete ==="

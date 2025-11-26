@@ -27,6 +27,22 @@ if lib_path.exists():
     sys.path.insert(0, str(lib_path))
     print(f"[download_manager] Added lib path: {lib_path}")
 
+# Add bin directory to PATH for embedded ffmpeg
+bin_path = current_dir / "bin"
+if bin_path.exists():
+    os.environ["PATH"] = str(bin_path) + os.pathsep + os.environ.get("PATH", "")
+    print(f"[download_manager] Added bin path to PATH: {bin_path}")
+    
+    # Store ffmpeg location for yt-dlp
+    ffmpeg_location = bin_path / "ffmpeg"
+    if ffmpeg_location.exists():
+        print(f"[download_manager] Found embedded ffmpeg at: {ffmpeg_location}")
+        os.environ["FFMPEG_BINARY"] = str(ffmpeg_location)
+    else:
+        print(f"[download_manager] WARNING: ffmpeg binary not found at {ffmpeg_location}")
+else:
+    print(f"[download_manager] WARNING: bin directory not found at {bin_path}")
+
 # Import yt-dlp
 try:
     import yt_dlp
@@ -246,6 +262,12 @@ class DownloadManager:
                 'quiet': False,
                 'no_warnings': False,
             }
+            
+            # Configure ffmpeg location if available
+            ffmpeg_binary = os.environ.get("FFMPEG_BINARY")
+            if ffmpeg_binary and os.path.exists(ffmpeg_binary):
+                ydl_opts['ffmpeg_location'] = os.path.dirname(ffmpeg_binary)
+                print(f"[action_download] Using ffmpeg at: {ffmpeg_binary}")
             
             # Add subtitle options
             if download_subtitles or download_captions:
