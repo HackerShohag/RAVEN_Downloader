@@ -1,17 +1,32 @@
-﻿/* youtube-dl-qt is Free Software: You can use, study share
- * and improve it at your will. Specifically you can redistribute
- * and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * This source have been modified significantly to adapt with the project.
- *
- * The original author of this code : Robin de Rooij (https://github.com/rrooij)
- * The original repository of this code : https://github.com/rrooij/youtube-dl-qt 
+﻿/**
+ * @file mediaformat.cpp
+ * @brief Implementation of MediaFormat data model
+ * 
+ * Implements getter/setter methods for managing video and audio format metadata.
+ * All setters emit corresponding Qt signals for QML property binding updates.
+ * 
+ * Implementation Notes:
+ * - String lists use append (<<) operator for adding items
+ * - Numeric values are rounded to nearest integer for file sizes
+ * - clearClutter() resets all members for object reuse
+ * - Audio bitrates can include language information
+ * 
+ * Original Source:
+ *   youtube-dl-qt by Robin de Rooij (https://github.com/rrooij/youtube-dl-qt)
+ *   Licensed under GNU GPL v3 or later
+ *   Extensively modified for RAVEN Downloader project
+ * 
+ * @author Robin de Rooij (original), Abdullah AL Shohag (modifications)
+ * @date 2022-2025
+ * @copyright GNU General Public License v3.0 or later
  */
 
 #include "mediaformat.h"
 
+/**
+ * @brief Constructs a MediaFormat object
+ * @param parent Parent QObject for Qt ownership hierarchy
+ */
 MediaFormat::MediaFormat(QObject *parent) : QObject{parent}
 {
 }
@@ -138,6 +153,15 @@ void MediaFormat::setFilesizeItem(double value)
     this->m_filesizes << qRound(value);
 }
 
+/**
+ * @brief Clears all stored metadata to reset the object for reuse
+ * 
+ * This method resets all member variables (title, formats, codecs, etc.)
+ * to their default empty state. Useful when reusing the same MediaFormat
+ * object for multiple videos to avoid memory allocation overhead.
+ * 
+ * @note Does not emit signals as this is a bulk reset operation
+ */
 void MediaFormat::clearClutter()
 {
     this->m_title.clear();

@@ -3,5 +3,19 @@ clickable_minimum_required: "8"
 builder: cmake
 kill: raven.downloader
 
+dependencies_host:
+- wget
+
 dependencies_target:
 - ffmpeg
+
+image_setup:
+  run:
+    - dpkg --add-architecture arm64 || true
+    - apt-get update
+    - apt-get install -y --no-install-recommends python3.8 python3.8-dev libpython3.8-dev libexpat1-dev
+    - apt-get download python3.8-minimal:arm64 python3.8:arm64 python3.8-dev:arm64 libpython3.8:arm64 libpython3.8-dev:arm64 libexpat1-dev:arm64
+    - dpkg --force-depends -i python3.8-minimal*.deb libpython3.8_*.deb python3.8_*_arm64.deb libpython3.8-dev*.deb python3.8-dev*_arm64.deb libexpat1-dev*.deb || true
+    - rm -f *.deb
+    - apt-get install -y --no-install-recommends python3-distutils python3-lib2to3 || true
+

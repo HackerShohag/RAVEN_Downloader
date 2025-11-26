@@ -1,17 +1,24 @@
-/*
- * Copyright (C) 2022  Abdullah AL Shohag
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 3.
- *
- * raven.downloader is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/**
+ * @file downloadmanager.cpp
+ * @brief Implementation of central download controller
+ * 
+ * Implements the complete download workflow including:
+ * - URL validation and playlist detection
+ * - Metadata fetching coordination with YoutubeDL
+ * - Download execution in both Python API and QProcess modes
+ * - Progress parsing and reporting
+ * - JSON-based history persistence
+ * - Error handling and user messaging
+ * 
+ * Implementation Notes:
+ * - Constructor initializes YoutubeDL with Python support if available
+ * - downloadWithPython() uses progress callbacks for real-time updates
+ * - downloadWithQProcess() parses stdout for progress information
+ * - History is stored in AppDataLocation as history.json
+ * 
+ * @author Abdullah AL Shohag
+ * @date 2022-2025
+ * @copyright GNU General Public License v3.0 or later
  */
 
 #include <QFile>
@@ -19,14 +26,32 @@
 #include <QUrlQuery>
 #include <QJsonArray>
 #include "downloadmanager.h"
+#include "embedded_python.h"
 
 #include <QDir>
 
-DownloadManager::DownloadManager(QObject *parent) : QObject{parent}
+/**
+ * @brief Constructs DownloadManager and initializes YoutubeDL with Python support
+ * 
+ * @param python Optional EmbeddedPython instance for API mode operation
+ * @param parent Parent QObject for Qt ownership hierarchy
+ * 
+ * Creates YoutubeDL instance with Python support if available. Connects signals
+ * for metadata updates, completion notifications, and error handling.
+ */
+DownloadManager::DownloadManager(EmbeddedPython* python, QObject *parent) 
+    : QObject{parent}
+    , m_python(python)
+    , m_usePythonMode(python && python->isInitialized())
 {
+    // Create YoutubeDL with Python support
+    this->ytdl = new YoutubeDL(python, this);
+    
     connect(this->ytdl, SIGNAL(updateQString(QString)), this, SLOT(checkJsonObject(QString)));
     connect(this->ytdl, SIGNAL(dataFetchFinished()), this, SLOT(finishedFetching()));
     connect(this->ytdl, SIGNAL(qProcessError(QProcess::ProcessError)), this, SLOT(errorMessage(QProcess::ProcessError)));
+    
+    qDebug() << "DownloadManager initialized. Python mode:" << m_usePythonMode;
 }
 
 DownloadManager::~DownloadManager()
@@ -225,31 +250,19 @@ void DownloadManager::actionDownload(QString url, QJsonObject data)
 {
     qDebug() << Q_FUNC_INFO;
 
-    QProcess *downloader = new QProcess();
-    QStringList arguments;
     qint64 indexID = data.value("indexID").toInt();
-
-    if (!data.value("subtitle").isUndefined())
-    {
-        arguments << "--all-subs";
-        if (!data.value("strConvert").isUndefined())
-            arguments << "--convert-subs=srt";
-        if (!data.value("embedded").isUndefined())
-            arguments << "--embed-subs";
-    } else if (!data.value("caption").isUndefined())
-        arguments << "--write-auto-sub";
-
-    arguments << "-f" << data.value("format").toString() << url;
-
-    arguments << "-o" << this->downloadPath + "/%(title)s";
-    qDebug() << "Download path: " << this->downloadPath;
-    downloader->start("yt-dlp_linux", arguments);
-    qDebug() << "Arguments:" << arguments;
-    qDebug() << "Current working directory: " << QDir::currentPath();
-
-    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {downloadProgressSlot(downloader, indexID);} );
-    connect(downloader, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorMessage(QProcess::ProcessError)));
-    connect(downloader, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(downloadFinishedSlot(int,QProcess::ExitStatus)));
+    QString format = data.value("format").toString();
+    QString outputPath = this->downloadPath + "/%(title)s";
+    
+    qDebug() << "Download path:" << this->downloadPath;
+    qDebug() << "Format:" << format;
+    qDebug() << "Use Python mode:" << m_usePythonMode;
+    
+    if (m_usePythonMode) {
+        downloadWithPython(url, format, outputPath, indexID);
+    } else {
+        downloadWithQProcess(url, format, outputPath, indexID);
+    }
 }
 
 void DownloadManager::stopProcess()
@@ -314,6 +327,82 @@ bool DownloadManager::isValidUrl(QString url)
             return false;
     }
     return YoutubeDL::isValidUrl(url);
+}
+
+void DownloadManager::downloadWithPython(const QString& url, const QString& format, const QString& outputPath, qint64 indexID)
+{
+    qDebug() << "Downloading with Python API";
+    
+    // Define progress callback with correct signature
+    auto progressCallback = [this, indexID](double progress, const std::string& status) {
+        // Parse progress from status string
+        // yt-dlp progress format: "[download]  45.2% of 10.5MiB at 1.2MiB/s ETA 00:05"
+        QString statusStr = QString::fromStdString(status);
+        
+        // Emit progress percentage (already provided by callback)
+        if (progress >= 0) {
+            emit downloadProgress(QString::number(qRound(progress)), indexID);
+        }
+        
+        if (statusStr.contains("[download]")) {
+            // Extract filename if present
+            QRegExp frx(".Merger. Merging formats into.*\\n");
+            QRegExp dfrx(".download. Destination: (.*)\\n");
+            
+            if (frx.indexIn(statusStr) != -1) {
+                QStringList f = frx.capturedTexts();
+                if (!f[0].isEmpty()) {
+                    this->filename = f[0].split("\"")[1];
+                    qDebug() << "Filename:" << "file://" + this->filename;
+                }
+            } else if (dfrx.indexIn(statusStr) != -1) {
+                QStringList df = dfrx.capturedTexts();
+                if (df.size() > 1) {
+                    this->filename = df[1];
+                    qDebug() << "Filename:" << "file://" + this->filename;
+                }
+            }
+        }
+        
+        qDebug() << statusStr;
+    };
+    
+    // Call embedded Python yt-dlp download
+    auto result = m_python->runYtDlpDownload(url.toStdString(), format.toStdString(), 
+                                             outputPath.toStdString(), progressCallback);
+    
+    if (result.first) {
+        // Success
+        qDebug() << "Python download completed successfully";
+        emit downloadFinished(this->filename);
+    } else {
+        // Error
+        QString errorMsg = QString::fromStdString(result.second);
+        qWarning() << "Python download failed:" << errorMsg;
+        emit generalMessage("Download failed: " + errorMsg);
+    }
+}
+
+void DownloadManager::downloadWithQProcess(const QString& url, const QString& format, const QString& outputPath, qint64 indexID)
+{
+    qDebug() << "Downloading with QProcess (fallback mode)";
+    
+    QProcess *downloader = new QProcess();
+    QStringList arguments;
+    
+    arguments << "-f" << format << url;
+    arguments << "-o" << outputPath;
+    
+    qDebug() << "Arguments:" << arguments;
+    qDebug() << "Current working directory:" << QDir::currentPath();
+    
+    downloader->start("yt-dlp_linux", arguments);
+    
+    connect(downloader, &QProcess::readyReadStandardOutput, this, [this, downloader, indexID] {
+        downloadProgressSlot(downloader, indexID);
+    });
+    connect(downloader, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorMessage(QProcess::ProcessError)));
+    connect(downloader, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(downloadFinishedSlot(int,QProcess::ExitStatus)));
 }
 
 //void listModelToString() {

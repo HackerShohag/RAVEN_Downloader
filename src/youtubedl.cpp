@@ -1,22 +1,53 @@
-/* youtube-dl-qt is Free Software: You can use, study share
- * and improve it at your will. Specifically you can redistribute
- * and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
- *
- * This source have been modified significantly to adapt with the project.
- *
- * The original author of this code : Robin de Rooij (https://github.com/rrooij)
- * The original repository of this code : https://github.com/rrooij/youtube-dl-qt
+/**
+ * @file youtubedl.cpp
+ * @brief Implementation of dual-mode yt-dlp metadata fetcher
+ * 
+ * Implements video metadata fetching using either:
+ * 1. Embedded Python API (m_python->runYtDlpExtract())
+ * 2. QProcess subprocess execution (yt-dlp_linux binary)
+ * 
+ * The implementation handles JSON parsing, playlist processing, and
+ * signal emission for both modes transparently.
+ * 
+ * Implementation Details:
+ * - Constructor determines mode based on EmbeddedPython initialization status
+ * - fetchWithPython() handles JSON array splitting for playlists
+ * - fetchWithQProcess() maintains legacy subprocess behavior
+ * - All methods emit updateQString for each video entry
+ * 
+ * Original Source:
+ *   youtube-dl-qt by Robin de Rooij (https://github.com/rrooij/youtube-dl-qt)
+ *   Licensed under GNU GPL v3 or later
+ *   Extensively modified for RAVEN Downloader project
+ * 
+ * @author Robin de Rooij (original), Abdullah AL Shohag (modifications)
+ * @date 2022-2025
+ * @copyright GNU General Public License v3.0 or later
  */
 
 #include <QRegExpValidator>
 #include <QDebug>
 #include <QUrlQuery>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "youtubedl.h"
+#include "embedded_python.h"
 
-YoutubeDL::YoutubeDL()
+/**
+ * @brief Constructs YoutubeDL with optional Python support
+ * 
+ * @param python Optional EmbeddedPython instance for API mode (nullptr for QProcess mode)
+ * @param parent Parent QObject for Qt ownership hierarchy
+ * 
+ * If python is provided and initialized, the object operates in Python API mode.
+ * Otherwise, it falls back to QProcess mode using the yt-dlp_linux binary.
+ */
+YoutubeDL::YoutubeDL(EmbeddedPython* python, QObject* parent)
+    : QObject(parent)
+    , m_python(python)
+    , m_usePythonMode(python && python->isInitialized())
 {
     this->ytdl = new QProcess();
     this->program = "yt-dlp_linux";
@@ -26,6 +57,11 @@ YoutubeDL::YoutubeDL()
     connect(this->ytdl,SIGNAL(readyRead()), this, SLOT(readyReadStandardOutput()));
     connect(this->ytdl,SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(finishedSlot(int, QProcess::ExitStatus)));
     connect(this->ytdl, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(emitErrorMessage(QProcess::ProcessError)));
+    
+    qDebug() << "YoutubeDL initialized. Python mode:" << m_usePythonMode;
+    if (m_usePythonMode) {
+        qDebug() << "yt-dlp version:" << QString::fromStdString(m_python->getYtDlpVersion());
+    }
 }
 
 YoutubeDL::~YoutubeDL()
@@ -36,11 +72,13 @@ YoutubeDL::~YoutubeDL()
 
 void YoutubeDL::fetchSingleFormats(QString url)
 {
-    qInfo() << Q_FUNC_INFO;
-    this->arguments << "-j" << "--no-playlist" << "--flat-playlist" << url;
-    this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
-    this->ytdl->start(this->program, this->arguments);
-    this->resetArguments();
+    qInfo() << Q_FUNC_INFO << "URL:" << url;
+    
+    if (m_usePythonMode) {
+        fetchWithPython(url, false);
+    } else {
+        fetchWithQProcess(url, false);
+    }
 }
 
 QString YoutubeDL::extractPlaylistUrl(QString url)
@@ -93,10 +131,13 @@ void YoutubeDL::addArguments(QString arg)
 
 void YoutubeDL::startForPlayList(QString url)
 {
-    arguments << "-j" << extractPlaylistUrl(url);
-    ytdl->setProcessChannelMode(QProcess::SeparateChannels);
-    ytdl->start(this->program, this->arguments);
-    this->resetArguments();
+    qInfo() << Q_FUNC_INFO << "Playlist URL:" << url;
+    
+    if (m_usePythonMode) {
+        fetchWithPython(url, true);
+    } else {
+        fetchWithQProcess(url, true);
+    }
 }
 
 void YoutubeDL::stopConnection()
@@ -120,6 +161,70 @@ void YoutubeDL::finishedSlot(int exitCode, QProcess::ExitStatus exitStatus)
 void YoutubeDL::emitErrorMessage(QProcess::ProcessError error)
 {
     emit qProcessError(error);
+}
+
+void YoutubeDL::fetchWithPython(const QString& url, bool isPlaylist)
+{
+    qDebug() << "Fetching with Python API. Playlist:" << isPlaylist;
+    
+    // Call embedded Python yt-dlp
+    auto result = m_python->runYtDlpExtract(url.toStdString(), isPlaylist);
+    
+    if (result.first) {
+        // Success - emit JSON data
+        QString jsonData = QString::fromStdString(result.second);
+        qDebug() << "Python fetch successful. JSON length:" << jsonData.length();
+        
+        if (isPlaylist) {
+            // For playlists, we need to emit each video entry separately
+            QJsonDocument doc = QJsonDocument::fromJson(jsonData.toUtf8());
+            if (doc.isObject()) {
+                QJsonObject playlistObj = doc.object();
+                QJsonArray entries = playlistObj["entries"].toArray();
+                
+                qDebug() << "Playlist has" << entries.size() << "entries";
+                
+                // Emit each entry as separate JSON
+                for (const QJsonValue& entry : entries) {
+                    if (entry.isObject()) {
+                        QJsonDocument entryDoc(entry.toObject());
+                        QString entryJson = QString::fromUtf8(entryDoc.toJson(QJsonDocument::Compact));
+                        emit updateQString(entryJson);
+                    }
+                }
+            }
+        } else {
+            // Single video - emit directly
+            emit updateQString(jsonData);
+        }
+        
+        // Signal completion
+        emit dataFetchFinished();
+    } else {
+        // Error - emit error signal
+        QString errorMsg = QString::fromStdString(result.second);
+        qWarning() << "Python fetch failed:" << errorMsg;
+        emit qProcessError(QProcess::UnknownError);
+        emit dataFetchFinished();
+    }
+}
+
+void YoutubeDL::fetchWithQProcess(const QString& url, bool isPlaylist)
+{
+    qDebug() << "Fetching with QProcess (fallback mode)";
+    
+    this->arguments.clear();
+    this->arguments << "-j";
+    
+    if (isPlaylist) {
+        this->arguments << extractPlaylistUrl(url);
+    } else {
+        this->arguments << "--no-playlist" << "--flat-playlist" << url;
+    }
+    
+    this->ytdl->setProcessChannelMode(QProcess::SeparateChannels);
+    this->ytdl->start(this->program, this->arguments);
+    this->resetArguments();
 }
 
 void YoutubeDL::resetArguments()

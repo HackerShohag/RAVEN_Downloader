@@ -102,19 +102,8 @@ add_custom_target(${DESKTOP_FILE_NAME} ALL
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_NAME} DESTINATION ${DATA_DIR})
 
-# yt-dlp architecture dependend files downloads
-if(${CLICK_ARCH} STREQUAL "arm64")
-    set(TARGET_ARCH "_aarch64")
-elseif(${CLICK_ARCH} STREQUAL "armhf")
-    set(TARGET_ARCH "_armv7l")
-else()
-    set(TARGET_ARCH "")
-endif()
-
-message("Target architecture ${CLICK_ARCH} and link https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH}" )
-
-file(DOWNLOAD https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux${TARGET_ARCH} ${BUILD_DIR}/bin/yt-dlp_linux SHOW_PROGRESS)
-install(FILES ${BUILD_DIR}/bin/yt-dlp_linux TYPE BIN PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ)
+# Include modular Python bundle management
+include(cmake/PythonBundle.cmake)
 
 add_subdirectory(po)
 add_subdirectory(plugins)

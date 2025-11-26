@@ -1,24 +1,66 @@
 # RAVEN Downloader
 [![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
 
-A simple youtube video downloader that can download entire playlist. This is Ubuntu Touch application based on qt framework.
+A YouTube video downloader for Ubuntu Touch with support for single videos and playlists. Built with Qt/QML framework and features embedded Python runtime for enhanced performance.
 
-### Requirements:
-        ffmpeg
-        yt-dlp
+## Features
 
-It uses the the `yt-dlp` binary release from [yt-dlp official repo](https://github.com/yt-dlp/yt-dlp/releases) named `yt-dlp_linux` (`yt-dlp_linux_aarch64` for arm64 and `yt-dlp_linux_armv7l` for arm).
+- Download individual videos and complete playlists
+- Multiple quality/format selection (video, audio, combined)
+- Embedded Python runtime with yt-dlp API integration
+- Automatic fallback to binary execution mode
+- Download progress tracking
+- Download history management
+- Dark/Light theme support
 
-### Needs testing:
-        Theme Management (might have some bugs)
-        Download Location (default is appData path: ~/.local/share/raven.downloader.shohag)
+## Requirements
 
-N.B.: Testing data or reporting bug would be appreciated. 
+**Runtime Dependencies:**
+
+- Ubuntu Touch 20.04 (Focal)
+- Qt 5.12+
+- ffmpeg (for format merging)
+- Python 3.8+ (bundled in Click package)
+- yt-dlp (bundled)
+
+**Build Dependencies:**
+
+- Clickable SDK
+- CMake 3.16+
+- Qt5 development packages
+- Python 3.8 development headers
+
+## Architecture
+
+The application operates in two modes:
+
+1. **Python API Mode** (Primary): Uses embedded Python interpreter to call yt-dlp directly as a library for better performance and error handling.
+
+2. **QProcess Mode** (Fallback): Executes yt-dlp binary as subprocess when Python initialization fails.
+
+## Installation
+
+Install from [OpenStore](https://open-store.io/app/raven.downloader.shohag) or build from source:
+
+```bash
+clickable build
+clickable install
+```
+
+## Configuration
+
+**Download Location:** Default is `~/.local/share/raven.downloader.shohag`  
+Can be changed in Settings page (needs testing).
+
+**Python Bundle:** Automatically deployed in Click packages.
+For development builds, run `./setup_python_bundle.sh` to create the bundle.
 
 ## Screenshots
+
 Download Page             |  Settings Page
 :-------------------------:|:-------------------------:
 ![Playlist Download Page](https://user-images.githubusercontent.com/47150885/226753975-bbebf3b5-954c-4559-930b-64a08b04afc4.png) | ![Settings Page](https://user-images.githubusercontent.com/47150885/226754242-5008069e-ac7c-4e1e-8c0e-fba715de5ded.png)
+
 
 
 ## License
