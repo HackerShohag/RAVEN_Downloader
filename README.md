@@ -2,6 +2,8 @@
 
 A professional YouTube and video platform downloader application built specifically for Ubuntu Touch, featuring a modern QML interface with Python-powered download capabilities.
 
+[![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
+
 ## Overview
 
 RAVEN Downloader is a native Ubuntu Touch application that enables users to download videos and audio from YouTube and other supported platforms. The application provides granular control over format selection, quality preferences, and includes advanced features such as subtitle embedding and playlist batch downloading.
