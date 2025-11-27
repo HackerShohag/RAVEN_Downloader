@@ -225,24 +225,19 @@ class DownloadManager:
                         }
                     
                 elif d['status'] == 'finished':
+                    # This is called after each fragment/stream download
+                    # For audio+video, it's called twice (once for audio, once for video)
+                    # Wait for post-processing to complete before marking as finished
                     filename = d.get('filename', 'Unknown')
-                    print(f"[action_download] Download {download_id} finished: {filename}")
+                    print(f"[action_download] Stream downloaded: {filename}")
                     
-                    # Store finished status
+                    # Update to processing status (ffmpeg merging)
                     self.last_progress_time[download_id] = {
-                        'progress': 100.0,
-                        'status': 'finished',
+                        'progress': 95.0,  # Show 95% while processing
+                        'status': 'processing',
                         'filename': filename,
                         'timestamp': current_time
                     }
-                    
-                    # Add to history
-                    self.storage.add_download_entry({
-                        'url': video_url,
-                        'filename': os.path.basename(filename),
-                        'path': filename,
-                        'timestamp': time.time(),
-                    })
                 
                 elif d['status'] == 'error':
                     print(f"[action_download] Download {download_id} error")
@@ -252,6 +247,29 @@ class DownloadManager:
                         'timestamp': current_time
                     }
             
+            # Post-processing hook for ffmpeg merging
+            def postprocessor_hook(d):
+                if d['status'] == 'finished':
+                    # Final file ready after merging
+                    filename = d.get('info_dict', {}).get('filepath', 'Unknown')
+                    print(f"[action_download] Post-processing complete: {filename}")
+                    
+                    # Now mark as truly finished
+                    self.last_progress_time[download_id] = {
+                        'progress': 100.0,
+                        'status': 'finished',
+                        'filename': filename,
+                        'timestamp': time.time()
+                    }
+                    
+                    # Add to history
+                    self.storage.add_download_entry({
+                        'url': video_url,
+                        'filename': os.path.basename(filename),
+                        'path': filename,
+                        'timestamp': time.time(),
+                    })
+            
             # Build yt-dlp options
             output_template = os.path.join(output_path, output_name)
             
@@ -259,6 +277,7 @@ class DownloadManager:
                 'format': format_selector,
                 'outtmpl': output_template,
                 'progress_hooks': [progress_hook],
+                'postprocessor_hooks': [postprocessor_hook],
                 'quiet': False,
                 'no_warnings': False,
             }
@@ -285,8 +304,30 @@ class DownloadManager:
                 try:
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         ydl.download([video_url])
-                    # Mark as success after completion
-                    self.last_progress_time[download_id]['success'] = True
+                    
+                    # If still in processing state, mark as finished
+                    # (happens when no post-processing needed)
+                    if self.last_progress_time[download_id].get('status') == 'processing':
+                        filename = self.last_progress_time[download_id].get('filename', 'Unknown')
+                        self.last_progress_time[download_id] = {
+                            'progress': 100.0,
+                            'status': 'finished',
+                            'filename': filename,
+                            'timestamp': time.time(),
+                            'success': True
+                        }
+                        
+                        # Add to history
+                        self.storage.add_download_entry({
+                            'url': video_url,
+                            'filename': os.path.basename(filename),
+                            'path': filename,
+                            'timestamp': time.time(),
+                        })
+                    else:
+                        # Mark as success
+                        self.last_progress_time[download_id]['success'] = True
+                        
                 except Exception as e:
                     error_msg = str(e)
                     print(f"[action_download] Download thread error: {error_msg}")

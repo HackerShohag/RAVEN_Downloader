@@ -145,18 +145,26 @@ class StorageManager:
     
     def get_download_path(self):
         """
-        Get default download path
+        Get download path for temporary storage.
+        On Ubuntu Touch, apps can only write to their cache directory.
+        Files should be downloaded here, then exported via ContentHub.
         
         Returns:
-            str: Download directory path
+            str: Download directory path (app's cache directory)
         """
-        # Try XDG downloads directory
-        downloads = os.path.join(Path.home(), 'Downloads')
-        if os.path.exists(downloads):
-            return downloads
+        # Use XDG_CACHE_HOME which the app has write permissions for
+        xdg_cache = os.environ.get('XDG_CACHE_HOME')
+        if xdg_cache:
+            cache_downloads = os.path.join(xdg_cache, self.app_name, 'downloads')
+        else:
+            # Fallback to ~/.cache
+            cache_downloads = os.path.join(Path.home(), '.cache', self.app_name, 'downloads')
         
-        # Fallback to home directory
-        return str(Path.home())
+        # Ensure directory exists
+        os.makedirs(cache_downloads, exist_ok=True)
+        print(f"[StorageManager] Download path: {cache_downloads}")
+        
+        return cache_downloads
 
 
 # Module-level convenience functions

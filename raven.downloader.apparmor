@@ -3,7 +3,6 @@
         "networking",
         "audio",
         "video",
-        "video_files",
         "content_exchange",
         "content_exchange_source"
     ],

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 21:46+0000\n"
+"POT-Creation-Date: 2025-11-27 14:54+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:469
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:549
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -41,23 +41,31 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:114 ../qml/MainPage.qml:257
+#: ../qml/Components/MediaItem.qml:115 ../qml/MainPage.qml:338
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:115
-msgid "File downloaded successfully: "
+#: ../qml/Components/MediaItem.qml:116
+msgid "File downloaded: "
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:128
+#: ../qml/Components/MediaItem.qml:119
+msgid "Save to..."
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:131
+msgid "Close"
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:142
 msgid "Download Failed"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:129
+#: ../qml/Components/MediaItem.qml:143
 msgid "An error occurred while starting the download."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:235
+#: ../qml/Components/MediaItem.qml:249
 msgid "Download"
 msgstr ""
 
@@ -69,63 +77,67 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:232
+#: ../qml/MainPage.qml:241
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/MainPage.qml:233
+#: ../qml/MainPage.qml:242
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/MainPage.qml:240
+#: ../qml/MainPage.qml:249
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:241
+#: ../qml/MainPage.qml:250
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/MainPage.qml:258
+#: ../qml/MainPage.qml:278
+msgid "Save Downloaded File"
+msgstr ""
+
+#: ../qml/MainPage.qml:339
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:265
+#: ../qml/MainPage.qml:346
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:266
+#: ../qml/MainPage.qml:347
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:301 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:382 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:353
+#: ../qml/MainPage.qml:434
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:359
+#: ../qml/MainPage.qml:440
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:442
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:442
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:367
+#: ../qml/MainPage.qml:448
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:387
+#: ../qml/MainPage.qml:468
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:458
+#: ../qml/MainPage.qml:538
 msgid "No downloads yet."
 msgstr ""
 

@@ -23,14 +23,14 @@ ProgressBar {
 
     background: Rectangle {
         implicitWidth: units.gu(20)
-        implicitHeight: units.gu(2)
+        implicitHeight: units.gu(1)
         color: "#4c4c4c"
         radius: 8
     }
 
     contentItem: Item {
         implicitWidth: units.gu(20)
-        implicitHeight: units.gu(2)
+        implicitHeight: units.gu(1)
 
         Rectangle {
             width: control.visualPosition * parent.width

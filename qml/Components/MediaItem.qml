@@ -111,10 +111,24 @@ LayoutsCustom {
         Dialog {
             id: finishedDialog
             property string fileName: ""
+            property string filePath: ""
             title: i18n.tr("Download Complete!")
-            text: i18n.tr("File downloaded successfully: ") + fileName
+            text: i18n.tr("File downloaded: ") + fileName
+            
             Button {
-                text: "OK"
+                text: i18n.tr("Save to...")
+                color: theme.palette.normal.positive
+                onClicked: {
+                    PopupUtils.close(finishedDialog);
+                    // Trigger ContentHub export
+                    if (root && root.openContentHubExport) {
+                        root.openContentHubExport(filePath);
+                    }
+                }
+            }
+            
+            Button {
+                text: i18n.tr("Close")
                 onClicked: PopupUtils.close(finishedDialog)
             }
         }
@@ -146,7 +160,7 @@ LayoutsCustom {
         rows: 3
         flow: GridLayout.TopToBottom
         anchors.fill: parent
-        anchors.margins: units.gu(1)
+        // anchors.margins: units.gu(1)
 
         Image {
             id: thumbnailContainer
@@ -182,7 +196,7 @@ LayoutsCustom {
         RowLayout {
             Label {
                 id: titleBox
-                font.bold: true
+                // font.bold: true
                 color: theme.palette.normal.backgroundText
                 elide: Label.ElideRight
                 Layout.fillWidth: true
@@ -196,10 +210,10 @@ LayoutsCustom {
                 Layout.fillWidth: true
             }
             Label {
-                text: videoProgressBar.value * 100 + "%"
+                text: Math.round(videoProgressBar.value * 100) + "%"
                 color: theme.palette.normal.backgroundText
-                font.pixelSize: 18
-                font.bold: true
+                // font.pixelSize: 18
+                // font.bold: true
             }
         }
         RowLayout {
@@ -271,16 +285,38 @@ LayoutsCustom {
                 
                 function checkDownloadStatus() {
                     python.call('download_manager.get_download_progress', [pollDownloadId], function(status) {
-                        if (status && status.status === 'finished') {
-                            pollTimer.stop();
-                            PopupUtils.open(downloadFinishedDialog, gridBox, {
-                                fileName: status.filename || 'Unknown'
-                            });
-                        } else if (status && status.status === 'error') {
-                            pollTimer.stop();
-                            PopupUtils.open(downloadErrorDialog, gridBox, { 
-                                errorMessage: status.error || 'Download failed'
-                            });
+                        if (status) {
+                            // Update progress bar
+                            if (status.progress !== undefined) {
+                                videoProgressBar.value = status.progress / 100.0;
+                            }
+                            
+                            // Check final status
+                            if (status.status === 'finished') {
+                                pollTimer.stop();
+                                videoProgressBar.value = 1.0;
+                                var fileName = status.filename || 'Unknown';
+                                var filePath = status.filename || '';
+                                
+                                // Extract just the filename from the path
+                                if (fileName.indexOf('/') !== -1) {
+                                    fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
+                                }
+                                
+                                PopupUtils.open(downloadFinishedDialog, gridBox, {
+                                    fileName: fileName,
+                                    filePath: filePath
+                                });
+                            } else if (status.status === 'error') {
+                                pollTimer.stop();
+                                videoProgressBar.value = 0;
+                                PopupUtils.open(downloadErrorDialog, gridBox, { 
+                                    errorMessage: status.error || 'Download failed'
+                                });
+                            } else if (status.status === 'processing') {
+                                // Show processing status in progress bar
+                                videoProgressBar.value = status.progress / 100.0;
+                            }
                         }
                     });
                 }

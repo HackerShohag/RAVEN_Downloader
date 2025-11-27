@@ -60,6 +60,15 @@ MainView {
         });
     }
 
+    property var contentHubPopup: null
+
+    function openContentHubExport(filePath) {
+        console.log("Opening ContentHub to save file:", filePath);
+        contentHubPopup = PopupUtils.open(contentShareDialog, root, {
+            downloadedFilePath: filePath
+        });
+    }
+
     function urlHandler(url, index) {
         pageBusyIndicator.running = true;
         
@@ -251,6 +260,78 @@ MainView {
         }
     }
 
+    ContentStore {
+        id: contentStore
+        scope: ContentScope.App
+    }
+
+    Component {
+        id: contentShareDialog
+
+        Page {
+            id: sharePageInstance
+            property string downloadedFilePath: ""
+            property var activeTransfer
+
+            header: PageHeader {
+                id: shareHeader
+                title: i18n.tr("Save Downloaded File")
+                leadingActionBar.actions: [
+                    Action {
+                        iconName: "back"
+                        onTriggered: {
+                            if (sharePageInstance.activeTransfer) {
+                                sharePageInstance.activeTransfer.state = ContentTransfer.Aborted;
+                            }
+                            PopupUtils.close(contentHubPopup);
+                        }
+                    }
+                ]
+            }
+
+            ContentPeerPicker {
+                id: peerPicker
+                anchors {
+                    fill: parent
+                    topMargin: shareHeader.height
+                }
+                visible: parent.visible
+                showTitle: false
+                contentType: ContentType.All
+                handler: ContentHandler.Destination
+
+                onPeerSelected: {
+                    sharePageInstance.activeTransfer = peer.request();
+                    if (sharePageInstance.activeTransfer) {
+                        var item = contentItemComponent.createObject(null, {
+                            "url": "file://" + sharePageInstance.downloadedFilePath
+                        });
+                        sharePageInstance.activeTransfer.items = [item];
+                        sharePageInstance.activeTransfer.state = ContentTransfer.Charged;
+                        console.log("File transfer initiated, closing ContentHub");
+                        PopupUtils.close(contentHubPopup);
+                    }
+                }
+
+                onCancelPressed: {
+                    if (sharePageInstance.activeTransfer) {
+                        sharePageInstance.activeTransfer.state = ContentTransfer.Aborted;
+                    }
+                    console.log("ContentHub cancelled, closing");
+                    PopupUtils.close(contentHubPopup);
+                }
+            }
+
+            Component {
+                id: contentItemComponent
+                ContentItem {
+                    property alias url: contentItemInstance.url
+                    id: contentItemInstance
+                }
+            }
+        }
+    }
+
     Component {
         id: finishedPopup
         WarningDialog {
@@ -377,16 +458,15 @@ MainView {
 
                     width: parent.width
                     anchors.top: inputPanel.bottom
-                    spacing: units.gu(1)
+                    // spacing: units.gu(1)
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.topMargin: units.gu(1)
+                    // anchors.topMargin: units.gu(1)
 
                     Label {
                         id: downloadContainerHeading
                         text: i18n.tr("   Downloaded Files")
                         height: units.gu(3)
-                        font.bold: true
                     }
                     ListModel {
                         id: downloadItemsModel
@@ -407,7 +487,7 @@ MainView {
                                 left: parent.left
                                 right: parent.right
                             }
-                            height: units.gu(15)
+                            height: units.gu(13)
 
                             videoTitle: vTitle
                             thumbnail: vThumbnail
