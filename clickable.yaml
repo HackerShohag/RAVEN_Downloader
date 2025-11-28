@@ -4,20 +4,18 @@ kill: qmlscene
 
 framework: ubuntu-touch-24.04-1.x
 
+image_setup:
+  run:
+    - apt update
+    - apt install -y python3-pip build-essential yasm nasm pkg-config
+
 ignore_review_warnings: true
 ignore_review_errors: true
 
-# Runtime dependencies for Ubuntu Touch
-dependencies_target:
-  - python3-minimal
-  - python3-setuptools
-  - python3-pip
-  - ffmpeg
-
-# Post-build script to install yt-dlp as embedded Python library and ffmpeg
+# Post-build script to install yt-dlp as embedded Python library and build ffmpeg from source
 postbuild: |
   set -ex
-  echo "=== Starting postbuild: Installing yt-dlp and ffmpeg ==="
+  echo "=== Starting postbuild: Installing yt-dlp and building ffmpeg ==="
 
   # Find the install directory
   if [ -n "$INSTALL_DIR" ]; then
@@ -35,36 +33,91 @@ postbuild: |
   echo "Installing yt-dlp..."
   pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-warn-script-location yt-dlp
   
-  echo "=== Setting up ffmpeg binary ==="
+  echo "=== Building ffmpeg from source ==="
   mkdir -p "$TARGET_DIR/bin"
+  mkdir -p "$TARGET_DIR/lib"
+  mkdir -p "$TARGET_DIR/include"
   
-  # Download static ffmpeg binary as fallback
-  echo "Downloading ffmpeg binary for ARM64 only. (armhf and i386 not supported currently)"
+  FFMPEG_VERSION="8.0.1"
+  FFMPEG_URL="https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz"
+  BUILD_DIR="/tmp/ffmpeg-build"
   
-  FFMPEG_URL="https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-arm64-static.tar.xz"
-
-  echo "Downloading ffmpeg from: $FFMPEG_URL"
-  # cp $ROOT/x_86_64/ffmpeg/ffmpeg "$TARGET_DIR/bin/ffmpeg" || {
-  #   echo "WARNING: Failed to copy ffmpeg binary"
-  #   echo "The app will try to use system ffmpeg at runtime"
-  # }
-  wget -q -O /tmp/ffmpeg.tar.xz "$FFMPEG_URL" || {
-    echo "WARNING: Failed to download ffmpeg binary"
-    echo "The app will try to use system ffmpeg at runtime"
-  }
-  
-  if [ -f /tmp/ffmpeg.tar.xz ]; then
-    tar -xJf /tmp/ffmpeg.tar.xz -C /tmp
-    find /tmp -name "ffmpeg" -type f -executable -exec cp {} "$TARGET_DIR/bin/ffmpeg" \;
-    chmod +x "$TARGET_DIR/bin/ffmpeg"
-    rm -rf /tmp/ffmpeg*.tar.xz /tmp/ffmpeg-*
-    echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
+  # Download ffmpeg source
+  echo "Downloading ffmpeg ${FFMPEG_VERSION} from: $FFMPEG_URL"
+  wget -q -O /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz "$FFMPEG_URL"
+  if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to download ffmpeg source"
+    exit 1
   fi
   
-  # Verify ffmpeg
+  # Extract source
+  echo "Extracting ffmpeg source..."
+  mkdir -p "$BUILD_DIR"
+  tar -xJf /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz -C "$BUILD_DIR" --strip-components=1
+  
+  # Configure and build ffmpeg
+  echo "Configuring ffmpeg..."
+  cd "$BUILD_DIR"
+  
+  # Detect target architecture
+  if [ -n "$ARCH_TRIPLET" ]; then
+    TARGET_ARCH="$ARCH_TRIPLET"
+  else
+    TARGET_ARCH="aarch64-linux-gnu"
+  fi
+  
+  echo "Cross-compiling ffmpeg for: $TARGET_ARCH"
+  
+  # Configure for cross-compilation
+  if echo "$TARGET_ARCH" | grep -q "aarch64"; then
+    ARCH_CONFIG="--arch=aarch64 --enable-cross-compile --cross-prefix=aarch64-linux-gnu- --target-os=linux"
+  elif echo "$TARGET_ARCH" | grep -q "armhf"; then
+    ARCH_CONFIG="--arch=arm --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- --target-os=linux"
+  else
+    ARCH_CONFIG=""
+  fi
+  
+  ./configure --prefix="$TARGET_DIR" --bindir="$TARGET_DIR/bin" --libdir="$TARGET_DIR/lib" $ARCH_CONFIG --enable-shared --enable-gpl --enable-small --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-debug --disable-static --disable-programs --enable-ffmpeg --enable-ffprobe
+  
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg configuration failed"
+    exit 1
+  fi
+  
+  echo "Building ffmpeg (this may take a while)..."
+  make -j$(nproc)
+  
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg build failed"
+    exit 1
+  fi
+  
+  echo "Installing ffmpeg..."
+  make install
+  
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg installation failed"
+    exit 1
+  fi
+  
+  # Verify installation
+  echo "Verifying ffmpeg installation..."
   if [ -f "$TARGET_DIR/bin/ffmpeg" ]; then
+    chmod +x "$TARGET_DIR/bin/ffmpeg"
+    echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
+    
+    # Set library path for verification
+    export LD_LIBRARY_PATH="$TARGET_DIR/lib:${LD_LIBRARY_PATH:-}"
     "$TARGET_DIR/bin/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
+  else
+    echo "ERROR: ffmpeg binary not found after installation"
+    exit 1
   fi
-
+  
+  # Cleanup
+  echo "Cleaning up build files..."
+  rm -rf "$BUILD_DIR" /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz
+  
   echo "=== yt-dlp installed successfully to $TARGET_DIR/lib/python3/dist-packages ==="
+  echo "=== ffmpeg built and installed successfully ==="
   echo "=== Postbuild complete ==="

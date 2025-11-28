@@ -31,6 +31,17 @@ if lib_path.exists():
     sys.path.insert(0, str(lib_path))
     print(f"[download_manager] Added lib path: {lib_path}")
 
+# Add ffmpeg library path for shared libraries
+ffmpeg_lib_path = current_dir / "lib"
+if ffmpeg_lib_path.exists():
+    # Add to LD_LIBRARY_PATH for dynamic linking
+    ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
+    if ld_library_path:
+        os.environ["LD_LIBRARY_PATH"] = f"{ffmpeg_lib_path}{os.pathsep}{ld_library_path}"
+    else:
+        os.environ["LD_LIBRARY_PATH"] = str(ffmpeg_lib_path)
+    print(f"[download_manager] Added ffmpeg lib path to LD_LIBRARY_PATH: {ffmpeg_lib_path}")
+
 # Add ffmpeg binary path
 bin_path = current_dir / "bin"
 if bin_path.exists():
