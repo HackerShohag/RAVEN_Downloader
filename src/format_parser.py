@@ -14,7 +14,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import os
+# Standard library imports - no external dependencies required
 
 
 def parse_video_formats(info_dict):

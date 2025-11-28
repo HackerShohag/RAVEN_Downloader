@@ -44,6 +44,10 @@ postbuild: |
   FFMPEG_URL="https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-arm64-static.tar.xz"
 
   echo "Downloading ffmpeg from: $FFMPEG_URL"
+  # cp $ROOT/x_86_64/ffmpeg/ffmpeg "$TARGET_DIR/bin/ffmpeg" || {
+  #   echo "WARNING: Failed to copy ffmpeg binary"
+  #   echo "The app will try to use system ffmpeg at runtime"
+  # }
   wget -q -O /tmp/ffmpeg.tar.xz "$FFMPEG_URL" || {
     echo "WARNING: Failed to download ffmpeg binary"
     echo "The app will try to use system ffmpeg at runtime"

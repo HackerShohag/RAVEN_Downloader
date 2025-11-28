@@ -25,9 +25,9 @@ LayoutsCustom {
     id: gridBox
 
     property alias  videoTitle          : titleBox.text
-    property alias  thumbnail           : thumbnailContainer.source
-    property string duration
-    property string videoLink           : null
+    property string thumbnail           : ""
+    property string duration            : ""
+    property string videoLink           : ""
 
     property var    vcodec              : null
     property var    resolutionModel     : null
@@ -46,14 +46,64 @@ LayoutsCustom {
     property var    sizeModel           : null
     property alias  videoProgress       : videoProgressBar.value
     property int    indexID
+    property string entryId             : ""
+    property var    pythonInstance      : null  // Pass Python instance from MainPage
 
     property alias  videoIndex          : resolutionPopup.index
     property alias  audioIndex          : audioPopup.index
+    property string selectedVideoCodec  : ""
+    property string selectedAudioCodec  : ""
 
     property var    downloadUnavailable : resolutionModel === null && vcodec === null ? true : false
     property var    comboHeading        : [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
 
     minimumWidth: childrenRect.width
+    
+    // Function to save entry metadata whenever something changes
+    function saveEntryMetadata() {
+        if (entryId === "") {
+            console.log("[MediaItem] No entryId, skipping save");
+            return;
+        }
+        
+        // Get currently selected codecs
+        var currentVideoCodec = (vcodec && videoIndex >= 0 && videoIndex < vcodec.length) ? vcodec[videoIndex] : '';
+        var currentAudioCodec = (acodec && audioIndex >= 0 && audioIndex < acodec.length) ? acodec[audioIndex] : '';
+        
+        var entryData = {
+            entryId: entryId,
+            vTitle: videoTitle,
+            vThumbnail: thumbnail,
+            vDuration: duration,
+            vID: videoLink,
+            vCodec: JSON.stringify(vcodec || []),
+            vResolutions: JSON.stringify(resolutionModel || []),
+            vVideoExts: JSON.stringify(videoExts || []),
+            vVideoFormats: JSON.stringify(videoFormats || []),
+            vVideoProgress: videoProgress,
+            aCodec: JSON.stringify(acodec || []),
+            vAudioExts: JSON.stringify(audioExts || []),
+            vAudioFormats: JSON.stringify(audioFormats || []),
+            vABR: JSON.stringify(audioBitrate || []),
+            vAudioSizes: JSON.stringify(audioSizes || []),
+            vVideoIndex: parseInt(videoIndex) || 0,
+            vAudioIndex: parseInt(audioIndex) || 0,
+            selectedVideoCodec: currentVideoCodec,
+            selectedAudioCodec: currentAudioCodec,
+            vSizeModel: JSON.stringify(sizeModel || []),
+            vIndex: parseInt(indexID) || 0,
+            timestamp: Date.now()
+        };
+        
+        // Save to storage via Python
+        if (pythonInstance) {
+            pythonInstance.call('storage_manager.save_single_entry', [entryData], function(result) {
+                console.log('[MediaItem] Entry saved:', entryId, 'result:', JSON.stringify(result));
+            });
+        } else {
+            console.log('[MediaItem] ERROR: Python instance not provided');
+        }
+    }
 
     function isDownloadValid(size, resolution) {
         return true
@@ -77,6 +127,23 @@ LayoutsCustom {
     }
 
     Component.onCompleted: {
+        // Restore previously selected codecs if available
+        if (selectedVideoCodec !== '' && vcodec) {
+            var videoIdx = vcodec.indexOf(selectedVideoCodec);
+            if (videoIdx >= 0) {
+                videoIndex = videoIdx;
+                console.log('[MediaItem] Restored video codec selection:', selectedVideoCodec, 'at index', videoIdx);
+            }
+        }
+        
+        if (selectedAudioCodec !== '' && acodec) {
+            var audioIdx = acodec.indexOf(selectedAudioCodec);
+            if (audioIdx >= 0) {
+                audioIndex = audioIdx;
+                console.log('[MediaItem] Restored audio codec selection:', selectedAudioCodec, 'at index', audioIdx);
+            }
+        }
+        
         if (generalSettings.autoDownload) {
             if (isDownloadValid(audioPopup.text, resolutionPopup.text))
             {
@@ -154,6 +221,12 @@ LayoutsCustom {
 
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
+    
+    LoadingOverlay {
+        id: itemLoadingOverlay
+        running: false
+        indicatorSize: units.gu(5)
+    }
 
     GridLayout {
         id: gridLayout
@@ -185,8 +258,42 @@ LayoutsCustom {
                 padding: units.gu(2)
                 running: thumbnailContainer.status === Image.Loading
             }
+            
+            // Handle thumbnail loading with fallback
+            property string thumbnailSource: ""
+            
+            Component.onCompleted: {
+                // Use placeholder initially
+                source = Qt.resolvedUrl("../../assets/placeholder-video.png");
+                // Bind parent thumbnail property
+                thumbnailSource = Qt.binding(function() { return gridBox.thumbnail || ""; });
+            }
+            
+            onThumbnailSourceChanged: {
+                if (thumbnailSource && thumbnailSource !== "") {
+                    // Handle file:// URLs for local cached thumbnails
+                    if (thumbnailSource.startsWith("/")) {
+                        source = "file://" + thumbnailSource;
+                    } else if (thumbnailSource.startsWith("qrc://")) {
+                        source = thumbnailSource;
+                    } else if (thumbnailSource.startsWith("file://")) {
+                        source = thumbnailSource;
+                    } else if (thumbnailSource.startsWith("http://") || thumbnailSource.startsWith("https://")) {
+                        source = thumbnailSource;
+                    } else {
+                        // Default to placeholder
+                        source = Qt.resolvedUrl("../../assets/placeholder-video.png");
+                    }
+                }
+            }
+            
+            onStatusChanged: {
+                if (status === Image.Error) {
+                    console.log("Thumbnail load error, using placeholder");
+                    source = Qt.resolvedUrl("../../assets/placeholder-video.png");
+                }
+            }
 
-            source: "qrc:///assets/placeholder-video.png"
             Layout.rowSpan: 3
             Layout.fillHeight: true
             Layout.minimumWidth: units.gu(15)
@@ -229,6 +336,14 @@ LayoutsCustom {
                 dropdownModel: audioExts
                 dropdownModel2: acodec
                 dropdownModel3: audioBitrate
+                
+                onIndexChanged: {
+                    // Update selected codec and save metadata
+                    if (acodec && index >= 0 && index < acodec.length) {
+                        gridBox.selectedAudioCodec = acodec[index];
+                    }
+                    gridBox.saveEntryMetadata();
+                }
             }
 
             CustomComboPopup {
@@ -241,6 +356,14 @@ LayoutsCustom {
                 dropdownModel: resolutionModel
                 dropdownModel2: videoExts
                 dropdownModel3: vcodec
+                
+                onIndexChanged: {
+                    // Update selected codec and save metadata
+                    if (vcodec && index >= 0 && index < vcodec.length) {
+                        gridBox.selectedVideoCodec = vcodec[index];
+                    }
+                    gridBox.saveEntryMetadata();
+                }
             }
 
             Button {
@@ -252,20 +375,39 @@ LayoutsCustom {
                 property var pollTimer: null
                 
                 onClicked: {
+                    // Show loading indicator
+                    itemLoadingOverlay.running = true;
+                    console.log('[MediaItem] Download button clicked - showing loading overlay');
+                    
+                    // Save metadata when download is initiated
+                    gridBox.saveEntryMetadata();
+                    
                     if (isDownloadValid(audioPopup.text, resolutionPopup.text)) {
                         python.call('download_manager.action_download', [videoLink, getFormats()], function(result) {
-                            console.log('Download response:', JSON.stringify(result));
+                            console.log('[MediaItem] Download response:', JSON.stringify(result));
+                            
+                            // Don't hide overlay here - let polling detect when download starts
+                            
                             if (result && result.success === false && result.error) {
+                                // Only hide on error
+                                itemLoadingOverlay.running = false;
                                 PopupUtils.open(downloadErrorDialog, gridBox, { 
                                     errorMessage: result.error 
                                 });
                             } else if (result && result.download_id !== undefined) {
                                 // Start polling for download status
+                                // Overlay will be hidden when status becomes 'downloading'
                                 pollDownloadId = result.download_id;
                                 startStatusPolling();
+                            } else {
+                                // Hide overlay if unexpected response
+                                console.log('[MediaItem] Unexpected response, hiding overlay');
+                                itemLoadingOverlay.running = false;
                             }
                         });
                     } else {
+                        // Hide loading if validation failed
+                        itemLoadingOverlay.running = false;
                         PopupUtils.open(invalidDownloadWarning);
                     }
                 }
@@ -286,14 +428,27 @@ LayoutsCustom {
                 function checkDownloadStatus() {
                     python.call('download_manager.get_download_progress', [pollDownloadId], function(status) {
                         if (status) {
+                            console.log('[MediaItem] Download status:', status.status, 'progress:', status.progress);
+                            
+                            // Hide loading overlay once actual download starts (or any progress is reported)
+                            if (status.status === 'downloading' || status.status === 'processing' || status.progress > 0) {
+                                if (itemLoadingOverlay.running) {
+                                    console.log('[MediaItem] Hiding loading overlay - download active');
+                                    itemLoadingOverlay.running = false;
+                                }
+                            }
+                            
                             // Update progress bar
                             if (status.progress !== undefined) {
                                 videoProgressBar.value = status.progress / 100.0;
+                                // Save progress update
+                                gridBox.saveEntryMetadata();
                             }
                             
                             // Check final status
                             if (status.status === 'finished') {
                                 pollTimer.stop();
+                                itemLoadingOverlay.running = false;  // Ensure overlay is hidden
                                 videoProgressBar.value = 1.0;
                                 var fileName = status.filename || 'Unknown';
                                 var filePath = status.filename || '';
@@ -309,6 +464,7 @@ LayoutsCustom {
                                 });
                             } else if (status.status === 'error') {
                                 pollTimer.stop();
+                                itemLoadingOverlay.running = false;  // Hide overlay on error
                                 videoProgressBar.value = 0;
                                 PopupUtils.open(downloadErrorDialog, gridBox, { 
                                     errorMessage: status.error || 'Download failed'

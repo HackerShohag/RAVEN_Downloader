@@ -55,6 +55,15 @@ MainView {
         for (var i = 0; i < downloadItemsModel.count; ++i){
             datamodel.push(downloadItemsModel.get(i))
         }
+        console.log('[listModelToString] Saving ' + datamodel.length + ' items to storage');
+        for (var j = 0; j < datamodel.length; j++) {
+            console.log('[listModelToString] Item ' + j + ': entryId=' + (datamodel[j].entryId || 'EMPTY') + ', title=' + (datamodel[j].vTitle || 'NO_TITLE'));
+        }
+        
+        // Write to file for debugging
+        var debugStr = JSON.stringify(datamodel, null, 2);
+        console.log('[listModelToString] JSON data being sent: ' + debugStr.substring(0, 200) + '...');
+        
         python.call('download_manager.save_list_model_data', [datamodel], function(result) {
             console.log('Download history saved: ' + result);
         });
@@ -70,14 +79,14 @@ MainView {
     }
 
     function urlHandler(url, index) {
-        pageBusyIndicator.running = true;
+        pageLoadingOverlay.running = true;
         
         var validationFunc = index ? 'is_valid_playlist' : 'is_valid_video_url';
         var invalidWarning = index ? invalidPlayListURLWarning : invalidURLWarning;
         
         python.call('download_manager.' + validationFunc, [url], function(isValid) {
             if (!isValid) {
-                pageBusyIndicator.running = false;
+                pageLoadingOverlay.running = false;
                 PopupUtils.open(invalidWarning);
                 return;
             }
@@ -86,7 +95,7 @@ MainView {
                 mainPage.toggleBlankPage();
                 
             python.call('download_manager.action_submit', [url, index], function(result) {
-                pageBusyIndicator.running = false;
+                pageLoadingOverlay.running = false;
                 
                 if (result && result.error) {
                     if (result.error === 'playlist_as_video') {
@@ -121,6 +130,7 @@ MainView {
             mainPage.toggleBlankPage();
 
         downloadItemsModel.append({
+            entryId: formats.entryId || '',
             vTitle: formats.title || '',
             vThumbnail: formats.thumbnail || '',
             vDuration: formats.duration || '',
@@ -140,13 +150,19 @@ MainView {
 
             vVideoIndex: 0,
             vAudioIndex: 0,
+            selectedVideoCodec: '',
+            selectedAudioCodec: '',
 
             vSizeModel: JSON.stringify(formats.filesizes || []),
-            vIndex: count
+            vIndex: count,
+            timestamp: Date.now()
         })
         count = count + 1;
         downloadItemsModel.move(0, 1, downloadItems.count-1);
-        pageBusyIndicator.running = false;
+        pageLoadingOverlay.running = false;
+        
+        // Save history immediately after adding item
+        listModelToString();
     }
     
     function handlePlaylistInfoExtracted(playlistData) {
@@ -173,12 +189,12 @@ MainView {
     }
     
     function handleInvalidPlaylistUrl(url) {
-        pageBusyIndicator.running = false;
+        pageLoadingOverlay.running = false;
         PopupUtils.open(invalidPlayListURLWarning);
     }
     
     function handleGeneralMessage(message) {
-        pageBusyIndicator.running = false;
+        pageLoadingOverlay.running = false;
         PopupUtils.open(qProcessError, root, { text: message });
     }
 
@@ -218,7 +234,7 @@ MainView {
 
     Connections {
         target: Qt.application
-        onAboutToQuit: {
+        function onAboutToQuit() {
             console.log("Quiting " + root.applicationName)
             listModelToString()
         }
@@ -267,68 +283,8 @@ MainView {
 
     Component {
         id: contentShareDialog
-
-        Page {
-            id: sharePageInstance
-            property string downloadedFilePath: ""
-            property var activeTransfer
-
-            header: PageHeader {
-                id: shareHeader
-                title: i18n.tr("Save Downloaded File")
-                leadingActionBar.actions: [
-                    Action {
-                        iconName: "back"
-                        onTriggered: {
-                            if (sharePageInstance.activeTransfer) {
-                                sharePageInstance.activeTransfer.state = ContentTransfer.Aborted;
-                            }
-                            PopupUtils.close(contentHubPopup);
-                        }
-                    }
-                ]
-            }
-
-            ContentPeerPicker {
-                id: peerPicker
-                anchors {
-                    fill: parent
-                    topMargin: shareHeader.height
-                }
-                visible: parent.visible
-                showTitle: false
-                contentType: ContentType.All
-                handler: ContentHandler.Destination
-
-                onPeerSelected: {
-                    sharePageInstance.activeTransfer = peer.request();
-                    if (sharePageInstance.activeTransfer) {
-                        var item = contentItemComponent.createObject(null, {
-                            "url": "file://" + sharePageInstance.downloadedFilePath
-                        });
-                        sharePageInstance.activeTransfer.items = [item];
-                        sharePageInstance.activeTransfer.state = ContentTransfer.Charged;
-                        console.log("File transfer initiated, closing ContentHub");
-                        PopupUtils.close(contentHubPopup);
-                    }
-                }
-
-                onCancelPressed: {
-                    if (sharePageInstance.activeTransfer) {
-                        sharePageInstance.activeTransfer.state = ContentTransfer.Aborted;
-                    }
-                    console.log("ContentHub cancelled, closing");
-                    PopupUtils.close(contentHubPopup);
-                }
-            }
-
-            Component {
-                id: contentItemComponent
-                ContentItem {
-                    property alias url: contentItemInstance.url
-                    id: contentItemInstance
-                }
-            }
+        ContentHubDialog {
+            downloadedFilePath: ""
         }
     }
 
@@ -348,28 +304,13 @@ MainView {
         }
     }
 
-    Rectangle {
-        id: loadingOverlay
-        anchors.fill: parent
-        visible: pageBusyIndicator.running
-        color: "#80000000"  // Semi-transparent black
-        z: 1000  // Ensure it's above all other content
-        
-        MouseArea {
-            anchors.fill: parent
-            preventStealing: true
-            hoverEnabled: true
-            // Consume all mouse/touch events to prevent interaction with underlying UI
-        }
-        
-        BusyIndicator {
-            id: pageBusyIndicator
-            anchors.centerIn: parent
-            width: units.gu(10)
-            height: units.gu(10)
-            running: false
-        }
+    LoadingOverlay {
+        id: pageLoadingOverlay
+        running: false
     }
+    
+    // Alias for backward compatibility
+    property alias pageBusyIndicator: pageLoadingOverlay
 
     Page {
         id: mainPage
@@ -393,10 +334,26 @@ MainView {
         }
 
         Component.onCompleted: {
-            toggleBlankPage();
+            // Load download history first
             python.call('download_manager.load_list_model_data', [], function(history) {
-                console.log('Loaded download history');
-                // TODO: Restore download history items to model
+                console.log('Loaded download history: ' + history.length + ' items');
+                
+                if (history && history.length > 0) {
+                    // Restore download history items to model
+                    for (var i = 0; i < history.length; i++) {
+                        var item = history[i];
+                        downloadItemsModel.append(item);
+                        count++;
+                    }
+                    
+                    // Show downloads if we have history
+                    if (downloadItemsContainer.visible === false) {
+                        toggleBlankPage();
+                    }
+                } else {
+                    // No history, show blank page
+                    toggleBlankPage();
+                }
             });
         }
 
@@ -412,8 +369,9 @@ MainView {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
                 contentY: units.gu(1)
-                // contentHeight: downloadItemsContainer.height + colLayout.height + downloadContainerHeading.height + root.margin + blankDownloadPage.height + units.gu(20)
-                contentHeight: contentItem.childrenRect.height
+                // Use implicit height of children instead of actual height to avoid binding loop
+                contentHeight: inputPanel.height + downloadContainerHeading.height + 
+                              (downloadItemsModel.count * units.gu(13.5)) + units.gu(10)
                 ScrollBar.vertical: ScrollBar { }
 
                 LayoutsCustom {
@@ -470,6 +428,11 @@ MainView {
                     }
                     ListModel {
                         id: downloadItemsModel
+                        
+                        // Enable StateSaver for model persistence
+                        Component.onCompleted: {
+                            console.log("downloadItemsModel initialized");
+                        }
                     }
 
                     Repeater {
@@ -487,12 +450,16 @@ MainView {
                                 left: parent.left
                                 right: parent.right
                             }
-                            height: units.gu(13)
+                            height: units.gu(13.5)
 
                             videoTitle: vTitle
                             thumbnail: vThumbnail
                             duration: vDuration
                             videoLink: vID
+                            
+                            // Pass the entryId and python instance to MediaItem so it can save metadata
+                            entryId: model.entryId || ''
+                            pythonInstance: python
 
                             vcodec: JSON.parse(vCodec)
                             resolutionModel: JSON.parse(vResolutions)
@@ -501,6 +468,8 @@ MainView {
                             videoProgress: vVideoProgress
                             videoIndex: vVideoIndex
                             audioIndex: vAudioIndex
+                            selectedVideoCodec: model.selectedVideoCodec || ''
+                            selectedAudioCodec: model.selectedAudioCodec || ''
 
 //                            langs: vLangs
 //                            langIds: vLangIds
@@ -558,6 +527,10 @@ MainView {
 
             importModule('download_manager', function() {
                 console.log('download_manager module imported in MainPage');
+            });
+            
+            importModule('storage_manager', function() {
+                console.log('storage_manager module imported in MainPage');
             });
         }
 

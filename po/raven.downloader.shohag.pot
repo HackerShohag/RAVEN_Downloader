@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-27 14:54+0000\n"
+"POT-Creation-Date: 2025-11-28 01:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,59 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:549
+#: ../qml/Components/ContentHubDialog.qml:34
+msgid "Save Downloaded File"
+msgstr ""
+
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:518
 msgid "Swipe for Settings"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:58
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:58
 msgid "select language"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:54
+#: ../qml/Components/MediaItem.qml:58
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:100
+#: ../qml/Components/MediaItem.qml:167
 msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:101
+#: ../qml/Components/MediaItem.qml:168
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:115 ../qml/MainPage.qml:338
+#: ../qml/Components/MediaItem.qml:182 ../qml/MainPage.qml:294
 msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:116
+#: ../qml/Components/MediaItem.qml:183
 msgid "File downloaded: "
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:119
+#: ../qml/Components/MediaItem.qml:186
 msgid "Save to..."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:131
+#: ../qml/Components/MediaItem.qml:198
 msgid "Close"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:142
+#: ../qml/Components/MediaItem.qml:209
 msgid "Download Failed"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:143
+#: ../qml/Components/MediaItem.qml:210
 msgid "An error occurred while starting the download."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:249
+#: ../qml/Components/MediaItem.qml:372
 msgid "Download"
 msgstr ""
 
@@ -77,67 +81,63 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:241
+#: ../qml/MainPage.qml:257
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/MainPage.qml:242
+#: ../qml/MainPage.qml:258
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/MainPage.qml:249
+#: ../qml/MainPage.qml:265
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:250
+#: ../qml/MainPage.qml:266
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/MainPage.qml:278
-msgid "Save Downloaded File"
-msgstr ""
-
-#: ../qml/MainPage.qml:339
+#: ../qml/MainPage.qml:295
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:346
+#: ../qml/MainPage.qml:302
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:347
+#: ../qml/MainPage.qml:303
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:382 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:323 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:434
+#: ../qml/MainPage.qml:392
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:440
+#: ../qml/MainPage.qml:398
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:442
+#: ../qml/MainPage.qml:400
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:442
+#: ../qml/MainPage.qml:400
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:448
+#: ../qml/MainPage.qml:406
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:468
+#: ../qml/MainPage.qml:426
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:538
+#: ../qml/MainPage.qml:507
 msgid "No downloads yet."
 msgstr ""
 
@@ -157,26 +157,22 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:136
+#: ../qml/SettingsPage.qml:132
 msgid "Download available subtitles"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:178
+#: ../qml/SettingsPage.qml:156
 msgid "Download captions (If subtitle unavailable)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:202
+#: ../qml/SettingsPage.qml:167
 msgid "Embed subtitles in files"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:231
+#: ../qml/SettingsPage.qml:184
 msgid "Auto Download (best format)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:264
-msgid "Select app theme"
-msgstr ""
-
-#: ../qml/SettingsPage.qml:294
+#: ../qml/SettingsPage.qml:232
 msgid "Clear All History"
 msgstr ""

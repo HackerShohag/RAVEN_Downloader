@@ -14,26 +14,29 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
+# Standard library imports
 import os
+import random
 import sys
 import threading
 import time
 from pathlib import Path
 
-# Add lib/python3/dist-packages to path for embedded yt-dlp
+# Configure embedded library paths
 current_dir = Path(__file__).parent.parent
+
+# Add yt-dlp library path
 lib_path = current_dir / "lib" / "python3" / "dist-packages"
 if lib_path.exists():
     sys.path.insert(0, str(lib_path))
     print(f"[download_manager] Added lib path: {lib_path}")
 
-# Add bin directory to PATH for embedded ffmpeg
+# Add ffmpeg binary path
 bin_path = current_dir / "bin"
 if bin_path.exists():
     os.environ["PATH"] = str(bin_path) + os.pathsep + os.environ.get("PATH", "")
     print(f"[download_manager] Added bin path to PATH: {bin_path}")
     
-    # Store ffmpeg location for yt-dlp
     ffmpeg_location = bin_path / "ffmpeg"
     if ffmpeg_location.exists():
         print(f"[download_manager] Found embedded ffmpeg at: {ffmpeg_location}")
@@ -43,7 +46,7 @@ if bin_path.exists():
 else:
     print(f"[download_manager] WARNING: bin directory not found at {bin_path}")
 
-# Import yt-dlp
+# Third-party imports
 try:
     import yt_dlp
     print(f"[download_manager] yt-dlp imported successfully, version: {yt_dlp.version.__version__}")
@@ -54,17 +57,16 @@ except Exception as e:
     print(f"[download_manager] ERROR importing yt-dlp: {e}")
     yt_dlp = None
 
-# Handle both relative and absolute imports
+# Local module imports
 try:
-    from .url_validator import is_valid_url, is_valid_playlist_url
-    from .format_parser import parse_video_formats, parse_playlist_info, format_filesize
+    from .format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from .storage_manager import get_storage_manager
+    from .url_validator import is_valid_playlist_url, is_valid_url
     print("[download_manager] Using relative imports")
 except ImportError:
-    # Fall back to absolute imports when run directly
-    from url_validator import is_valid_url, is_valid_playlist_url
-    from format_parser import parse_video_formats, parse_playlist_info, format_filesize
+    from format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from storage_manager import get_storage_manager
+    from url_validator import is_valid_playlist_url, is_valid_url
     print("[download_manager] Using absolute imports")
 
 
@@ -203,6 +205,13 @@ class DownloadManager:
             
             print(f"[action_download] Starting download {download_id} for {video_url}")
             print(f"[action_download] Format: {format_selector}, Path: {output_path}")
+            
+            # Initialize progress with "preparing" status
+            self.last_progress_time[download_id] = {
+                'progress': 0,
+                'status': 'preparing',
+                'timestamp': time.time()
+            }
             
             # Progress hook - stores progress for polling
             def progress_hook(d):
@@ -421,7 +430,29 @@ def action_submit(url, download_type=0):
         dict: Format data or error
     """
     manager = get_manager()
-    return manager.action_submit(url, download_type)
+    result = manager.action_submit(url, download_type)
+    
+    # Download and cache thumbnail if available
+    if result and result.get('type') == 'video' and result.get('data'):
+        data = result['data']
+        thumbnail_url = data.get('thumbnail')
+        video_id = data.get('videoUrl', url)
+        
+        if thumbnail_url and video_id:
+            storage = get_storage_manager()
+            # Generate entry ID for this download
+            timestamp = int(time.time() * 1000)
+            rand = random.randint(1000, 9999)
+            entry_id = f"entry_{timestamp}_{rand}"
+            
+            # Download thumbnail to entry directory
+            cached_thumbnail = storage.download_thumbnail(thumbnail_url, video_id, entry_id)
+            # Update with local path and entry ID
+            data['thumbnail'] = cached_thumbnail
+            data['entryId'] = entry_id
+            print(f"[action_submit] Entry ID: {entry_id}, Thumbnail: {cached_thumbnail}")
+    
+    return result
 
 
 def action_download(video_url, options):

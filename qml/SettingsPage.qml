@@ -121,43 +121,26 @@ Page {
 //                value: getIndexFromModel(generalSettings.customDownloadLocation)
 //            }
 
-            RowLayout {
+            SettingsCheckbox {
                 id: subtitleCheckboxContainer
-                anchors{
+                anchors {
                     top: parent.top
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
                 }
-                Text {
-                    id: subtitleCheckboxLabel
-                    Layout.fillWidth: true
-                    elide: Text.ElideRight
-                    text: i18n.tr("Download available subtitles")
-                    color: theme.palette.normal.backgroundText
-                    font.pixelSize: units.gu(2)
-                }
-                CheckBox {
-                    id: subtitleCheckbox
-                    Layout.alignment: Qt.AlignRight
-                    SlotsLayout.position: SlotsLayout.Trailing
-                    onTriggered: {
-                        generalSettings.downloadSubtitle = checked
-                        generalSettings.downloadCaption = checked
-                        generalSettings.embeddedSubtitle = checked
-                    }
-                }
-                Binding {
-                    target: subtitleCheckbox
-                    property: "checked"
-                    value: generalSettings.downloadSubtitle
+                labelText: i18n.tr("Download available subtitles")
+                checked: generalSettings.downloadSubtitle
+                onToggled: {
+                    generalSettings.downloadSubtitle = checked
+                    generalSettings.downloadCaption = checked
+                    generalSettings.embeddedSubtitle = checked
                 }
             }
 
             ColumnLayout {
                 id: subCapContainer
-
-                anchors{
+                anchors {
                     top: subtitleCheckboxContainer.bottom
                     left: parent.left
                     right: parent.right
@@ -167,81 +150,41 @@ Page {
                     bottomMargin: units.gu(1)
                 }
 
-                RowLayout {
-                    id: captionContainer
-                    // Layout.fillWidth: true
-                    enabled: subtitleCheckbox.checked
-                    Text {
-                        id: captionLabel
-                        Layout.fillWidth: true
-                        elide: Text.ElideRight
-                        text: i18n.tr("Download captions (If subtitle unavailable)")
-                        color: enabled ? theme.palette.normal.backgroundText : LomiriColors.lightGrey
-                    }
-                    CheckBox {
-                        id: captionCheckBox
-                        Layout.alignment: Qt.AlignRight
-                        SlotsLayout.position: SlotsLayout.Trailing
-                        onTriggered: generalSettings.downloadCaption = checked
-                    }
-                    Binding {
-                        target: captionCheckBox
-                        property: "checked"
-                        value: generalSettings.downloadCaption
+                SettingsCheckbox {
+                    id: captionCheckbox
+                    Layout.fillWidth: true
+                    labelText: i18n.tr("Download captions (If subtitle unavailable)")
+                    checked: generalSettings.downloadCaption
+                    isEnabled: generalSettings.downloadSubtitle
+                    onToggled: {
+                        generalSettings.downloadCaption = checked
                     }
                 }
 
-                RowLayout {
-                    id: embeddedSubtitleContainer
-                    // Layout.fillWidth: ture
-                    enabled: subtitleCheckbox.checked
-                    Text {
-                        id: embeddedSubtitleLabel
-                        Layout.fillWidth: true
-                        elide: Text.ElideRight
-                        text: i18n.tr("Embed subtitles in files")
-                        color: enabled ? theme.palette.normal.backgroundText : LomiriColors.lightGrey
-                    }
-                    CheckBox {
-                        id: embeddedSubtitle
-                        Layout.alignment: Qt.AlignRight
-                        SlotsLayout.position: SlotsLayout.Trailing
-                        onTriggered: generalSettings.embeddedSubtitle = checked
-                    }
-                    Binding {
-                        target: embeddedSubtitle
-                        property: "checked"
-                        value: generalSettings.embeddedSubtitle
+                SettingsCheckbox {
+                    id: embeddedSubtitleCheckbox
+                    Layout.fillWidth: true
+                    labelText: i18n.tr("Embed subtitles in files")
+                    checked: generalSettings.embeddedSubtitle
+                    isEnabled: generalSettings.downloadSubtitle
+                    onToggled: {
+                        generalSettings.embeddedSubtitle = checked
                     }
                 }
             }
 
-            RowLayout {
-                id: autoDownloadContainer
-                anchors{
+            SettingsCheckbox {
+                id: autoDownloadCheckbox
+                anchors {
                     top: subCapContainer.bottom
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
                 }
-                Text {
-                    id: autoDownloadLabel
-                    elide: Text.ElideRight
-                    Layout.fillWidth: true
-                    text: i18n.tr("Auto Download (best format)")
-                    color: theme.palette.normal.backgroundText
-                    font.pixelSize: units.gu(2)
-                }
-                CheckBox {
-                    id: setAutoDownloadCheckbox
-                    Layout.alignment: Qt.AlignRight
-                    SlotsLayout.position: SlotsLayout.Trailing
-                    onTriggered: generalSettings.autoDownload = checked
-                }
-                Binding {
-                    target: setAutoDownloadCheckbox
-                    property: "checked"
-                    value: generalSettings.autoDownload
+                labelText: i18n.tr("Auto Download (best format)")
+                checked: generalSettings.autoDownload
+                onToggled: {
+                    generalSettings.autoDownload = checked
                 }
             }
 
@@ -250,7 +193,7 @@ Page {
                 anchors {
                     margins: units.gu(2)
                     topMargin: units.gu(3)
-                    top: autoDownloadContainer.bottom
+                    top: autoDownloadCheckbox.bottom
                     right: parent.right
                     left: parent.left
                 }
@@ -259,18 +202,13 @@ Page {
             OptionSelector {
                 id: themeSelector
                 model: themeModel
-                selectedIndex: 0
-
-                text: i18n.tr("Select app theme")
-
-                anchors{
+                anchors {
                     top: divider.bottom
                     left: parent.left
                     right: parent.right
                     margins: units.gu(2)
                 }
-
-                onSelectedIndexChanged:  {
+                onSelectedIndexChanged: {
                     if (themeModel[selectedIndex] == "Ambiance theme")
                         generalSettings.theme = "Lomiri.Components.Themes.Ambiance"
                     if (themeModel[selectedIndex] == "Suru-dark theme")
