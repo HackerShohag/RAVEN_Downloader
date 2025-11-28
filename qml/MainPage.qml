@@ -285,6 +285,11 @@ MainView {
         id: contentShareDialog
         ContentHubDialog {
             downloadedFilePath: ""
+            onCloseRequested: {
+                if (contentHubPopup) {
+                    PopupUtils.close(contentHubPopup)
+                }
+            }
         }
     }
 
@@ -372,7 +377,6 @@ MainView {
                 // Use implicit height of children instead of actual height to avoid binding loop
                 contentHeight: inputPanel.height + downloadContainerHeading.height + 
                               (downloadItemsModel.count * units.gu(13.5)) + units.gu(10)
-                ScrollBar.vertical: ScrollBar { }
 
                 LayoutsCustom {
                     id: inputPanel

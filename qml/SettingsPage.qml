@@ -62,6 +62,7 @@ Page {
         contentWidth: rectRoot.width
         contentHeight: rectRoot.height
         flickableDirection: Flickable.VerticalFlick
+        ScrollBar.vertical: ScrollBar { visible: false }
 
         Rectangle {
             id: rectRoot

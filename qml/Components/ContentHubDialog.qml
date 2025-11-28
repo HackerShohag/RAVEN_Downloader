@@ -29,6 +29,8 @@ Page {
     property string downloadedFilePath: ""
     property var activeTransfer
     
+    signal closeRequested()
+    
     header: PageHeader {
         id: dialogHeader
         title: i18n.tr("Save Downloaded File")
@@ -40,7 +42,7 @@ Page {
                     if (contentHubDialog.activeTransfer) {
                         contentHubDialog.activeTransfer.state = ContentTransfer.Aborted
                     }
-                    PopupUtils.close(contentHubDialog)
+                    closeRequested()
                 }
             }
         ]

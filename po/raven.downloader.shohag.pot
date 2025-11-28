@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-28 01:26+0000\n"
+"POT-Creation-Date: 2025-11-28 01:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/Components/ContentHubDialog.qml:34
+#: ../qml/Components/ContentHubDialog.qml:36
 msgid "Save Downloaded File"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:518
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:522
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:182 ../qml/MainPage.qml:294
+#: ../qml/Components/MediaItem.qml:182 ../qml/MainPage.qml:299
 msgid "Download Complete!"
 msgstr ""
 
@@ -97,47 +97,47 @@ msgstr ""
 msgid "Please provide a link with valid list argument."
 msgstr ""
 
-#: ../qml/MainPage.qml:295
+#: ../qml/MainPage.qml:300
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:302
+#: ../qml/MainPage.qml:307
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:303
+#: ../qml/MainPage.qml:308
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:323 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:328 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:392
+#: ../qml/MainPage.qml:396
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:398
+#: ../qml/MainPage.qml:402
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:400
+#: ../qml/MainPage.qml:404
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:400
+#: ../qml/MainPage.qml:404
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:406
+#: ../qml/MainPage.qml:410
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:426
+#: ../qml/MainPage.qml:430
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:507
+#: ../qml/MainPage.qml:511
 msgid "No downloads yet."
 msgstr ""
 
@@ -157,22 +157,22 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:132
+#: ../qml/SettingsPage.qml:133
 msgid "Download available subtitles"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:156
+#: ../qml/SettingsPage.qml:157
 msgid "Download captions (If subtitle unavailable)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:167
+#: ../qml/SettingsPage.qml:168
 msgid "Embed subtitles in files"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:184
+#: ../qml/SettingsPage.qml:185
 msgid "Auto Download (best format)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:232
+#: ../qml/SettingsPage.qml:233
 msgid "Clear All History"
 msgstr ""
