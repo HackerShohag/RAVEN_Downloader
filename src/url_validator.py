@@ -110,3 +110,9 @@ def extract_video_id(url):
             return match.group(1)
     
     return None
+
+
+# Backwards compatibility aliases
+is_valid_video_url = is_valid_url
+is_valid_playlist = is_valid_playlist_url
+

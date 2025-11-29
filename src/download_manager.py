@@ -71,13 +71,13 @@ except Exception as e:
 # Local module imports
 try:
     from .format_parser import format_filesize, parse_playlist_info, parse_video_formats
-    from .storage_manager import get_storage_manager
-    from .url_validator import is_valid_playlist_url, is_valid_url
+    from .storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
+    from .url_validator import is_valid_playlist_url, is_valid_url, is_valid_video_url, is_valid_playlist
     print("[download_manager] Using relative imports")
 except ImportError:
     from format_parser import format_filesize, parse_playlist_info, parse_video_formats
-    from storage_manager import get_storage_manager
-    from url_validator import is_valid_playlist_url, is_valid_url
+    from storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
+    from url_validator import is_valid_playlist_url, is_valid_url, is_valid_video_url, is_valid_playlist
     print("[download_manager] Using absolute imports")
 
 
@@ -509,61 +509,10 @@ def cancel_download(download_id):
     return manager.cancel_download(download_id)
 
 
-def is_valid_video_url(url):
-    """
-    Check if URL is valid
-    
-    Args:
-        url (str): URL to validate
-        
-    Returns:
-        bool: True if valid
-    """
-    return is_valid_url(url)
-
-
-def is_valid_playlist(url):
-    """
-    Check if URL is a playlist
-    
-    Args:
-        url (str): URL to check
-        
-    Returns:
-        bool: True if playlist
-    """
-    return is_valid_playlist_url(url)
-
-
-def save_list_model_data(data):
-    """
-    Save download history
-    
-    Args:
-        data: Data to save
-        
-    Returns:
-        bool: Success status
-    """
-    try:
-        from .storage_manager import save_list_model_data as save_data
-    except ImportError:
-        from storage_manager import save_list_model_data as save_data
-    return save_data(data)
-
-
-def load_list_model_data():
-    """
-    Load download history
-    
-    Returns:
-        list: Download history
-    """
-    try:
-        from .storage_manager import load_list_model_data as load_data
-    except ImportError:
-        from storage_manager import load_list_model_data as load_data
-    return load_data()
+# Note: Validation and storage functions are re-exported from their respective modules
+# No wrapper functions needed - they are imported directly at the top of this file:
+# - is_valid_video_url, is_valid_playlist (from url_validator)
+# - save_list_model_data, load_list_model_data (from storage_manager)
 
 
 def get_yt_dlp_version():
@@ -578,4 +527,5 @@ def get_yt_dlp_version():
 
 # Module initialization complete
 print("[download_manager.py] Module loaded successfully")
+print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")
 print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")
