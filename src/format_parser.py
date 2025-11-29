@@ -128,12 +128,24 @@ def parse_playlist_info(info_dict):
     
     entries = info_dict.get('entries', [])
     
+    # Process entries to ensure we have necessary data
+    processed_entries = []
+    for entry in entries:
+        if entry:  # Skip None entries
+            processed_entry = {
+                'id': entry.get('id', ''),
+                'title': entry.get('title', 'Unknown'),
+                'url': entry.get('url', '') or entry.get('webpage_url', ''),
+                'duration': entry.get('duration', 0),
+            }
+            processed_entries.append(processed_entry)
+    
     return {
         'title': info_dict.get('title', 'Unknown Playlist'),
         'playlist_id': info_dict.get('id', ''),
         'uploader': info_dict.get('uploader', ''),
-        'video_count': len(entries),
-        'entries': entries,
+        'video_count': len(processed_entries),
+        'entries': processed_entries,
     }
 
 

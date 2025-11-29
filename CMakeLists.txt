@@ -12,6 +12,7 @@ execute_process(
 set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
 set(PROJECT_NAME "raven.downloader")
+set(PROJECT_VERSION "4.1.0")
 set(FULL_PROJECT_NAME "raven.downloader.shohag")
 set(DATA_DIR /)
 set(DESKTOP_FILE_NAME ${PROJECT_NAME}.desktop)
@@ -49,9 +50,17 @@ if(NOT BUILD_VERSION_RAW)
     OUTPUT_STRIP_TRAILING_WHITESPACE
     ERROR_QUIET
     )
-  string(TIMESTAMP BUILD_VERSION_RAW "${LAST_VERSION_RAW}.%y%m%d%H%M%S" UTC)
+  if(LAST_VERSION_RAW)
+    string(SUBSTRING ${LAST_VERSION_RAW} 1 -1 LAST_VERSION)
+    string(TIMESTAMP BUILD_VERSION "${LAST_VERSION}.%y%m%d%H%M%S" UTC)
+  else()
+    # Fallback to PROJECT_VERSION if no git tags
+    string(TIMESTAMP BUILD_VERSION "${PROJECT_VERSION}")
+  endif()
+else()
+  # Remove 'v' prefix from git tag
+  string(SUBSTRING ${BUILD_VERSION_RAW} 1 -1 BUILD_VERSION)
 endif(NOT BUILD_VERSION_RAW)
-string(SUBSTRING ${BUILD_VERSION_RAW} 1 -1 BUILD_VERSION)
 message(STATUS "Build version is: ${BUILD_VERSION}")
 add_definitions(-DBUILD_VERSION="${BUILD_VERSION}")
 

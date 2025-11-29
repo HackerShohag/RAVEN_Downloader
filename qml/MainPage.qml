@@ -169,6 +169,41 @@ MainView {
         console.log("Playlist: " + playlistData.title + " with " + playlistData.video_count + " videos");
         root.playListTitle = playlistData.title;
         root.entry = playlistData.video_count;
+        
+        // Process each video in the playlist
+        if (playlistData.entries && playlistData.entries.length > 0) {
+            console.log("Processing " + playlistData.entries.length + " videos from playlist...");
+            pageLoadingOverlay.running = true;
+            
+            // Process videos sequentially
+            processPlaylistVideos(playlistData.entries, 0);
+        }
+    }
+    
+    function processPlaylistVideos(entries, index) {
+        if (index >= entries.length) {
+            console.log("Finished processing all playlist videos");
+            pageLoadingOverlay.running = false;
+            PopupUtils.open(finishedPopup);
+            return;
+        }
+        
+        var entry = entries[index];
+        var videoUrl = entry.url || ('https://www.youtube.com/watch?v=' + entry.id);
+        
+        console.log("Processing playlist video " + (index + 1) + "/" + entries.length + ": " + (entry.title || videoUrl));
+        
+        // Get full video info for this entry
+        python.call('download_manager.action_submit', [videoUrl, 0], function(result) {
+            if (result && result.type === 'video') {
+                handleFormatsUpdated(result.data);
+            } else if (result && result.error) {
+                console.log("Error processing playlist video: " + result.error);
+            }
+            
+            // Process next video after a small delay
+            processPlaylistVideos(entries, index + 1);
+        });
     }
     
     function handleFinished() {
@@ -190,7 +225,7 @@ MainView {
     
     function handleInvalidPlaylistUrl(url) {
         pageLoadingOverlay.running = false;
-        PopupUtils.open(invalidPlayListURLWarning);
+        PopupUtils.open(playlistAsVideoWarning);
     }
     
     function handleGeneralMessage(message) {
@@ -263,7 +298,15 @@ MainView {
         id: invalidPlayListURLWarning
         WarningDialog {
             title: i18n.tr("Invalid Playlist URL!")
-            text: i18n.tr("Please provide a link with valid list argument.")
+            text: i18n.tr("Please provide a valid playlist link with list argument.")
+        }
+    }
+
+    Component {
+        id: playlistAsVideoWarning
+        WarningDialog {
+            title: i18n.tr("Playlist Detected!")
+            text: i18n.tr("This is a playlist URL. Please select 'Playlist' mode to download all videos.")
         }
     }
 

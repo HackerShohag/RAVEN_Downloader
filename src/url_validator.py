@@ -31,13 +31,14 @@ def is_valid_url(url):
     if not url or not isinstance(url, str):
         return False
     
-    # YouTube patterns (including shorts)
+    # YouTube patterns (including shorts and playlists)
     youtube_patterns = [
         r'(https?://)?(www\.)?(youtube\.com/watch\?v=)',
         r'(https?://)?(www\.)?(youtu\.be/)',
         r'(https?://)?(www\.)?(youtube\.com/embed/)',
         r'(https?://)?(www\.)?(m\.youtube\.com/watch\?v=)',
         r'(https?://)?(www\.)?(youtube\.com/shorts/)',
+        r'(https?://)?(www\.)?(youtube\.com/playlist\?)',
         r'(https?://)?(yotu\.be/)',
     ]
     
