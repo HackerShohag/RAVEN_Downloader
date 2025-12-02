@@ -12,7 +12,7 @@ execute_process(
 set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
 set(PROJECT_NAME "raven.downloader")
-set(PROJECT_VERSION "4.2.2")
+set(PROJECT_VERSION "4.2.3")
 set(FULL_PROJECT_NAME "raven.downloader.shohag")
 set(DATA_DIR /)
 set(DESKTOP_FILE_NAME ${PROJECT_NAME}.desktop)
@@ -64,7 +64,6 @@ endif(NOT BUILD_VERSION_RAW)
 message(STATUS "Build version is: ${BUILD_VERSION}")
 add_definitions(-DBUILD_VERSION="${BUILD_VERSION}")
 
-
 configure_file(manifest.json.in ${CMAKE_CURRENT_BINARY_DIR}/manifest.json)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES ${PROJECT_NAME}.apparmor DESTINATION ${DATA_DIR})
@@ -72,7 +71,15 @@ install(FILES ${PROJECT_NAME}.apparmor DESTINATION ${DATA_DIR})
 install(DIRECTORY assets DESTINATION ${DATA_DIR})
 install(DIRECTORY src DESTINATION ${DATA_DIR})
 
-install(DIRECTORY qml DESTINATION ${DATA_DIR})
+# Generate and install version.js
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/qml/version.js.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/qml/version.js"
+    @ONLY
+)
+
+install(DIRECTORY qml DESTINATION ${DATA_DIR} PATTERN "*.in" EXCLUDE)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/qml/version.js DESTINATION ${DATA_DIR}qml)
 
 # Install lib directory if it exists (created by postbuild script with yt-dlp)
 if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/lib)

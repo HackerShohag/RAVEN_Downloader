@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-02 04:09+0000\n"
+"POT-Creation-Date: 2025-12-02 04:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,74 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../qml/AboutPage.qml:29
+msgid "About RAVEN Downloader"
+msgstr ""
+
+#: ../qml/AboutPage.qml:60
+msgid "Multi-Platform Video Downloader"
+msgstr ""
+
+#: ../qml/AboutPage.qml:66
+msgid ""
+"Download videos from 12+ platforms including YouTube, Vimeo, Dailymotion, "
+"Twitch, Facebook, Instagram, Twitter, TikTok, SoundCloud, Reddit, and "
+"Bilibili."
+msgstr ""
+
+#: ../qml/AboutPage.qml:74
+msgid "Features:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:80
+msgid "Multi-platform support with smart URL detection"
+msgstr ""
+
+#: ../qml/AboutPage.qml:81
+msgid "Playlist downloads (platform-dependent)"
+msgstr ""
+
+#: ../qml/AboutPage.qml:82
+msgid "Custom format and quality selection"
+msgstr ""
+
+#: ../qml/AboutPage.qml:83
+msgid "Native ContentHub integration"
+msgstr ""
+
+#: ../qml/AboutPage.qml:84
+msgid "Subtitle & caption support"
+msgstr ""
+
+#: ../qml/AboutPage.qml:92
+msgid "Developer:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:119
+msgid "Report Bugs & Send Feedback:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:140
+msgid "Technologies & Libraries:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:162
+msgid "License:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:176
+msgid "Source Code:"
+msgstr ""
+
+#: ../qml/AboutPage.qml:196 ../qml/Components/MediaItemDialogs.qml:68
+msgid "Close"
+msgstr ""
+
 #: ../qml/Components/ContentHubDialog.qml:36
 msgid "Save Downloaded File"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:423
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:436
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -59,10 +122,6 @@ msgstr ""
 
 #: ../qml/Components/MediaItemDialogs.qml:56
 msgid "Save to..."
-msgstr ""
-
-#: ../qml/Components/MediaItemDialogs.qml:68
-msgid "Close"
 msgstr ""
 
 #: ../qml/Components/MediaItemDialogs.qml:82
@@ -118,35 +177,39 @@ msgstr ""
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:259 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:264 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:313
+#: ../qml/MainPage.qml:269
+msgid "About"
+msgstr ""
+
+#: ../qml/MainPage.qml:326
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:320
+#: ../qml/MainPage.qml:333
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:322
+#: ../qml/MainPage.qml:335
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:322
+#: ../qml/MainPage.qml:335
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:328
+#: ../qml/MainPage.qml:341
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:343
+#: ../qml/MainPage.qml:356
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:412
+#: ../qml/MainPage.qml:425
 msgid "No downloads yet."
 msgstr ""
 

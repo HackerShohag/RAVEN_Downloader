@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025  Abdullah AL Shohag
+ * Copyright (C) 2022  Abdullah AL Shohag
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,11 @@ MainView {
             title: i18n.tr("Download Complete!")
             text: i18n.tr(videoCount + " video(s) from \"" + playlistTitle + "\" playlist have been added.")
         }
+    }
+    
+    Component {
+        id: aboutDialog
+        AboutPage {}
     }
 
     // Download Item Manager
@@ -257,6 +262,14 @@ MainView {
         header: PageHeader {
             id: header
             title: i18n.tr("RAVEN Downloader")
+            
+            trailingActionBar.actions: [
+                Action {
+                    iconName: "info"
+                    text: i18n.tr("About")
+                    onTriggered: PopupUtils.open(aboutDialog, root)
+                }
+            ]
         }
 
         function toggleBlankPage() {

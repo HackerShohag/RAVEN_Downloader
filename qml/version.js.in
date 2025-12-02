@@ -1,0 +1,4 @@
+// Auto-generated version file
+.pragma library
+
+var BUILD_VERSION = "@BUILD_VERSION@";
