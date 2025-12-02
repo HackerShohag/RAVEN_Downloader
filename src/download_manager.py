@@ -72,12 +72,14 @@ except Exception as e:
 try:
     from .format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from .storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
-    from .url_validator import is_valid_playlist_url, is_valid_url, is_valid_video_url, is_valid_playlist
+    from .url_validator import (is_valid_playlist_url, is_valid_url, is_valid_video_url, 
+                                is_valid_playlist, supports_playlists, get_platform_name)
     print("[download_manager] Using relative imports")
 except ImportError:
     from format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
-    from url_validator import is_valid_playlist_url, is_valid_url, is_valid_video_url, is_valid_playlist
+    from url_validator import (is_valid_playlist_url, is_valid_url, is_valid_video_url, 
+                               is_valid_playlist, supports_playlists, get_platform_name)
     print("[download_manager] Using absolute imports")
 
 
@@ -131,10 +133,24 @@ class DownloadManager:
             is_playlist = is_valid_playlist_url(url)
             print(f"[action_submit] Is playlist: {is_playlist}")
             
+            # Check if user wants playlist but platform doesn't support it
+            if download_type == 1 and not supports_playlists(url):
+                platform = get_platform_name(url)
+                error_msg = f'{platform} does not support playlist downloads'
+                print(f"[action_submit] ERROR: {error_msg}")
+                return {'error': error_msg}
+            
             if is_playlist and download_type == 0:
                 # User submitted playlist as single video
                 print(f"[action_submit] Playlist URL submitted as single video")
                 return {'error': 'playlist_as_video', 'url': url}
+            
+            # If user selected playlist mode but URL is not a playlist
+            if download_type == 1 and not is_playlist:
+                platform = get_platform_name(url)
+                error_msg = f'This is not a valid playlist URL for {platform}'
+                print(f"[action_submit] ERROR: {error_msg}")
+                return {'error': error_msg}
             
             # Extract video/playlist information
             print(f"[action_submit] Extracting info from: {url}")

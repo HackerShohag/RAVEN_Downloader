@@ -46,7 +46,16 @@ MainView {
         name: "Lomiri.Components.Themes.Ambiance"
     }
 
-    // Validation Dialog Components
+    /**
+     * Validation Dialog Components
+     * 
+     * These dialogs MUST be defined here in the MainView root context.
+     * PopupUtils.open() requires a root object, and attempting to move these
+     * to a separate QtObject component causes "Failed to get root object" errors.
+     * 
+     * Each dialog is a reusable Component that can be opened with PopupUtils.open()
+     * throughout the application with custom property values.
+     */
     Component {
         id: qProcessError
         WarningDialog {
@@ -59,7 +68,7 @@ MainView {
         id: invalidPlayListURLWarning
         WarningDialog {
             title: i18n.tr("Invalid Playlist URL!")
-            text: i18n.tr("Please provide a valid playlist link with list argument.")
+            text: i18n.tr("Please provide a valid playlist url.")
         }
     }
     

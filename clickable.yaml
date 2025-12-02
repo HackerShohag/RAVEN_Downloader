@@ -37,104 +37,104 @@ postbuild: |
   mkdir -p "$TARGET_DIR/bin"
   mkdir -p "$TARGET_DIR/lib"
   mkdir -p "$TARGET_DIR/include"
-  mkdir -p "$TARGET_DIR/opt"
+  # mkdir -p "$TARGET_DIR/opt"
   
   FFMPEG_VERSION="8.0.1"
   FFMPEG_URL="https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz"
   BUILD_DIR="/tmp/ffmpeg-build"
   
-  # # Download ffmpeg source
-  # echo "Downloading ffmpeg ${FFMPEG_VERSION} from: $FFMPEG_URL"
-  # wget -q -O /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz "$FFMPEG_URL"
-  # if [ $? -ne 0 ]; then
-  #   echo "ERROR: Failed to download ffmpeg source"
-  #   exit 1
-  # fi
+  # Download ffmpeg source
+  echo "Downloading ffmpeg ${FFMPEG_VERSION} from: $FFMPEG_URL"
+  wget -q -O /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz "$FFMPEG_URL"
+  if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to download ffmpeg source"
+    exit 1
+  fi
   
-  # # Extract source
-  # echo "Extracting ffmpeg source..."
-  # mkdir -p "$BUILD_DIR"
-  # tar -xJf /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz -C "$BUILD_DIR" --strip-components=1
+  # Extract source
+  echo "Extracting ffmpeg source..."
+  mkdir -p "$BUILD_DIR"
+  tar -xJf /tmp/ffmpeg-${FFMPEG_VERSION}.tar.xz -C "$BUILD_DIR" --strip-components=1
   
-  # # Configure and build ffmpeg
-  # echo "Configuring ffmpeg..."
-  # cd "$BUILD_DIR"
+  # Configure and build ffmpeg
+  echo "Configuring ffmpeg..."
+  cd "$BUILD_DIR"
   
-  # # Detect target architecture from ARCH or ARCH_TRIPLET
-  # if [ -n "$ARCH" ]; then
-  #   TARGET_ARCH="$ARCH"
-  # elif [ -n "$ARCH_TRIPLET" ]; then
-  #   TARGET_ARCH="$ARCH_TRIPLET"
-  # else
-  #   TARGET_ARCH="arm64"
-  # fi
+  # Detect target architecture from ARCH or ARCH_TRIPLET
+  if [ -n "$ARCH" ]; then
+    TARGET_ARCH="$ARCH"
+  elif [ -n "$ARCH_TRIPLET" ]; then
+    TARGET_ARCH="$ARCH_TRIPLET"
+  else
+    TARGET_ARCH="arm64"
+  fi
   
-  # echo "Cross-compiling ffmpeg for architecture: $TARGET_ARCH"
+  echo "Cross-compiling ffmpeg for architecture: $TARGET_ARCH"
   
-  # # Configure for cross-compilation based on architecture
-  # ARCH_CONFIG=""
-  # case "$TARGET_ARCH" in
-  #   *aarch64*|*arm64*)
-  #     echo "Configuring for ARM64/AARCH64"
-  #     ARCH_CONFIG="--arch=aarch64 --enable-cross-compile --cross-prefix=aarch64-linux-gnu- --target-os=linux"
-  #     ;;
-  #   *armhf*|*armv7*)
-  #     echo "Configuring for ARMHF/ARMv7"
-  #     ARCH_CONFIG="--arch=arm --cpu=armv7-a --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- --target-os=linux"
-  #     ;;
-  #   *amd64*|*x86_64*)
-  #     echo "Configuring for AMD64/x86_64"
-  #     ARCH_CONFIG="--arch=x86_64"
-  #     ;;
-  #   *)
-  #     echo "WARNING: Unknown architecture $TARGET_ARCH, building for host"
-  #     ARCH_CONFIG=""
-  #     ;;
-  # esac
+  # Configure for cross-compilation based on architecture
+  ARCH_CONFIG=""
+  case "$TARGET_ARCH" in
+    *aarch64*|*arm64*)
+      echo "Configuring for ARM64/AARCH64"
+      ARCH_CONFIG="--arch=aarch64 --enable-cross-compile --cross-prefix=aarch64-linux-gnu- --target-os=linux"
+      ;;
+    *armhf*|*armv7*)
+      echo "Configuring for ARMHF/ARMv7"
+      ARCH_CONFIG="--arch=arm --cpu=armv7-a --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- --target-os=linux"
+      ;;
+    *amd64*|*x86_64*)
+      echo "Configuring for AMD64/x86_64"
+      ARCH_CONFIG="--arch=x86_64"
+      ;;
+    *)
+      echo "WARNING: Unknown architecture $TARGET_ARCH, building for host"
+      ARCH_CONFIG=""
+      ;;
+  esac
 
-  # ./configure --prefix="$TARGET_DIR" --bindir="$TARGET_DIR/bin" --libdir="$TARGET_DIR/lib" $ARCH_CONFIG --enable-shared --enable-gpl --enable-small --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-debug --disable-static --disable-programs --enable-ffmpeg --enable-ffprobe
+  ./configure --prefix="$TARGET_DIR" --bindir="$TARGET_DIR/bin" --libdir="$TARGET_DIR/lib" $ARCH_CONFIG --enable-shared --enable-gpl --enable-small --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-debug --disable-static --disable-programs --enable-ffmpeg --enable-ffprobe
   
-  # if [ $? -ne 0 ]; then
-  #   echo "ERROR: ffmpeg configuration failed"
-  #   exit 1
-  # fi
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg configuration failed"
+    exit 1
+  fi
   
-  # echo "Building ffmpeg (this may take a while)..."
-  # make -j$(nproc)
+  echo "Building ffmpeg (this may take a while)..."
+  make -j$(nproc)
   
-  # if [ $? -ne 0 ]; then
-  #   echo "ERROR: ffmpeg build failed"
-  #   exit 1
-  # fi
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg build failed"
+    exit 1
+  fi
   
-  # echo "Installing ffmpeg..."
-  # make install
+  echo "Installing ffmpeg..."
+  make install
   
-  # if [ $? -ne 0 ]; then
-  #   echo "ERROR: ffmpeg installation failed"
-  #   exit 1
-  # fi
+  if [ $? -ne 0 ]; then
+    echo "ERROR: ffmpeg installation failed"
+    exit 1
+  fi
   
   # Verify installation
-  # echo "Verifying ffmpeg installation..."
-  # if [ -f "$TARGET_DIR/bin/ffmpeg" ]; then
-  #   chmod +x "$TARGET_DIR/bin/ffmpeg"
-  #   echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
+  echo "Verifying ffmpeg installation..."
+  if [ -f "$TARGET_DIR/bin/ffmpeg" ]; then
+    chmod +x "$TARGET_DIR/bin/ffmpeg"
+    echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
     
-  #   # Verify architecture of built binaries
-  #   echo "Verifying architecture of built binaries:"
-  #   file "$TARGET_DIR/bin/ffmpeg"
-  #   if [ -f "$TARGET_DIR/lib/libavcodec.so" ]; then
-  #     file "$TARGET_DIR/lib/libavcodec.so"
-  #   fi
+    # Verify architecture of built binaries
+    echo "Verifying architecture of built binaries:"
+    file "$TARGET_DIR/bin/ffmpeg"
+    if [ -f "$TARGET_DIR/lib/libavcodec.so" ]; then
+      file "$TARGET_DIR/lib/libavcodec.so"
+    fi
     
-  #   # Set library path for verification
-  #   export LD_LIBRARY_PATH="$TARGET_DIR/lib:${LD_LIBRARY_PATH:-}"
-  #   "$TARGET_DIR/bin/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
-  # else
-  #   echo "ERROR: ffmpeg binary not found after installation"
-  #   exit 1
-  # fi
+    # Set library path for verification
+    export LD_LIBRARY_PATH="$TARGET_DIR/lib:${LD_LIBRARY_PATH:-}"
+    "$TARGET_DIR/bin/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
+  else
+    echo "ERROR: ffmpeg binary not found after installation"
+    exit 1
+  fi
   
   # Cleanup
   echo "Cleaning up build files..."

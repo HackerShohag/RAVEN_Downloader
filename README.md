@@ -6,12 +6,31 @@ A professional video downloader for Ubuntu Touch with Python-powered backend and
 
 ## Features
 
+- **Multi-Platform Support** - Download from 12 major video platforms with intelligent detection
 - **Format Control** - Independent video quality and audio bitrate selection
-- **Playlist Support** - Batch download with individual format control
+- **Playlist Support** - Batch download with individual format control (platform-dependent)
 - **ContentHub Integration** - Native file export to any app
 - **Subtitle Management** - Download, auto-caption, and embedding
 - **Persistent History** - Entry-based storage with thumbnail caching
 - **Theme Support** - Ambiance and Suru Dark themes
+
+### Supported Platforms
+
+| Platform | Video Downloads | Playlist Support |
+|----------|----------------|------------------|
+| **YouTube** | ✅ | ✅ Playlists |
+| **Vimeo** | ✅ | ✅ Albums, Channels, Groups |
+| **Dailymotion** | ✅ | ✅ Playlists |
+| **Twitch** | ✅ | ✅ Collections |
+| **Facebook** | ✅ | ✅ Series |
+| **Instagram** | ✅ | ⚠️ Limited |
+| **Twitter/X** | ✅ | ❌ |
+| **TikTok** | ✅ | ✅ User Profiles |
+| **SoundCloud** | ✅ | ✅ Playlists, Albums |
+| **Reddit** | ✅ | ✅ Subreddit Feeds |
+| **Bilibili** | ✅ | ✅ Playlists, Series |
+
+*Powered by yt-dlp's 1800+ extractors. The app intelligently validates URLs and provides platform-specific guidance.*
 
 ## Quick Start
 
@@ -44,7 +63,7 @@ UI Layer (QML)
 Backend (Python)
     ├─ download_manager.py    # yt-dlp orchestration
     ├─ format_parser.py        # Metadata extraction
-    ├─ url_validator.py        # URL validation
+    ├─ url_validator.py        # Multi-platform URL validation
     └─ storage_manager.py      # Entry-based persistence
 ```
 
@@ -84,24 +103,48 @@ clickable logs --arch all
 
 ## Usage
 
-1. **Single Video**: Paste URL → Submit → Select format → Download
-2. **Playlist**: Set type to "playlist" → Submit → Select formats per video
+1. **Single Video**: Paste URL from any supported platform → Submit → Select format → Download
+2. **Playlist**: Set type to "playlist" → Submit → Select formats per video (if platform supports playlists)
 3. **Export**: Automatic ContentHub dialog on completion
 4. **Settings**: Bottom-edge swipe for subtitles, theme, auto-download
+
+### Example URLs
+
+```text
+YouTube:      https://www.youtube.com/watch?v=VIDEO_ID
+              https://www.youtube.com/playlist?list=PLAYLIST_ID
+Vimeo:        https://vimeo.com/VIDEO_ID
+              https://vimeo.com/album/ALBUM_ID
+Dailymotion:  https://www.dailymotion.com/video/VIDEO_ID
+Twitch:       https://www.twitch.tv/videos/VIDEO_ID
+Facebook:     https://www.facebook.com/watch/?v=VIDEO_ID
+Instagram:    https://www.instagram.com/p/POST_ID/
+Twitter:      https://twitter.com/user/status/TWEET_ID
+TikTok:       https://www.tiktok.com/@username/video/VIDEO_ID
+SoundCloud:   https://soundcloud.com/artist/track
+Reddit:       https://www.reddit.com/r/subreddit/comments/POST_ID/
+Bilibili:     https://www.bilibili.com/video/BV_ID
+```
+
+**Note**: The app automatically detects the platform and validates URL format. If you select playlist mode for a platform that doesn't support playlists (e.g., Twitter), you'll receive a helpful error message.
 
 ## Development
 
 ### Adding Python Dependencies
+## Troubleshooting
 
-Edit `clickable.yaml`:
+**yt-dlp not found**: `clickable clean --arch all && clickable build --arch all`
 
-```yaml
-postbuild: |
-  pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" package-name
-```
+**Module import error**: Check `lib/python3/dist-packages` exists in build
 
-### Component Structure
+**Progress stuck**: Check logs with `clickable logs --arch all | grep download`
 
+**Playlist URL invalid**: 
+- For YouTube, ensure URL contains `list=` or `/playlist?` parameter
+- For other platforms, check the [Supported Platforms](#supported-platforms) table
+- Some platforms (Twitter, Instagram) don't support playlist downloads
+
+**Platform not supported**: The app supports 12 major platforms. For other sites supported by yt-dlp, submit a feature request with example URLs
 ```text
 qml/Components/
 ├── ContentHubDialog.qml    # File export dialog

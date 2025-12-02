@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-29 12:35+0000\n"
+"POT-Creation-Date: 2025-12-02 03:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,105 +21,56 @@ msgstr ""
 msgid "Save Downloaded File"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:414
-#: ../qml/MainPage_old.qml:565
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:423
 msgid "Swipe for Settings"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:58
+#: ../qml/Components/MediaItem.qml:63
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:58
+#: ../qml/Components/MediaItem.qml:63
 msgid "select language"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:58
+#: ../qml/Components/MediaItem.qml:63
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:167
-msgid "Download Invalid!"
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:168
-msgid "Please refresh download link."
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:182
-#: ../qml/Components/ValidationDialogs.qml:61 ../qml/MainPage.qml:88
-#: ../qml/MainPage_old.qml:342
-msgid "Download Complete!"
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:183
-msgid "File downloaded: "
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:186
-msgid "Save to..."
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:198
-msgid "Close"
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:209
-msgid "Download Failed"
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:210
-msgid "An error occurred while starting the download."
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:372
+#: ../qml/Components/MediaItem.qml:322
 msgid "Download"
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:30 ../qml/MainPage.qml:53
-#: ../qml/MainPage_old.qml:292
-msgid "Error Occurred!"
+#: ../qml/Components/MediaItemDialogs.qml:34
+msgid "Download Invalid!"
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:31 ../qml/MainPage.qml:54
-#: ../qml/MainPage_old.qml:293
-msgid "An unknown error occured."
+#: ../qml/Components/MediaItemDialogs.qml:35
+msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:37 ../qml/MainPage.qml:61
-#: ../qml/MainPage_old.qml:300
-msgid "Invalid Playlist URL!"
+#: ../qml/Components/MediaItemDialogs.qml:52 ../qml/MainPage.qml:97
+msgid "Download Complete!"
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:38 ../qml/MainPage.qml:62
-#: ../qml/MainPage_old.qml:301
-msgid "Please provide a valid playlist link with list argument."
+#: ../qml/Components/MediaItemDialogs.qml:53
+msgid "File downloaded: "
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:44 ../qml/MainPage.qml:69
-#: ../qml/MainPage_old.qml:308
-msgid "Playlist Detected!"
+#: ../qml/Components/MediaItemDialogs.qml:56
+msgid "Save to..."
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:45 ../qml/MainPage.qml:70
-#: ../qml/MainPage_old.qml:309
-msgid ""
-"This is a playlist URL. Please select 'Playlist' mode to download all videos."
+#: ../qml/Components/MediaItemDialogs.qml:68
+msgid "Close"
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:51 ../qml/MainPage.qml:77
-#: ../qml/MainPage_old.qml:350
-msgid "Invalid URL!"
+#: ../qml/Components/MediaItemDialogs.qml:82
+msgid "Download Failed"
 msgstr ""
 
-#: ../qml/Components/ValidationDialogs.qml:52 ../qml/MainPage.qml:78
-#: ../qml/MainPage_old.qml:351
-msgid "Please provide a valid video link."
-msgstr ""
-
-#: ../qml/Components/ValidationDialogs.qml:62 ../qml/MainPage.qml:89
-#: ../qml/MainPage_old.qml:343
-msgid " video(s) from \""
+#: ../qml/Components/MediaItemDialogs.qml:83
+msgid "An error occurred while starting the download."
 msgstr ""
 
 #: ../qml/Components/WarningDialog.qml:27
@@ -130,36 +81,72 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:250 ../qml/MainPage_old.qml:371
-#: raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:62
+msgid "Error Occurred!"
+msgstr ""
+
+#: ../qml/MainPage.qml:63
+msgid "An unknown error occured."
+msgstr ""
+
+#: ../qml/MainPage.qml:70
+msgid "Invalid Playlist URL!"
+msgstr ""
+
+#: ../qml/MainPage.qml:71
+msgid "Please provide a valid playlist url."
+msgstr ""
+
+#: ../qml/MainPage.qml:78
+msgid "Playlist Detected!"
+msgstr ""
+
+#: ../qml/MainPage.qml:79
+msgid ""
+"This is a playlist URL. Please select 'Playlist' mode to download all videos."
+msgstr ""
+
+#: ../qml/MainPage.qml:86
+msgid "Invalid URL!"
+msgstr ""
+
+#: ../qml/MainPage.qml:87
+msgid "Please provide a valid video link."
+msgstr ""
+
+#: ../qml/MainPage.qml:98
+msgid " video(s) from \""
+msgstr ""
+
+#: ../qml/MainPage.qml:259 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:304 ../qml/MainPage_old.qml:439
+#: ../qml/MainPage.qml:313
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:311 ../qml/MainPage_old.qml:445
+#: ../qml/MainPage.qml:320
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:313 ../qml/MainPage_old.qml:447
+#: ../qml/MainPage.qml:322
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:313 ../qml/MainPage_old.qml:447
+#: ../qml/MainPage.qml:322
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:319 ../qml/MainPage_old.qml:453
+#: ../qml/MainPage.qml:328
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:334 ../qml/MainPage_old.qml:473
+#: ../qml/MainPage.qml:343
 msgid "   Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:403 ../qml/MainPage_old.qml:554
+#: ../qml/MainPage.qml:412
 msgid "No downloads yet."
 msgstr ""
 

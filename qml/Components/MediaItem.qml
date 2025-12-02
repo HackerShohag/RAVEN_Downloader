@@ -24,6 +24,11 @@ import Lomiri.Components.Popups 1.3
 LayoutsCustom {
     id: gridBox
 
+    // Reusable dialog components
+    MediaItemDialogs {
+        id: mediaDialogs
+    }
+
     property alias  videoTitle          : titleBox.text
     property string thumbnail           : ""
     property string duration            : ""
@@ -154,64 +159,9 @@ LayoutsCustom {
                 });
             }
             else
-                PopupUtils.open(invalidDownloadWarning)
+                PopupUtils.open(mediaDialogs.invalidDownloadWarning, gridBox)
             downloadItems.itemAt(indexID).videoIndex = downloadItems.itemAt(indexID).vcodec.length - 1;
             downloadItems.itemAt(indexID).audioIndex = downloadItems.itemAt(indexID).acodec.length - 1;
-        }
-    }
-
-    Component {
-        id: invalidDownloadWarning
-        Dialog {
-            id: dialogue
-            title: i18n.tr("Download Invalid!")
-            text: i18n.tr("Please refresh download link.")
-            Button {
-                text: "OK"
-                onClicked: PopupUtils.close(dialogue)
-            }
-        }
-    }
-
-    Component {
-        id: downloadFinishedDialog
-        Dialog {
-            id: finishedDialog
-            property string fileName: ""
-            property string filePath: ""
-            title: i18n.tr("Download Complete!")
-            text: i18n.tr("File downloaded: ") + fileName
-            
-            Button {
-                text: i18n.tr("Save to...")
-                color: theme.palette.normal.positive
-                onClicked: {
-                    PopupUtils.close(finishedDialog);
-                    // Trigger ContentHub export
-                    if (root && root.openContentHubExport) {
-                        root.openContentHubExport(filePath);
-                    }
-                }
-            }
-            
-            Button {
-                text: i18n.tr("Close")
-                onClicked: PopupUtils.close(finishedDialog)
-            }
-        }
-    }
-
-    Component {
-        id: downloadErrorDialog
-        Dialog {
-            id: errorDialog
-            property string errorMessage: ""
-            title: i18n.tr("Download Failed")
-            text: errorMessage || i18n.tr("An error occurred while starting the download.")
-            Button {
-                text: "OK"
-                onClicked: PopupUtils.close(errorDialog)
-            }
         }
     }
 
@@ -391,7 +341,7 @@ LayoutsCustom {
                             if (result && result.success === false && result.error) {
                                 // Only hide on error
                                 itemLoadingOverlay.running = false;
-                                PopupUtils.open(downloadErrorDialog, gridBox, { 
+                                PopupUtils.open(mediaDialogs.downloadErrorDialog, gridBox, { 
                                     errorMessage: result.error 
                                 });
                             } else if (result && result.download_id !== undefined) {
@@ -408,7 +358,7 @@ LayoutsCustom {
                     } else {
                         // Hide loading if validation failed
                         itemLoadingOverlay.running = false;
-                        PopupUtils.open(invalidDownloadWarning);
+                        PopupUtils.open(mediaDialogs.invalidDownloadWarning, gridBox);
                     }
                 }
                 
@@ -458,7 +408,7 @@ LayoutsCustom {
                                     fileName = fileName.substring(fileName.lastIndexOf('/') + 1);
                                 }
                                 
-                                PopupUtils.open(downloadFinishedDialog, gridBox, {
+                                PopupUtils.open(mediaDialogs.downloadFinishedDialog, gridBox, {
                                     fileName: fileName,
                                     filePath: filePath
                                 });
@@ -466,7 +416,7 @@ LayoutsCustom {
                                 pollTimer.stop();
                                 itemLoadingOverlay.running = false;  // Hide overlay on error
                                 videoProgressBar.value = 0;
-                                PopupUtils.open(downloadErrorDialog, gridBox, { 
+                                PopupUtils.open(mediaDialogs.downloadErrorDialog, gridBox, { 
                                     errorMessage: status.error || 'Download failed'
                                 });
                             } else if (status.status === 'processing') {

@@ -1,6 +1,6 @@
 {
     "name": "raven.downloader.shohag",
-    "description": "A Simple YouTube Batch Downloader",
+    "description": "Multi-platform video downloader supporting YouTube, Vimeo, Dailymotion, Twitch, Facebook, Instagram, Twitter, TikTok, SoundCloud, Reddit, Bilibili and more. Features playlist support, format control, and native ContentHub integration.",
     "architecture": "@CLICK_ARCH@",
     "title": "RAVEN Downloader",
     "hooks": {

@@ -32,10 +32,10 @@ Button {
 
     color: theme.palette.normal.background
     text: defaultValue ? dropdownModel[0] : heading
-    onClicked: PopupUtils.open(invalidURLWarning)
+    onClicked: PopupUtils.open(comboSelectorDialog)
 
     Component {
-        id: invalidURLWarning
+        id: comboSelectorDialog
         Dialog {
             id: dialogue
             title: heading
