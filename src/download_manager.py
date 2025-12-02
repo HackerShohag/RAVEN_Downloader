@@ -159,6 +159,13 @@ class DownloadManager:
                 'quiet': True,
                 'no_warnings': True,
                 'extract_flat': is_playlist,  # Don't download playlist videos
+                # Fix SSL/TLS issues for Dailymotion and others
+                'nocheckcertificate': True,
+                'legacy_server_connect': True,
+                # Add user-agent for sites that require it (e.g., Vimeo)
+                'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                # Enable cookie support for authenticated content
+                'cookiesfrombrowser': None,  # Can be set to browser name if needed
             }
             
             print(f"[action_submit] Creating YoutubeDL instance...")
@@ -316,6 +323,13 @@ class DownloadManager:
                 'postprocessor_hooks': [postprocessor_hook],
                 'quiet': False,
                 'no_warnings': False,
+                # Fix SSL/TLS issues for Dailymotion and others
+                'nocheckcertificate': True,
+                'legacy_server_connect': True,
+                # Add user-agent for sites that require it (e.g., Vimeo)
+                'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                # Enable cookie support for authenticated content
+                'cookiesfrombrowser': None,
             }
             
             # Configure ffmpeg location if available
