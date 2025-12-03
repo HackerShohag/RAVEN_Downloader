@@ -21,10 +21,14 @@ import QtGraphicalEffects 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
 
-LayoutsCustom {
+ListItem {
     id: gridBox
+    divider {
+        colorFrom: "transparent"
+        colorTo: "transparent"
+    }
+    // dragMode: true
 
-    // Reusable dialog components
     MediaItemDialogs {
         id: mediaDialogs
     }
@@ -61,8 +65,6 @@ LayoutsCustom {
 
     property var    downloadUnavailable : resolutionModel === null && vcodec === null ? true : false
     property var    comboHeading        : [ i18n.tr("select audio"), i18n.tr("select language"), i18n.tr("select resolution") ]
-
-    minimumWidth: childrenRect.width
     
     // Function to save entry metadata whenever something changes
     function saveEntryMetadata() {
@@ -167,7 +169,7 @@ LayoutsCustom {
 
     height: gridLayout.height
     width: gridLayout.width
-    animationEnabled: true
+    // animationEnabled: true
 
     Layout.fillWidth: true
     Layout.minimumWidth: gridLayout.Layout.minimumWidth
@@ -183,7 +185,6 @@ LayoutsCustom {
         rows: 3
         flow: GridLayout.TopToBottom
         anchors.fill: parent
-        // anchors.margins: units.gu(1)
 
         Image {
             id: thumbnailContainer
@@ -205,7 +206,6 @@ LayoutsCustom {
 
             BusyIndicator {
                 anchors.fill: parent
-                padding: units.gu(2)
                 running: thumbnailContainer.status === Image.Loading
             }
             

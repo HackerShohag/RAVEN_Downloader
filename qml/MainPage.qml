@@ -296,7 +296,7 @@ MainView {
             id: searchBarLayout
             anchors.topMargin: header.height
             anchors.fill: parent
-            anchors.margins: root.margin
+            // anchors.margins: root.margin
             anchors.bottom: bottomEdge.top
 
             Flickable {
@@ -305,43 +305,41 @@ MainView {
                 Layout.fillHeight: true
                 contentY: units.gu(1)
                 contentHeight: inputPanel.height + downloadContainerHeading.height + 
-                              (downloadManager.count * units.gu(13.5)) + units.gu(10)
+                              (downloadManager.count * units.gu(11)) + units.gu(12)
 
-                LayoutsCustom {
+                ColumnLayout {
                     id: inputPanel
                     Layout.fillWidth: true
-                    height: units.gu(20)
-                    width: parent.width
+                    Layout.fillHeight: true
 
-                    ColumnLayout {
-                        id: colLayout
-                        anchors.fill: parent
-                        anchors.margins: units.gu(1)
+                    anchors {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        margins: units.gu(1)
+                    }
+                    
+                    TextField {
+                        id: urlContainer
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        
-                        TextField {
-                            id: urlContainer
-                            Layout.fillWidth: true
-                            placeholderText: i18n.tr("Put YouTube video or playlist URL here")
-                            Keys.onReturnPressed: urlHandler(urlContainer.text, downloadType.index === 1)
-                        }
-                        
-                        CustomComboPopup {
-                            id: downloadType
-                            Layout.fillWidth: true
-                            heading: i18n.tr("Select download type")
-                            defaultValue: true
-                            dropdownModel: [i18n.tr("single video"), i18n.tr("playlist")]
-                        }
+                        placeholderText: i18n.tr("Put YouTube video or playlist URL here")
+                        Keys.onReturnPressed: urlHandler(urlContainer.text, downloadType.index === 1)
+                    }
+                    
+                    CustomComboPopup {
+                        id: downloadType
+                        Layout.fillWidth: true
+                        heading: i18n.tr("Select download type")
+                        defaultValue: true
+                        dropdownModel: [i18n.tr("single video"), i18n.tr("playlist")]
+                    }
 
-                        Button {
-                            id: submitButton
-                            Layout.fillWidth: true
-                            text: i18n.tr("Submit")
-                            onClicked: {
-                                urlHandler(urlContainer.text, downloadType.index === 1);
-                            }
+                    Button {
+                        id: submitButton
+                        Layout.fillWidth: true
+                        text: i18n.tr("Submit")
+                        onClicked: {
+                            urlHandler(urlContainer.text, downloadType.index === 1);
                         }
                     }
                 }
@@ -350,11 +348,17 @@ MainView {
                     id: downloadItemsContainer
                     width: parent.width
                     anchors.top: inputPanel.bottom
+                    anchors.topMargin: units.gu(1)
+                    spacing: units.gu(1)
 
                     Label {
                         id: downloadContainerHeading
-                        text: i18n.tr("   Downloaded Files")
-                        height: units.gu(3)
+                        anchors {
+                            left: parent.left
+                            right: parent.right
+                            leftMargin: units.gu(1)
+                        }
+                        text: i18n.tr("Downloaded Files")
                     }
 
                     Repeater {
@@ -366,41 +370,45 @@ MainView {
                             left: parent.left
                         }
 
+                        // gaps: units.gu(1)
+                        // spacing: units.gu(1)
+
                         model: downloadManager.model
                         delegate: MediaItem {
-                            anchors {
-                                left: parent.left
-                                right: parent.right
-                            }
-                            height: units.gu(13.5)
+                                        anchors {
+                                            left: parent.left
+                                            right: parent.right
+                                            margins: units.gu(1)
+                                        }
+                                        height: units.gu(11)
 
-                            videoTitle: vTitle
-                            thumbnail: vThumbnail
-                            duration: vDuration
-                            videoLink: vID
-                            
-                            entryId: model.entryId || ''
-                            pythonInstance: python
+                                        videoTitle: vTitle
+                                        thumbnail: vThumbnail
+                                        duration: vDuration
+                                        videoLink: vID
+                                        
+                                        entryId: model.entryId || ''
+                                        pythonInstance: python
 
-                            vcodec: JSON.parse(vCodec)
-                            resolutionModel: JSON.parse(vResolutions)
-                            videoExts: JSON.parse(vVideoExts)
-                            videoFormats: JSON.parse(vVideoFormats)
-                            videoProgress: vVideoProgress
-                            videoIndex: vVideoIndex
-                            audioIndex: vAudioIndex
-                            selectedVideoCodec: model.selectedVideoCodec || ''
-                            selectedAudioCodec: model.selectedAudioCodec || ''
+                                        vcodec: JSON.parse(vCodec)
+                                        resolutionModel: JSON.parse(vResolutions)
+                                        videoExts: JSON.parse(vVideoExts)
+                                        videoFormats: JSON.parse(vVideoFormats)
+                                        videoProgress: vVideoProgress
+                                        videoIndex: vVideoIndex
+                                        audioIndex: vAudioIndex
+                                        selectedVideoCodec: model.selectedVideoCodec || ''
+                                        selectedAudioCodec: model.selectedAudioCodec || ''
 
-                            acodec: JSON.parse(aCodec)
-                            audioExts: JSON.parse(vAudioExts)
-                            audioFormats: JSON.parse(vAudioFormats)
-                            audioBitrate: JSON.parse(vABR)
-                            audioSizes: JSON.parse(vAudioSizes)
+                                        acodec: JSON.parse(aCodec)
+                                        audioExts: JSON.parse(vAudioExts)
+                                        audioFormats: JSON.parse(vAudioFormats)
+                                        audioBitrate: JSON.parse(vABR)
+                                        audioSizes: JSON.parse(vAudioSizes)
 
-                            sizeModel: JSON.parse(vSizeModel)
-                            indexID: vIndex
-                        }
+                                        sizeModel: JSON.parse(vSizeModel)
+                                        indexID: vIndex
+                                    }
                     }
                 }
                 

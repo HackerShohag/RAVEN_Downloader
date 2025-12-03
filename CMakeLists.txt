@@ -12,7 +12,7 @@ execute_process(
 set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
 
 set(PROJECT_NAME "raven.downloader")
-set(PROJECT_VERSION "4.2.3")
+set(PROJECT_VERSION "4.2.5")
 set(FULL_PROJECT_NAME "raven.downloader.shohag")
 set(DATA_DIR /)
 set(DESKTOP_FILE_NAME ${PROJECT_NAME}.desktop)

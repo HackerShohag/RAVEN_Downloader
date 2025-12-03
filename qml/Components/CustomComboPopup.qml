@@ -30,7 +30,7 @@ Button {
     property int    index
     property bool   defaultValue    : false
 
-    color: theme.palette.normal.background
+    color: theme.palette.normal.foreground
     text: defaultValue ? dropdownModel[0] : heading
     onClicked: PopupUtils.open(comboSelectorDialog)
 

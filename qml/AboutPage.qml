@@ -144,7 +144,7 @@ Dialog {
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
                 color: theme.palette.normal.activity
-                text: "• <a href='https://github.com/yt-dlp/yt-dlp'>yt-dlp</a> (1800+ site extractors)<br>" +
+                text: "• <a href='https://github.com/yt-dlp/yt-dlp'>yt-dlp</a> 2025.11.12<br>" +
                       "• <a href='https://ffmpeg.org'>FFmpeg</a> 8.0.1<br>"
                 onLinkActivated: Qt.openUrlExternally(link)
                 MouseArea {
