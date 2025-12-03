@@ -300,9 +300,10 @@ MainView {
                 id: mainScroll
                 Layout.fillWidth: true
                 Layout.fillHeight: true
+                Layout.minimumHeight: mainPage.height - header.height - bottomEdge.height - units.gu(2)
                 contentY: units.gu(1)
                 contentHeight: inputPanel.height + downloadContainerHeading.height + 
-                              (downloadManager.count * units.gu(11)) + units.gu(12)
+                              (downloadManager.count ? downloadManager.count * units.gu(11) : units.gu(10)) + units.gu(12)
 
                 ColumnLayout {
                     id: inputPanel
@@ -371,41 +372,42 @@ MainView {
                         // spacing: units.gu(1)
 
                         model: downloadManager.model
-                        delegate: MediaItem {
-                                        anchors {
-                                            left: parent.left
-                                            right: parent.right
-                                            margins: units.gu(1)
-                                        }
-                                        height: units.gu(11)
-
-                                        videoTitle: vTitle
-                                        thumbnail: vThumbnail
-                                        duration: vDuration
-                                        videoLink: vID
-                                        
-                                        entryId: model.entryId || ''
-                                        pythonInstance: python
-
-                                        vcodec: JSON.parse(vCodec)
-                                        resolutionModel: JSON.parse(vResolutions)
-                                        videoExts: JSON.parse(vVideoExts)
-                                        videoFormats: JSON.parse(vVideoFormats)
-                                        videoProgress: vVideoProgress
-                                        videoIndex: vVideoIndex
-                                        audioIndex: vAudioIndex
-                                        selectedVideoCodec: model.selectedVideoCodec || ''
-                                        selectedAudioCodec: model.selectedAudioCodec || ''
-
-                                        acodec: JSON.parse(aCodec)
-                                        audioExts: JSON.parse(vAudioExts)
-                                        audioFormats: JSON.parse(vAudioFormats)
-                                        audioBitrate: JSON.parse(vABR)
-                                        audioSizes: JSON.parse(vAudioSizes)
-
-                                        sizeModel: JSON.parse(vSizeModel)
-                                        indexID: vIndex
+                        delegate:
+                                MediaItem {
+                                    anchors {
+                                        left: parent.left
+                                        right: parent.right
+                                        margins: units.gu(1)
                                     }
+                                    height: units.gu(11)
+
+                                    videoTitle: vTitle
+                                    thumbnail: vThumbnail
+                                    duration: vDuration
+                                    videoLink: vID
+                                    
+                                    entryId: model.entryId || ''
+                                    pythonInstance: python
+
+                                    vcodec: JSON.parse(vCodec)
+                                    resolutionModel: JSON.parse(vResolutions)
+                                    videoExts: JSON.parse(vVideoExts)
+                                    videoFormats: JSON.parse(vVideoFormats)
+                                    videoProgress: vVideoProgress
+                                    videoIndex: vVideoIndex
+                                    audioIndex: vAudioIndex
+                                    selectedVideoCodec: model.selectedVideoCodec || ''
+                                    selectedAudioCodec: model.selectedAudioCodec || ''
+
+                                    acodec: JSON.parse(aCodec)
+                                    audioExts: JSON.parse(vAudioExts)
+                                    audioFormats: JSON.parse(vAudioFormats)
+                                    audioBitrate: JSON.parse(vABR)
+                                    audioSizes: JSON.parse(vAudioSizes)
+
+                                    sizeModel: JSON.parse(vSizeModel)
+                                    indexID: vIndex
+                                }
                     }
                 }
                 
@@ -414,8 +416,10 @@ MainView {
                     visible: false
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+                    height: units.gu(20)
                     anchors {
                         margins: units.gu(2)
+                        leftMargin: units.gu(1)
                         top: inputPanel.bottom
                         left: parent.left
                         right: parent.right
@@ -424,9 +428,7 @@ MainView {
 
                     Label {
                         id: label
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignCenter
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         text: i18n.tr("No downloads yet.")
                         font.pixelSize: units.gu(2)
                     }
