@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-03 02:07+0000\n"
+"POT-Creation-Date: 2025-12-03 03:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,7 +84,7 @@ msgstr ""
 msgid "Save Downloaded File"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:444
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:452
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -100,7 +100,7 @@ msgstr ""
 msgid "select resolution"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:322
+#: ../qml/Components/MediaItem.qml:324
 msgid "Download"
 msgstr ""
 
@@ -112,7 +112,7 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItemDialogs.qml:52 ../qml/MainPage.qml:97
+#: ../qml/Components/MediaItemDialogs.qml:52 ../qml/MainPage.qml:105
 msgid "Download Complete!"
 msgstr ""
 
@@ -140,111 +140,111 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:62
+#: ../qml/MainPage.qml:70
 msgid "Error Occurred!"
 msgstr ""
 
-#: ../qml/MainPage.qml:63
+#: ../qml/MainPage.qml:71
 msgid "An unknown error occured."
 msgstr ""
 
-#: ../qml/MainPage.qml:70
+#: ../qml/MainPage.qml:78
 msgid "Invalid Playlist URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:71
+#: ../qml/MainPage.qml:79
 msgid "Please provide a valid playlist url."
 msgstr ""
 
-#: ../qml/MainPage.qml:78
+#: ../qml/MainPage.qml:86
 msgid "Playlist Detected!"
 msgstr ""
 
-#: ../qml/MainPage.qml:79
+#: ../qml/MainPage.qml:87
 msgid ""
 "This is a playlist URL. Please select 'Playlist' mode to download all videos."
 msgstr ""
 
-#: ../qml/MainPage.qml:86
+#: ../qml/MainPage.qml:94
 msgid "Invalid URL!"
 msgstr ""
 
-#: ../qml/MainPage.qml:87
+#: ../qml/MainPage.qml:95
 msgid "Please provide a valid video link."
 msgstr ""
 
-#: ../qml/MainPage.qml:98
+#: ../qml/MainPage.qml:106
 msgid " video(s) from \""
 msgstr ""
 
-#: ../qml/MainPage.qml:264 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:272 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:269
+#: ../qml/MainPage.qml:277
 msgid "About"
 msgstr ""
 
-#: ../qml/MainPage.qml:325
+#: ../qml/MainPage.qml:333
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:332
+#: ../qml/MainPage.qml:340
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:334
+#: ../qml/MainPage.qml:342
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:334
+#: ../qml/MainPage.qml:342
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:340
+#: ../qml/MainPage.qml:348
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:369
 msgid "Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:433
+#: ../qml/MainPage.qml:441
 msgid "No downloads yet."
 msgstr ""
 
-#: ../qml/SettingsPage.qml:35
+#: ../qml/SettingsPage.qml:49
 msgid "System theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:36
+#: ../qml/SettingsPage.qml:50
 msgid "Ambiance theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:37
+#: ../qml/SettingsPage.qml:51
 msgid "Suru-dark theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:52
+#: ../qml/SettingsPage.qml:66
 msgid "Settings"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:134
+#: ../qml/SettingsPage.qml:148
 msgid "Download available subtitles"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:158
+#: ../qml/SettingsPage.qml:172
 msgid "Download captions (If subtitle unavailable)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:169
+#: ../qml/SettingsPage.qml:183
 msgid "Embed subtitles in files"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:186
+#: ../qml/SettingsPage.qml:200
 msgid "Auto Download (best format)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:234
+#: ../qml/SettingsPage.qml:265
 msgid "Clear All History"
 msgstr ""

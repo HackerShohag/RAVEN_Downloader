@@ -43,19 +43,16 @@ MainView {
 
     theme: ThemeSettings {
         id: appTheme
-        name: "Lomiri.Components.Themes.Ambiance"
+        name: generalSettings.themeName
+    }
+    
+    Connections {
+        target: generalSettings
+        function onThemeNameChanged() {
+            appTheme.name = generalSettings.themeName
+        }
     }
 
-    /**
-     * Validation Dialog Components
-     * 
-     * These dialogs MUST be defined here in the MainView root context.
-     * PopupUtils.open() requires a root object, and attempting to move these
-     * to a separate QtObject component causes "Failed to get root object" errors.
-     * 
-     * Each dialog is a reusable Component that can be opened with PopupUtils.open()
-     * throughout the application with custom property values.
-     */
     Component {
         id: qProcessError
         WarningDialog {
@@ -213,9 +210,9 @@ MainView {
 
     Settings {
         id: generalSettings
-        objectName: "GeneralSettings"
+        category: "GeneralSettings"
 
-        property alias theme: appTheme.name
+        property string themeName: "Lomiri.Components.Themes.Ambiance"
         property bool downloadSubtitle: false
         property bool downloadCaption: false
         property bool embeddedSubtitle: false

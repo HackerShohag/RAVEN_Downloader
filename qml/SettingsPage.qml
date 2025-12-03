@@ -17,6 +17,7 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import QtQuick.Controls 2.2
+import Qt.labs.settings 1.0
 import Lomiri.Components 1.3
 import Lomiri.Components.ListItems 1.3
 
@@ -24,6 +25,19 @@ import "Components"
 
 Page { 
     id: settingsPageRoot
+    
+    // Local Settings object - needed because SettingsPage is loaded via BottomEdge contentUrl
+    // and doesn't have access to MainPage's generalSettings
+    Settings {
+        id: localSettings
+        category: "GeneralSettings"
+        
+        property string themeName: "Lomiri.Components.Themes.Ambiance"
+        property bool downloadSubtitle: false
+        property bool downloadCaption: false
+        property bool embeddedSubtitle: false
+        property bool autoDownload: false
+    }
 
     property var downloadLocationModel: [
         "Downloads (/home/phablet/Downloads)",
@@ -54,7 +68,7 @@ Page {
 
     Flickable {
         clip: true
-        anchors{
+        anchors {
             top: settingsPageRoot.header.bottom
             left: parent.left
             right: parent.right
@@ -67,8 +81,8 @@ Page {
 
         Rectangle {
             id: rectRoot
-            width: root.width
-            height: {childrenRect.height+units.gu(4)}
+            width: settingsPageRoot.width > 0 ? settingsPageRoot.width : units.gu(50)
+            height: childrenRect.height + units.gu(4)
             color: "transparent"
 
 //            RowLayout {
@@ -132,11 +146,11 @@ Page {
                     margins: units.gu(2)
                 }
                 labelText: i18n.tr("Download available subtitles")
-                checked: generalSettings.downloadSubtitle
+                checked: localSettings.downloadSubtitle
                 onToggled: {
-                    generalSettings.downloadSubtitle = checked
-                    generalSettings.downloadCaption = checked
-                    generalSettings.embeddedSubtitle = checked
+                    localSettings.downloadSubtitle = checked
+                    localSettings.downloadCaption = checked
+                    localSettings.embeddedSubtitle = checked
                 }
             }
 
@@ -156,10 +170,10 @@ Page {
                     id: captionCheckbox
                     Layout.fillWidth: true
                     labelText: i18n.tr("Download captions (If subtitle unavailable)")
-                    checked: generalSettings.downloadCaption
-                    isEnabled: generalSettings.downloadSubtitle
+                    checked: localSettings.downloadCaption
+                    isEnabled: localSettings.downloadSubtitle
                     onToggled: {
-                        generalSettings.downloadCaption = checked
+                        localSettings.downloadCaption = checked
                     }
                 }
 
@@ -167,10 +181,10 @@ Page {
                     id: embeddedSubtitleCheckbox
                     Layout.fillWidth: true
                     labelText: i18n.tr("Embed subtitles in files")
-                    checked: generalSettings.embeddedSubtitle
-                    isEnabled: generalSettings.downloadSubtitle
+                    checked: localSettings.embeddedSubtitle
+                    isEnabled: localSettings.downloadSubtitle
                     onToggled: {
-                        generalSettings.embeddedSubtitle = checked
+                        localSettings.embeddedSubtitle = checked
                     }
                 }
             }
@@ -184,9 +198,9 @@ Page {
                     margins: units.gu(2)
                 }
                 labelText: i18n.tr("Auto Download (best format)")
-                checked: generalSettings.autoDownload
+                checked: localSettings.autoDownload
                 onToggled: {
-                    generalSettings.autoDownload = checked
+                    localSettings.autoDownload = checked
                 }
             }
 
@@ -210,13 +224,30 @@ Page {
                     right: parent.right
                     margins: units.gu(2)
                 }
+                
+                // Set initial index based on current theme
+                Component.onCompleted: {
+                    if (localSettings.themeName === "Lomiri.Components.Themes.SuruDark") {
+                        selectedIndex = 2
+                    } else if (localSettings.themeName === "Lomiri.Components.Themes.Ambiance") {
+                        selectedIndex = 1
+                    } else {
+                        selectedIndex = 0 // System theme
+                    }
+                }
+                
                 onSelectedIndexChanged: {
-                    if (themeModel[selectedIndex] == "Ambiance theme")
-                        generalSettings.theme = "Lomiri.Components.Themes.Ambiance"
-                    if (themeModel[selectedIndex] == "Suru-dark theme")
-                        generalSettings.theme = "Lomiri.Components.Themes.SuruDark"
-                    else
-                        generalSettings.theme = "Lomiri.Components.Themes.Ambiance"
+                    // Use switch or proper if-else-if chain to avoid logic bugs
+                    if (selectedIndex === 0) {
+                        // System theme - use default Ambiance
+                        localSettings.themeName = "Lomiri.Components.Themes.Ambiance"
+                    } else if (selectedIndex === 1) {
+                        // Ambiance theme
+                        localSettings.themeName = "Lomiri.Components.Themes.Ambiance"
+                    } else if (selectedIndex === 2) {
+                        // Suru-dark theme
+                        localSettings.themeName = "Lomiri.Components.Themes.SuruDark"
+                    }
                 }
             }
 
