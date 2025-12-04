@@ -26,8 +26,6 @@ import "Components"
 Page { 
     id: settingsPageRoot
     
-    // Local Settings object - needed because SettingsPage is loaded via BottomEdge contentUrl
-    // and doesn't have access to MainPage's generalSettings
     Settings {
         id: localSettings
         category: "GeneralSettings"
@@ -84,58 +82,6 @@ Page {
             width: settingsPageRoot.width > 0 ? settingsPageRoot.width : units.gu(50)
             height: childrenRect.height + units.gu(4)
             color: "transparent"
-
-//            RowLayout {
-//                id: donwloadLocationContainer
-//                anchors{
-//                    top: parent.top
-//                    left: parent.left
-//                    right: parent.right
-//                    margins: units.gu(2)
-//                }
-//                Text {
-//                    id: donwloadLocationLabel
-//                    elide: Text.ElideRight
-//                    Layout.fillWidth: true
-//                    text: i18n.tr("Select download location")
-//                    color: theme.palette.normal.backgroundText
-//                    font.pixelSize: units.gu(2)
-//                }
-//                CheckBox {
-//                    id: setDownloadLocationCheckbox
-//                    Layout.alignment: Qt.AlignRight
-//                    SlotsLayout.position: SlotsLayout.Trailing
-//                    onTriggered: {
-//                        generalSettings.setDownloadLocation = checked
-//                        locationSelector.expanded = false
-//                    }
-//                }
-//                Binding {
-//                    target: setDownloadLocationCheckbox
-//                    property: "checked"
-//                    value: generalSettings.setDownloadLocation
-//                }
-//            }
-
-//            OptionSelector {
-//                id: locationSelector
-//                model: downloadLocationModel
-//                enabled: setDownloadLocationCheckbox.checked
-//                anchors{
-//                    top: donwloadLocationContainer.bottom
-//                    topMargin: units.gu(1)
-//                    left: parent.left
-//                    leftMargin: units.gu(2)
-//                    right: parent.right
-//                    rightMargin: units.gu(2)
-//                }
-//                onSelectedIndexChanged: generalSettings.customDownloadLocation = getDownloadLocation(downloadLocationModel[locationSelector.selectedIndex]);
-//            }
-//            Binding {
-//                target: locationSelector
-//                property: "selectedIndex"
-//                value: getIndexFromModel(generalSettings.customDownloadLocation)
-//            }
 
             SettingsCheckbox {
                 id: subtitleCheckboxContainer
@@ -225,27 +171,22 @@ Page {
                     margins: units.gu(2)
                 }
                 
-                // Set initial index based on current theme
                 Component.onCompleted: {
                     if (localSettings.themeName === "Lomiri.Components.Themes.SuruDark") {
                         selectedIndex = 2
                     } else if (localSettings.themeName === "Lomiri.Components.Themes.Ambiance") {
                         selectedIndex = 1
                     } else {
-                        selectedIndex = 0 // System theme
+                        selectedIndex = 0
                     }
                 }
                 
                 onSelectedIndexChanged: {
-                    // Use switch or proper if-else-if chain to avoid logic bugs
                     if (selectedIndex === 0) {
-                        // System theme - use default Ambiance
                         localSettings.themeName = "Lomiri.Components.Themes.Ambiance"
                     } else if (selectedIndex === 1) {
-                        // Ambiance theme
                         localSettings.themeName = "Lomiri.Components.Themes.Ambiance"
                     } else if (selectedIndex === 2) {
-                        // Suru-dark theme
                         localSettings.themeName = "Lomiri.Components.Themes.SuruDark"
                     }
                 }

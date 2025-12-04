@@ -14,7 +14,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-# Standard library imports
 import json
 import os
 import random
@@ -22,21 +21,26 @@ import sys
 import time
 from pathlib import Path
 
-
 class StorageManager:
-    """Manages persistent storage for download history and settings"""
+    """
+    Manages persistent storage for download history, settings, and thumbnail caching.
+    
+    Implements entry-based storage architecture where each download gets a unique
+    directory with metadata and associated assets (thumbnails). Uses JSON index
+    for efficient listing and lookup.
+    """
     
     def __init__(self, app_name='raven.downloader.shohag'):
         """
-        Initialize storage manager
+        Initialize storage manager with configuration paths.
         
         Args:
-            app_name (str): Application name for config directory
+            app_name: Application identifier for config directory structure
         """
         self.app_name = app_name
         self.config_dir = self._get_config_dir()
-        self.index_file = os.path.join(self.config_dir, 'index.json')  # Entry index
-        self.entries_dir = os.path.join(self.config_dir, 'entries')  # Entry directories
+        self.index_file = os.path.join(self.config_dir, 'index.json')
+        self.entries_dir = os.path.join(self.config_dir, 'entries')
         self.settings_file = os.path.join(self.config_dir, 'settings.json')
         
         print(f"[StorageManager] Config directory: {self.config_dir}")
@@ -48,31 +52,28 @@ class StorageManager:
         print(f"[StorageManager] Settings file: {self.settings_file}")
         sys.stdout.flush()
         
-        # Ensure directories exist
         os.makedirs(self.config_dir, exist_ok=True)
         os.makedirs(self.entries_dir, exist_ok=True)
     
     def _get_config_dir(self):
         """
-        Get configuration directory path
+        Determine XDG-compliant configuration directory path.
         
         Returns:
-            str: Path to config directory
+            Path string to application config directory, prioritizing XDG_CONFIG_HOME
         """
-        # Try XDG config home first (Ubuntu Touch standard)
         xdg_config = os.environ.get('XDG_CONFIG_HOME')
         if xdg_config:
             return os.path.join(xdg_config, self.app_name)
         
-        # Fallback to ~/.config
         return os.path.join(Path.home(), '.config', self.app_name)
     
     def _generate_entry_id(self):
         """
-        Generate unique entry ID using timestamp and random component
+        Generate unique entry identifier using timestamp and random component.
         
         Returns:
-            str: Unique entry ID
+            Unique entry ID string with format 'entry_{timestamp_ms}_{random}'
         """
         timestamp = int(time.time() * 1000)
         rand = random.randint(1000, 9999)
@@ -80,58 +81,63 @@ class StorageManager:
     
     def save_download_history(self, history_data):
         """
-        DEPRECATED: Use entry-based storage via save_entry() instead
-        This method is kept for backward compatibility but does nothing
+        DEPRECATED: Backwards compatibility stub for legacy API.
+        
+        Use entry-based storage via save_entry() instead. This method exists
+        only for backwards compatibility and performs no operation.
         
         Args:
-            history_data (list): List of download items
+            history_data: Legacy download items list (ignored)
             
         Returns:
-            bool: True (always succeeds as it's deprecated)
+            True (always succeeds as operation is deprecated)
         """
         print(f"[StorageManager] save_download_history is deprecated - use entry-based storage")
         return True
     
     def load_download_history(self):
         """
-        DEPRECATED: Use load_all_entries() instead
-        This method returns all entries from entry-based storage for backward compatibility
+        DEPRECATED: Backwards compatibility wrapper for legacy API.
+        
+        Use load_all_entries() instead. This method delegates to the new API
+        to maintain backwards compatibility with existing code.
         
         Returns:
-            list: List of download items from entry-based storage
+            List of all download entries from entry-based storage
         """
         print(f"[StorageManager] load_download_history is deprecated - using load_all_entries()")
         return self.load_all_entries()
     
     def add_download_entry(self, entry):
         """
-        Add a single download entry to history
-        Now uses entry-based storage
+        Add single download entry to persistent storage.
+        
+        Delegates to entry-based storage system using save_entry().
         
         Args:
-            entry (dict): Download entry data
+            entry: Download entry data dictionary
             
         Returns:
-            bool: True if successful
+            True if save successful, False otherwise
         """
         entry_id = self.save_entry(entry)
         return entry_id is not None
     
     def clear_download_history(self):
         """
-        Clear all download history (entry-based storage)
-        Removes all entries and clears index
+        Delete all download history from entry-based storage.
+        
+        Removes all entry directories and clears the index file. This is
+        a destructive operation that cannot be undone.
         
         Returns:
-            bool: True if successful
+            True if successful, False on error
         """
         try:
-            # Clear index file
             if os.path.exists(self.index_file):
                 with open(self.index_file, 'w', encoding='utf-8') as f:
                     json.dump([], f)
             
-            # Remove entries directory
             import shutil
             if os.path.exists(self.entries_dir):
                 shutil.rmtree(self.entries_dir)
@@ -145,13 +151,13 @@ class StorageManager:
     
     def save_settings(self, settings):
         """
-        Save application settings
+        Persist application settings to JSON file.
         
         Args:
-            settings (dict): Settings dictionary
+            settings: Settings dictionary to save
             
         Returns:
-            bool: True if successful
+            True if successful, False on error
         """
         try:
             with open(self.settings_file, 'w', encoding='utf-8') as f:
@@ -163,10 +169,10 @@ class StorageManager:
     
     def load_settings(self):
         """
-        Load application settings
+        Load application settings from JSON file.
         
         Returns:
-            dict: Settings dictionary, empty dict if file doesn't exist
+            Settings dictionary, or empty dict if file does not exist
         """
         try:
             if os.path.exists(self.settings_file):
@@ -179,22 +185,21 @@ class StorageManager:
     
     def get_download_path(self):
         """
-        Get download path for temporary storage.
+        Get writable download directory path for temporary storage.
+        
         On Ubuntu Touch, apps can only write to their cache directory.
-        Files should be downloaded here, then exported via ContentHub.
+        Downloaded files are stored here temporarily before being exported
+        via ContentHub to user-accessible storage.
         
         Returns:
-            str: Download directory path (app's cache directory)
+            Path string to application cache downloads directory
         """
-        # Use XDG_CACHE_HOME which the app has write permissions for
         xdg_cache = os.environ.get('XDG_CACHE_HOME')
         if xdg_cache:
             cache_downloads = os.path.join(xdg_cache, self.app_name, 'downloads')
         else:
-            # Fallback to ~/.cache
             cache_downloads = os.path.join(Path.home(), '.cache', self.app_name, 'downloads')
         
-        # Ensure directory exists
         os.makedirs(cache_downloads, exist_ok=True)
         print(f"[StorageManager] Download path: {cache_downloads}")
         
@@ -202,10 +207,10 @@ class StorageManager:
     
     def get_thumbnails_path(self):
         """
-        Get thumbnails cache directory path
+        Get XDG-compliant thumbnails cache directory path.
         
         Returns:
-            str: Thumbnails directory path
+            Path string to application thumbnails cache directory
         """
         xdg_cache = os.environ.get('XDG_CACHE_HOME')
         if xdg_cache:
@@ -218,15 +223,19 @@ class StorageManager:
     
     def download_thumbnail(self, thumbnail_url, video_id, entry_id=None):
         """
-        Download and cache a thumbnail image
+        Download and cache thumbnail image to local storage.
+        
+        Supports both entry-based storage (when entry_id provided) and legacy
+        global thumbnails directory. Checks for existing cached copies before
+        downloading.
         
         Args:
-            thumbnail_url (str): Remote thumbnail URL
-            video_id (str): Video ID for filename
-            entry_id (str): Optional entry ID to save in entry directory
+            thumbnail_url: Remote thumbnail URL
+            video_id: Video identifier for filename generation
+            entry_id: Optional entry ID to store in entry-specific directory
             
         Returns:
-            str: Local file path to cached thumbnail, or original URL if download fails
+            Local file path to cached thumbnail, or original URL on failure
         """
         if not thumbnail_url or not video_id:
             return thumbnail_url
@@ -235,30 +244,25 @@ class StorageManager:
             import urllib.request
             import hashlib
             
-            # Determine extension from URL
             ext = '.jpg'
             if '.png' in thumbnail_url.lower():
                 ext = '.png'
             elif '.webp' in thumbnail_url.lower():
                 ext = '.webp'
             
-            # If entry_id provided, save in entry directory
             if entry_id:
                 entry_dir = os.path.join(self.entries_dir, entry_id)
                 os.makedirs(entry_dir, exist_ok=True)
                 thumbnail_path = os.path.join(entry_dir, f"thumbnail{ext}")
             else:
-                # Legacy: save in global thumbnails directory
                 safe_id = hashlib.md5(video_id.encode()).hexdigest()
                 thumbnail_filename = f"{safe_id}{ext}"
                 thumbnail_path = os.path.join(self.get_thumbnails_path(), thumbnail_filename)
             
-            # Check if already cached
             if os.path.exists(thumbnail_path):
                 print(f"[StorageManager] Using cached thumbnail: {thumbnail_path}")
                 return thumbnail_path
             
-            # Download thumbnail
             print(f"[StorageManager] Downloading thumbnail from: {thumbnail_url}")
             urllib.request.urlretrieve(thumbnail_url, thumbnail_path)
             print(f"[StorageManager] Thumbnail saved to: {thumbnail_path}")
@@ -267,24 +271,25 @@ class StorageManager:
             
         except Exception as e:
             print(f"[StorageManager] Error downloading thumbnail: {e}")
-            # Return original URL as fallback
             return thumbnail_url
     
     def save_entry(self, entry_data):
         """
-        Save a download entry with its own directory
+        Save download entry with dedicated directory for metadata and assets.
+        
+        Creates entry directory, saves metadata JSON, and updates index for
+        efficient listing. Generates unique entry ID if not provided.
         
         Args:
-            entry_data (dict): Entry data including all metadata
+            entry_data: Entry metadata dictionary including all download information
             
         Returns:
-            str: Entry ID
+            Entry ID string if successful, None on error
         """
         try:
             print(f"[StorageManager] save_entry called with data: {list(entry_data.keys()) if entry_data else 'None'}")
             sys.stdout.flush()
             
-            # Generate unique entry ID if not present
             entry_id = entry_data.get('entryId')
             if not entry_id:
                 entry_id = self._generate_entry_id()
@@ -295,13 +300,11 @@ class StorageManager:
                 print(f"[StorageManager] Using existing entry_id: {entry_id}")
                 sys.stdout.flush()
             
-            # Create entry directory
             entry_dir = os.path.join(self.entries_dir, entry_id)
             os.makedirs(entry_dir, exist_ok=True)
             print(f"[StorageManager] Entry directory created/verified: {entry_dir}")
             sys.stdout.flush()
             
-            # Save entry metadata
             entry_file = os.path.join(entry_dir, 'metadata.json')
             with open(entry_file, 'w', encoding='utf-8') as f:
                 json.dump(entry_data, f, indent=2, ensure_ascii=False)
@@ -309,7 +312,6 @@ class StorageManager:
             print(f"[StorageManager] Entry metadata saved to: {entry_file}")
             sys.stdout.flush()
             
-            # Update index
             print(f"[StorageManager] Calling _update_index...")
             sys.stdout.flush()
             self._update_index(entry_id, entry_data)
@@ -324,13 +326,15 @@ class StorageManager:
     
     def save_single_entry(self, entry_data):
         """
-        Save or update a single entry (called from QML on user interactions)
+        QML-accessible wrapper for saving individual entry.
+        
+        Provides result dictionary with success status for QML error handling.
         
         Args:
-            entry_data (dict): Entry data to save
+            entry_data: Entry metadata to save
             
         Returns:
-            dict: Result with success status
+            Dictionary with 'success' boolean and 'entryId' or 'error' message
         """
         try:
             entry_id = self.save_entry(entry_data)
@@ -356,11 +360,14 @@ class StorageManager:
     
     def _update_index(self, entry_id, entry_data):
         """
-        Update index file with entry summary
+        Update central index with entry summary for efficient listing.
+        
+        Maintains lightweight index file containing essential fields only,
+        preventing duplicates by checking both entry ID and video ID.
         
         Args:
-            entry_id (str): Entry ID
-            entry_data (dict): Full entry data
+            entry_id: Unique entry identifier
+            entry_data: Full entry metadata dictionary
         """
         try:
             print(f"[StorageManager] _update_index called for: {entry_id}")
@@ -368,12 +375,10 @@ class StorageManager:
             print(f"[StorageManager] Index file path: {self.index_file}")
             sys.stdout.flush()
             
-            # Load existing index
             index = self.load_index()
             print(f"[StorageManager] Current index has {len(index)} entries")
             sys.stdout.flush()
             
-            # Create index entry with essential fields only
             index_entry = {
                 'entryId': entry_id,
                 'vTitle': entry_data.get('vTitle', ''),
@@ -382,23 +387,19 @@ class StorageManager:
                 'vIndex': int(entry_data.get('vIndex', 0))
             }
             
-            # Skip empty entries
             if not index_entry['vTitle'] and not index_entry['vID']:
                 print(f"[StorageManager] Skipping index update for empty entry: {entry_id}")
                 sys.stdout.flush()
                 return
             
-            # Check if entry already exists by entryId OR by vID (to prevent duplicates)
             existing_index = next((i for i, e in enumerate(index) if e.get('entryId') == entry_id), None)
             
-            # Also check for duplicate vID (same video, different entryId)
             if existing_index is None and index_entry['vID']:
                 duplicate_index = next((i for i, e in enumerate(index) if e.get('vID') == index_entry['vID'] and e.get('vID') != ''), None)
                 if duplicate_index is not None:
                     print(f"[StorageManager] Found duplicate vID at index {duplicate_index}, updating instead")
                     sys.stdout.flush()
                     existing_index = duplicate_index
-                    # Update the entryId to use the existing one to prevent orphaned entries
                     entry_id = index[duplicate_index]['entryId']
                     index_entry['entryId'] = entry_id
             
@@ -411,10 +412,8 @@ class StorageManager:
                 sys.stdout.flush()
                 index.append(index_entry)
             
-            # Ensure directory exists
             os.makedirs(os.path.dirname(self.index_file), exist_ok=True)
             
-            # Save index
             print(f"[StorageManager] Writing index to: {self.index_file}")
             sys.stdout.flush()
             with open(self.index_file, 'w', encoding='utf-8') as f:
@@ -423,7 +422,6 @@ class StorageManager:
             print(f"[StorageManager] Index successfully written with {len(index)} entries")
             sys.stdout.flush()
             
-            # Verify file was created
             if os.path.exists(self.index_file):
                 file_size = os.path.getsize(self.index_file)
                 print(f"[StorageManager] Index file verified: {self.index_file} ({file_size} bytes)")
@@ -439,10 +437,10 @@ class StorageManager:
     
     def load_index(self):
         """
-        Load index of all entries
+        Load central index of all entry summaries.
         
         Returns:
-            list: List of entry summaries
+            List of entry summary dictionaries, or empty list if index does not exist
         """
         try:
             if os.path.exists(self.index_file):
@@ -455,13 +453,13 @@ class StorageManager:
     
     def load_entry(self, entry_id):
         """
-        Load full entry data from its directory
+        Load complete entry metadata from directory.
         
         Args:
-            entry_id (str): Entry ID
+            entry_id: Entry identifier to load
             
         Returns:
-            dict: Entry data or None
+            Entry data dictionary, or None if entry does not exist
         """
         try:
             entry_dir = os.path.join(self.entries_dir, entry_id)
@@ -477,10 +475,12 @@ class StorageManager:
     
     def load_all_entries(self):
         """
-        Load all entries from their directories
+        Load complete metadata for all entries.
+        
+        Reads index for entry IDs, then loads full data from each entry directory.
         
         Returns:
-            list: List of all entry data
+            List of all entry data dictionaries
         """
         index = self.load_index()
         entries = []
@@ -496,11 +496,15 @@ class StorageManager:
         return entries
 
 
-# Module-level convenience functions
 _storage = None
 
 def get_storage_manager():
-    """Get singleton storage manager instance"""
+    """
+    Retrieve singleton StorageManager instance.
+    
+    Returns:
+        Global StorageManager instance, creating it if necessary
+    """
     global _storage
     if _storage is None:
         _storage = StorageManager()
@@ -509,14 +513,17 @@ def get_storage_manager():
 
 def save_list_model_data(data):
     """
-    Save download history (compatibility with C++ API)
-    Uses new entry-based storage architecture
+    Save QML ListModel data to entry-based storage.
+    
+    QML-accessible function providing backwards compatibility with C++ API.
+    Handles PyOtherSide QObject conversion to Python dictionaries. Each list
+    item is saved as a separate entry.
     
     Args:
-        data (list): List of download items from QML ListModel
+        data: List of download items from QML ListModel (may be PyOtherSide QObjects)
         
     Returns:
-        bool: Success status
+        True if successful, False on error
     """
     storage = get_storage_manager()
     print(f"[save_list_model_data] Called with {len(data) if data else 0} items")
@@ -527,24 +534,18 @@ def save_list_model_data(data):
             print(f"[save_list_model_data] Data type: {type(data)}")
             sys.stdout.flush()
             
-            # Save each item as separate entry
             for idx, item in enumerate(data):
                 print(f"[save_list_model_data] Item {idx} type: {type(item)}, value: {item}")
                 sys.stdout.flush()
                 
-                # PyOtherSide sends QObjects that act like dicts but aren't dict instances
-                # We need to extract the data by accessing properties directly
                 item_dict = {}
                 
-                # Check if it's a PyOtherSide QObject - match the actual class name
                 type_str = str(type(item))
                 if 'pyotherside' in type_str.lower() or 'qobject' in type_str.lower():
                     print(f"[save_list_model_data] Converting PyOtherSide QObject to dict")
                     sys.stdout.flush()
                     
-                    # Try to get all properties - PyOtherSide QObjects can be iterated
                     try:
-                        # List of expected properties from QML model
                         expected_keys = [
                             'entryId', 'vTitle', 'vThumbnail', 'vDuration', 'vID',
                             'vCodec', 'vResolutions', 'vVideoExts', 'vVideoFormats', 'vVideoProgress',
@@ -555,7 +556,6 @@ def save_list_model_data(data):
                         
                         for key in expected_keys:
                             try:
-                                # Try to get the attribute
                                 value = getattr(item, key, None)
                                 if value is not None:
                                     item_dict[key] = value
@@ -573,7 +573,6 @@ def save_list_model_data(data):
                 elif isinstance(item, dict):
                     item_dict = item
                 else:
-                    # Try direct dict conversion as fallback
                     try:
                         item_dict = dict(item)
                     except:
@@ -585,13 +584,11 @@ def save_list_model_data(data):
                     print(f"[save_list_model_data] Processing item {idx}: entryId={item_dict.get('entryId', 'NO_ID')}, title={item_dict.get('vTitle', 'NO_TITLE')[:30]}")
                     sys.stdout.flush()
                     
-                    # Skip empty or invalid entries (no title AND no video ID)
                     if not item_dict.get('vTitle') and not item_dict.get('vID'):
                         print(f"[save_list_model_data] Skipping empty entry at index {idx}")
                         sys.stdout.flush()
                         continue
                     
-                    # Ensure integer types for numeric fields
                     for int_field in ['vVideoIndex', 'vAudioIndex', 'vIndex', 'timestamp']:
                         if int_field in item_dict and item_dict[int_field] is not None:
                             try:
@@ -599,11 +596,9 @@ def save_list_model_data(data):
                             except (ValueError, TypeError):
                                 item_dict[int_field] = 0
                     
-                    # Add timestamp if not present
                     if 'timestamp' not in item_dict:
-                        item_dict['timestamp'] = int(time.time() * 1000)  # milliseconds
+                        item_dict['timestamp'] = int(time.time() * 1000)
                     
-                    # Save entry (will create or update)
                     entry_id = storage.save_entry(item_dict)
                     print(f"[save_list_model_data] Item {idx} saved with entry_id: {entry_id}")
                     sys.stdout.flush()
@@ -625,36 +620,32 @@ def save_list_model_data(data):
 
 def load_list_model_data():
     """
-    Load download history (compatibility with C++ API)
-    Uses new entry-based storage architecture
+    Load download history for QML ListModel.
+    
+    QML-accessible function providing backwards compatibility with C++ API.
+    Ensures all required fields exist with proper defaults and validates
+    thumbnail paths before returning.
     
     Returns:
-        list: List of download items for QML ListModel
+        List of download entry dictionaries in reverse chronological order
     """
     storage = get_storage_manager()
     
-    # Load all entries from entry-based storage
     entries = storage.load_all_entries()
     print(f"[load_list_model_data] Loaded {len(entries)} entries")
     
-    # Return empty list if no entries
     if not entries:
         return []
     
-    # Ensure all items have required fields for QML
     for item in entries:
-        # Ensure entryId exists
         if 'entryId' not in item:
-            # Generate one if missing (for legacy entries)
             item['entryId'] = storage._generate_entry_id()
         
-        # Set defaults for missing fields
         if 'vTitle' not in item:
             item['vTitle'] = item.get('title', '')
         if 'vThumbnail' not in item:
             item['vThumbnail'] = item.get('thumbnail', '')
         
-        # Verify thumbnail path exists, use placeholder if not
         thumbnail = item.get('vThumbnail', '')
         if thumbnail and not thumbnail.startswith('qrc://'):
             if not os.path.exists(thumbnail):
@@ -666,17 +657,15 @@ def load_list_model_data():
         if 'vID' not in item:
             item['vID'] = item.get('videoUrl', item.get('url', ''))
         if 'vVideoProgress' not in item:
-            item['vVideoProgress'] = 1.0  # Completed downloads
+            item['vVideoProgress'] = 1.0
         if 'vIndex' not in item:
             item['vIndex'] = item.get('indexID', 0)
             
-        # Ensure JSON string fields exist
         for field in ['vCodec', 'vResolutions', 'vVideoExts', 'vVideoFormats', 
                       'aCodec', 'vAudioExts', 'vAudioFormats', 'vABR', 'vAudioSizes', 'vSizeModel']:
             if field not in item:
                 item[field] = '[]'
         
-        # Ensure index fields exist and are integers
         if 'vVideoIndex' not in item:
             item['vVideoIndex'] = 0
         else:
@@ -689,29 +678,27 @@ def load_list_model_data():
             
         if 'vIndex' not in item:
             item['vIndex'] = item.get('indexID', 0)
-        # Ensure vIndex is integer
         item['vIndex'] = int(item['vIndex']) if item['vIndex'] is not None else 0
         
-        # Ensure selected codec fields exist
         if 'selectedVideoCodec' not in item:
             item['selectedVideoCodec'] = ''
         if 'selectedAudioCodec' not in item:
             item['selectedAudioCodec'] = ''
     
-    # Return entries in reverse order (newest first)
     return list(reversed(entries))
 
 
-# Module-level function for QML to save single entry
 def save_single_entry(entry_data):
     """
-    Save or update a single entry (called from QML)
+    Save or update individual entry from QML.
+    
+    QML-accessible wrapper for entry save operation.
     
     Args:
-        entry_data (dict): Entry data to save
+        entry_data: Entry metadata dictionary
         
     Returns:
-        dict: Result with success status
+        Dictionary with success status, entry ID, or error message
     """
     storage = get_storage_manager()
     return storage.save_single_entry(entry_data)

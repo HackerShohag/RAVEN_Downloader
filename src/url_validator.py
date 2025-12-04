@@ -14,199 +14,101 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-# Standard library imports
 import re
 
-
-# Video platform URL patterns
-# Format: (domain_pattern, video_patterns, playlist_patterns, name)
 PLATFORM_PATTERNS = [
-    # YouTube
     {
         'name': 'YouTube',
         'domains': [r'youtube\.com', r'youtu\.be', r'm\.youtube\.com', r'yotu\.be'],
-        'video_patterns': [
-            r'/watch\?v=',
-            r'/embed/',
-            r'/shorts/',
-            r'youtu\.be/',
-        ],
-        'playlist_patterns': [
-            r'[?&]list=',
-            r'/playlist\?',
-        ],
+        'video_patterns': [r'/watch\?v=', r'/embed/', r'/shorts/', r'youtu\.be/'],
+        'playlist_patterns': [r'[?&]list=', r'/playlist\?'],
     },
-    
-    # Vimeo
     {
         'name': 'Vimeo',
         'domains': [r'vimeo\.com', r'player\.vimeo\.com'],
-        'video_patterns': [
-            r'/\d+',  # vimeo.com/123456789
-            r'/video/',
-        ],
-        'playlist_patterns': [
-            r'/album/',
-            r'/channels/',
-            r'/groups/',
-            r'/showcase/',
-        ],
+        'video_patterns': [r'/\d+', r'/video/'],
+        'playlist_patterns': [r'/album/', r'/channels/', r'/groups/', r'/showcase/'],
     },
-    
-    # Dailymotion
     {
         'name': 'Dailymotion',
         'domains': [r'dailymotion\.com', r'dai\.ly'],
-        'video_patterns': [
-            r'/video/',
-            r'dai\.ly/',
-        ],
-        'playlist_patterns': [
-            r'/playlist/',
-            r'/user/.+/\d+',  # user playlists
-        ],
+        'video_patterns': [r'/video/', r'dai\.ly/'],
+        'playlist_patterns': [r'/playlist/', r'/user/.+/\d+'],
     },
-    
-    # Twitch
     {
         'name': 'Twitch',
         'domains': [r'twitch\.tv', r'm\.twitch\.tv'],
-        'video_patterns': [
-            r'/videos/',
-            r'/clips/',
-        ],
-        'playlist_patterns': [
-            r'/collections/',
-            r'/(videos|clips)\?filter=',  # filtered video lists
-        ],
+        'video_patterns': [r'/videos/', r'/clips/'],
+        'playlist_patterns': [r'/collections/', r'/(videos|clips)\?filter='],
     },
-    
-    # Facebook
     {
         'name': 'Facebook',
         'domains': [r'facebook\.com', r'fb\.watch', r'fb\.com'],
-        'video_patterns': [
-            r'/videos?/',
-            r'/watch/',
-            r'fb\.watch/',
-        ],
-        'playlist_patterns': [
-            r'/watch/[^/]+/\d+',  # video series
-        ],
+        'video_patterns': [r'/videos?/', r'/watch/', r'fb\.watch/'],
+        'playlist_patterns': [r'/watch/[^/]+/\d+'],
     },
-    
-    # Instagram
     {
         'name': 'Instagram',
         'domains': [r'instagram\.com', r'instagr\.am'],
-        'video_patterns': [
-            r'/p/',  # posts
-            r'/reel/',
-            r'/tv/',
-        ],
-        'playlist_patterns': [
-            r'/explore/tags/',  # hashtag feeds (limited)
-        ],
+        'video_patterns': [r'/p/', r'/reel/', r'/tv/'],
+        'playlist_patterns': [r'/explore/tags/'],
     },
-    
-    # Twitter/X
     {
         'name': 'Twitter',
         'domains': [r'twitter\.com', r'x\.com', r't\.co'],
-        'video_patterns': [
-            r'/status/',
-            r'/i/broadcasts/',
-        ],
-        'playlist_patterns': [],  # Twitter doesn't have traditional playlists
+        'video_patterns': [r'/status/', r'/i/broadcasts/'],
+        'playlist_patterns': [],
     },
-    
-    # TikTok
     {
         'name': 'TikTok',
         'domains': [r'tiktok\.com', r'vm\.tiktok\.com'],
-        'video_patterns': [
-            r'/@[^/]+/video/',
-            r'/v/',
-        ],
-        'playlist_patterns': [
-            r'/@[^/]+$',  # user profile (all videos)
-        ],
+        'video_patterns': [r'/@[^/]+/video/', r'/v/'],
+        'playlist_patterns': [r'/@[^/]+$'],
     },
-    
-    # SoundCloud
     {
         'name': 'SoundCloud',
         'domains': [r'soundcloud\.com', r'snd\.sc'],
-        'video_patterns': [
-            r'/[^/]+/[^/]+$',  # user/track
-        ],
-        'playlist_patterns': [
-            r'/sets/',
-            r'/[^/]+/tracks',  # user tracks
-            r'/[^/]+/albums',  # user albums
-        ],
+        'video_patterns': [r'/[^/]+/[^/]+$'],
+        'playlist_patterns': [r'/sets/', r'/[^/]+/tracks', r'/[^/]+/albums'],
     },
-    
-    # Reddit
     {
         'name': 'Reddit',
         'domains': [r'reddit\.com', r'redd\.it', r'v\.redd\.it'],
-        'video_patterns': [
-            r'/r/[^/]+/comments/',
-            r'v\.redd\.it/',
-        ],
-        'playlist_patterns': [
-            r'/r/[^/]+/top',
-            r'/r/[^/]+/hot',
-            r'/user/[^/]+/submitted',  # user submissions
-        ],
+        'video_patterns': [r'/r/[^/]+/comments/', r'v\.redd\.it/'],
+        'playlist_patterns': [r'/r/[^/]+/top', r'/r/[^/]+/hot', r'/user/[^/]+/submitted'],
     },
-    
-    # Bilibili
     {
         'name': 'Bilibili',
         'domains': [r'bilibili\.com', r'b23\.tv'],
-        'video_patterns': [
-            r'/video/av',
-            r'/video/BV',
-        ],
-        'playlist_patterns': [
-            r'/medialist/',
-            r'/favlist/',
-            r'/bangumi/play/',  # series
-        ],
+        'video_patterns': [r'/video/av', r'/video/BV'],
+        'playlist_patterns': [r'/medialist/', r'/favlist/', r'/bangumi/play/'],
     },
 ]
 
 
-def is_valid_url(url):
+def is_valid_url(url: str) -> bool:
     """
-    Check if URL is a valid video URL from supported platforms
+    Validate if URL is from a supported video platform.
     
     Args:
-        url (str): URL to validate
+        url: URL string to validate
         
     Returns:
-        bool: True if valid video URL, False otherwise
+        True if URL matches any supported platform pattern, False otherwise
     """
     if not url or not isinstance(url, str):
         return False
     
     url = url.strip()
     
-    # Basic URL format check
     if not re.match(r'^https?://', url, re.IGNORECASE):
-        # Try adding https://
         url = 'https://' + url
     
-    # Check against all platform patterns
     for platform in PLATFORM_PATTERNS:
-        # Check if domain matches
         domain_match = any(re.search(domain, url, re.IGNORECASE) 
                           for domain in platform['domains'])
         
         if domain_match:
-            # Check if it matches video patterns OR playlist patterns
             video_match = any(re.search(pattern, url, re.IGNORECASE) 
                             for pattern in platform['video_patterns'])
             playlist_match = any(re.search(pattern, url, re.IGNORECASE) 
@@ -218,33 +120,29 @@ def is_valid_url(url):
     return False
 
 
-def is_valid_playlist_url(url):
+def is_valid_playlist_url(url: str) -> bool:
     """
-    Check if URL is a playlist URL from supported platforms
+    Validate if URL is a playlist from a supported platform.
     
     Args:
-        url (str): URL to validate
+        url: URL string to validate
         
     Returns:
-        bool: True if valid playlist URL, False otherwise
+        True if URL matches playlist pattern for any supported platform, False otherwise
     """
     if not url or not isinstance(url, str):
         return False
     
     url = url.strip()
     
-    # Basic URL format check
     if not re.match(r'^https?://', url, re.IGNORECASE):
         url = 'https://' + url
     
-    # Check against all platform patterns
     for platform in PLATFORM_PATTERNS:
-        # Check if domain matches
         domain_match = any(re.search(domain, url, re.IGNORECASE) 
                           for domain in platform['domains'])
         
         if domain_match and platform['playlist_patterns']:
-            # Check if it matches playlist patterns
             playlist_match = any(re.search(pattern, url, re.IGNORECASE) 
                                for pattern in platform['playlist_patterns'])
             
@@ -254,15 +152,15 @@ def is_valid_playlist_url(url):
     return False
 
 
-def get_platform_name(url):
+def get_platform_name(url: str) -> str:
     """
-    Identify the platform from URL
+    Identify the video platform from URL.
     
     Args:
-        url (str): URL to check
+        url: URL string to analyze
         
     Returns:
-        str: Platform name or 'Unknown'
+        Platform name string, or 'Unknown' if not recognized
     """
     if not url or not isinstance(url, str):
         return 'Unknown'
@@ -278,15 +176,15 @@ def get_platform_name(url):
     return 'Unknown'
 
 
-def supports_playlists(url):
+def supports_playlists(url: str) -> bool:
     """
-    Check if the platform supports playlist downloads
+    Check if the platform supports playlist downloads.
     
     Args:
-        url (str): URL to check
+        url: URL string to check
         
     Returns:
-        bool: True if platform supports playlists
+        True if the platform has playlist support, False otherwise
     """
     if not url or not isinstance(url, str):
         return False
@@ -302,15 +200,15 @@ def supports_playlists(url):
     return False
 
 
-def extract_video_id(url):
+def extract_video_id(url: str) -> str:
     """
-    Extract video ID from YouTube URL
+    Extract unique video identifier from YouTube URL.
     
     Args:
-        url (str): YouTube URL
+        url: YouTube URL string
         
     Returns:
-        str: Video ID or None
+        Video ID string, or None if not found
     """
     if not url:
         return None
@@ -330,6 +228,5 @@ def extract_video_id(url):
     return None
 
 
-# Backwards compatibility aliases
 is_valid_video_url = is_valid_url
 is_valid_playlist = is_valid_playlist_url

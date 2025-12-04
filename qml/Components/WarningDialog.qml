@@ -20,9 +20,9 @@ import Lomiri.Components.Popups 1.3
 
 Dialog {
     id: dialogue
-//    title: i18n.tr("Invalid Playlist URL!")
-//    text: i18n.tr("Please provide a link with valid list argument.")
+    
     Keys.onPressed: PopupUtils.close(dialogue)
+    
     Button {
         text: i18n.tr("OK")
         onClicked: PopupUtils.close(dialogue)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-03 03:19+0000\n"
+"POT-Creation-Date: 2025-12-04 03:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,91 +17,137 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../qml/AboutPage.qml:29
+#: ../qml/AboutPage.qml:26
 msgid "About RAVEN Downloader"
 msgstr ""
 
-#: ../qml/AboutPage.qml:60
+#: ../qml/AboutPage.qml:53
 msgid "Multi-Platform Video Downloader"
 msgstr ""
 
-#: ../qml/AboutPage.qml:66
+#: ../qml/AboutPage.qml:59
 msgid ""
 "Download videos from 12+ platforms including YouTube, Vimeo, Dailymotion, "
 "Twitch, Facebook, Instagram, Twitter, TikTok, SoundCloud, Reddit, and "
 "Bilibili."
 msgstr ""
 
-#: ../qml/AboutPage.qml:74
+#: ../qml/AboutPage.qml:63
 msgid "Features:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:80
+#: ../qml/AboutPage.qml:69
 msgid "Multi-platform support with smart URL detection"
 msgstr ""
 
-#: ../qml/AboutPage.qml:81
+#: ../qml/AboutPage.qml:70
 msgid "Playlist downloads (platform-dependent)"
 msgstr ""
 
-#: ../qml/AboutPage.qml:82
+#: ../qml/AboutPage.qml:71
 msgid "Custom format and quality selection"
 msgstr ""
 
-#: ../qml/AboutPage.qml:83
+#: ../qml/AboutPage.qml:72
 msgid "Native ContentHub integration"
 msgstr ""
 
-#: ../qml/AboutPage.qml:84
+#: ../qml/AboutPage.qml:73
 msgid "Subtitle & caption support"
 msgstr ""
 
-#: ../qml/AboutPage.qml:92
+#: ../qml/AboutPage.qml:77
 msgid "Developer:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:119
+#: ../qml/AboutPage.qml:91
 msgid "Report Bugs & Send Feedback:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:140
+#: ../qml/AboutPage.qml:99
 msgid "Technologies & Libraries:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:162
+#: ../qml/AboutPage.qml:108
 msgid "License:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:176
+#: ../qml/AboutPage.qml:118
 msgid "Source Code:"
 msgstr ""
 
-#: ../qml/AboutPage.qml:196 ../qml/Components/MediaItemDialogs.qml:68
+#: ../qml/AboutPage.qml:128 ../qml/Components/MediaItemDialogs.qml:67
 msgid "Close"
 msgstr ""
 
-#: ../qml/Components/ContentHubDialog.qml:36
-msgid "Save Downloaded File"
+#: ../qml/Components/ContentHubDialog.qml:31
+msgid "Share Downloaded File"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:452
+#: ../qml/Components/ContentHubDialog.qml:36
+msgid "Cancel"
+msgstr ""
+
+#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:423
 msgid "Swipe for Settings"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:67
+#: ../qml/Components/DownloadButton.qml:23
+msgid "Download"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:25
+msgid "Error Occurred!"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:26
+msgid "An unknown error occured."
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:32
+msgid "Invalid Playlist URL!"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:33
+msgid "Please provide a valid playlist url."
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:39
+msgid "Playlist Detected!"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:40
+msgid ""
+"This is a playlist URL. Please select 'Playlist' mode to download all videos."
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:46
+msgid "Invalid URL!"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:47
+msgid "Please provide a valid video link."
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:56
+#: ../qml/Components/MediaItemDialogs.qml:52
+msgid "Download Complete!"
+msgstr ""
+
+#: ../qml/Components/MainPageDialogs.qml:57
+msgid " video(s) from \""
+msgstr ""
+
+#: ../qml/Components/MediaItem.qml:70
 msgid "select audio"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:67
+#: ../qml/Components/MediaItem.qml:71
 msgid "select language"
 msgstr ""
 
-#: ../qml/Components/MediaItem.qml:67
+#: ../qml/Components/MediaItem.qml:72
 msgid "select resolution"
-msgstr ""
-
-#: ../qml/Components/MediaItem.qml:324
-msgid "Download"
 msgstr ""
 
 #: ../qml/Components/MediaItemDialogs.qml:34
@@ -112,10 +158,6 @@ msgstr ""
 msgid "Please refresh download link."
 msgstr ""
 
-#: ../qml/Components/MediaItemDialogs.qml:52 ../qml/MainPage.qml:105
-msgid "Download Complete!"
-msgstr ""
-
 #: ../qml/Components/MediaItemDialogs.qml:53
 msgid "File downloaded: "
 msgstr ""
@@ -124,11 +166,11 @@ msgstr ""
 msgid "Save to..."
 msgstr ""
 
-#: ../qml/Components/MediaItemDialogs.qml:82
+#: ../qml/Components/MediaItemDialogs.qml:81
 msgid "Download Failed"
 msgstr ""
 
-#: ../qml/Components/MediaItemDialogs.qml:83
+#: ../qml/Components/MediaItemDialogs.qml:82
 msgid "An error occurred while starting the download."
 msgstr ""
 
@@ -140,111 +182,74 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:70
-msgid "Error Occurred!"
-msgstr ""
-
-#: ../qml/MainPage.qml:71
-msgid "An unknown error occured."
-msgstr ""
-
-#: ../qml/MainPage.qml:78
-msgid "Invalid Playlist URL!"
-msgstr ""
-
-#: ../qml/MainPage.qml:79
-msgid "Please provide a valid playlist url."
-msgstr ""
-
-#: ../qml/MainPage.qml:86
-msgid "Playlist Detected!"
-msgstr ""
-
-#: ../qml/MainPage.qml:87
-msgid ""
-"This is a playlist URL. Please select 'Playlist' mode to download all videos."
-msgstr ""
-
-#: ../qml/MainPage.qml:94
-msgid "Invalid URL!"
-msgstr ""
-
-#: ../qml/MainPage.qml:95
-msgid "Please provide a valid video link."
-msgstr ""
-
-#: ../qml/MainPage.qml:106
-msgid " video(s) from \""
-msgstr ""
-
-#: ../qml/MainPage.qml:272 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:227 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:277
+#: ../qml/MainPage.qml:232
 msgid "About"
 msgstr ""
 
-#: ../qml/MainPage.qml:333
+#: ../qml/MainPage.qml:294
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:340
+#: ../qml/MainPage.qml:301
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:342
+#: ../qml/MainPage.qml:303
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:342
+#: ../qml/MainPage.qml:303
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:348
+#: ../qml/MainPage.qml:309
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:369
+#: ../qml/MainPage.qml:330
 msgid "Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:441
+#: ../qml/MainPage.qml:412
 msgid "No downloads yet."
 msgstr ""
 
-#: ../qml/SettingsPage.qml:49
+#: ../qml/SettingsPage.qml:47
 msgid "System theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:50
+#: ../qml/SettingsPage.qml:48
 msgid "Ambiance theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:51
+#: ../qml/SettingsPage.qml:49
 msgid "Suru-dark theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:66
+#: ../qml/SettingsPage.qml:64
 msgid "Settings"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:148
+#: ../qml/SettingsPage.qml:94
 msgid "Download available subtitles"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:172
+#: ../qml/SettingsPage.qml:118
 msgid "Download captions (If subtitle unavailable)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:183
+#: ../qml/SettingsPage.qml:129
 msgid "Embed subtitles in files"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:200
+#: ../qml/SettingsPage.qml:146
 msgid "Auto Download (best format)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:265
+#: ../qml/SettingsPage.qml:206
 msgid "Clear All History"
 msgstr ""

@@ -57,7 +57,6 @@ QtObject {
                 color: theme.palette.normal.positive
                 onClicked: {
                     PopupUtils.close(finishedDialog);
-                    // Trigger ContentHub export
                     if (root && root.openContentHubExport) {
                         root.openContentHubExport(filePath);
                     }

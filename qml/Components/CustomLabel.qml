@@ -15,32 +15,21 @@
  */
 
 import QtQuick 2.7
-import QtQuick.Controls 2.2
+import QtQuick.Layouts 1.3
 import Lomiri.Components 1.3
 
-Rectangle {
-    id: overlay
+Label {
+    id: customLabel
     
-    property alias running: busyIndicator.running
-    property alias indicatorSize: busyIndicator.width
+    Layout.fillWidth: true
+    wrapMode: Text.WordWrap
+    color: theme.palette.normal.activity
     
-    anchors.fill: parent
-    visible: running
-    color: "#20000000"
-    radius: units.gu(1)
-    z: 1000
-
+    onLinkActivated: Qt.openUrlExternally(link)
+    
     MouseArea {
         anchors.fill: parent
-        preventStealing: true
-        hoverEnabled: true
-    }
-    
-    BusyIndicator {
-        id: busyIndicator
-        anchors.centerIn: parent
-        height: units.gu(5)
-        width: units.gu(5)
-        running: false
+        acceptedButtons: Qt.NoButton
+        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 }

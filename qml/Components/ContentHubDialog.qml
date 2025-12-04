@@ -16,33 +16,31 @@
 
 import QtQuick 2.7
 import Lomiri.Components 1.3
-import Lomiri.Components.Popups 1.3
 import Lomiri.Content 1.1
+import "../js/utils.js" as Utils
 
-/**
- * Reusable ContentHub dialog for exporting/sharing files
- * Handles the full ContentHub transfer flow with proper state management
- */
 Page {
-    id: contentHubDialog
+    id: sharePage
     
     property string downloadedFilePath: ""
     property var activeTransfer
-    
-    signal closeRequested()
+    property var pageStack
     
     header: PageHeader {
-        id: dialogHeader
-        title: i18n.tr("Save Downloaded File")
+        id: shareHeader
+        title: i18n.tr("Share Downloaded File")
         
         leadingActionBar.actions: [
             Action {
                 iconName: "back"
+                text: i18n.tr("Cancel")
                 onTriggered: {
-                    if (contentHubDialog.activeTransfer) {
-                        contentHubDialog.activeTransfer.state = ContentTransfer.Aborted
+                    if (sharePage.activeTransfer) {
+                        sharePage.activeTransfer.state = ContentTransfer.Aborted
                     }
-                    closeRequested()
+                    if (sharePage.pageStack) {
+                        sharePage.pageStack.pop()
+                    }
                 }
             }
         ]
@@ -51,46 +49,52 @@ Page {
     ContentPeerPicker {
         id: peerPicker
         anchors {
-            fill: parent
-            topMargin: dialogHeader.height
+            top: shareHeader.bottom
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
         }
-        visible: parent.visible
         showTitle: false
         contentType: ContentType.All
         handler: ContentHandler.Destination
         
         onPeerSelected: {
-            contentHubDialog.activeTransfer = peer.request()
-            if (contentHubDialog.activeTransfer) {
-                contentHubDialog.activeTransfer.stateChanged.connect(function() {
-                    if (contentHubDialog.activeTransfer.state === ContentTransfer.InProgress) {
-                        var item = contentItemComponent.createObject(null, {
-                            "url": "file://" + contentHubDialog.downloadedFilePath
-                        })
-                        contentHubDialog.activeTransfer.items = [item]
-                        contentHubDialog.activeTransfer.state = ContentTransfer.Charged
-                        console.log("ContentHub: File transfer charged")
-                    } else if (contentHubDialog.activeTransfer.state === ContentTransfer.Charged) {
-                        console.log("ContentHub: File transfer complete")
+            sharePage.activeTransfer = peer.request()
+            
+            if (sharePage.activeTransfer) {
+                sharePage.activeTransfer.stateChanged.connect(function() {
+                    if (sharePage.activeTransfer.state === ContentTransfer.Charged) {
+                        console.log("[ContentHub] Transfer charged, closing page")
+                        if (sharePage.pageStack) {
+                            sharePage.pageStack.pop()
+                        }
                     }
                 })
-                contentHubDialog.activeTransfer.state = ContentTransfer.Requested
+                
+                var item = Utils.createContentItem(
+                    contentItemComponent, 
+                    sharePage.downloadedFilePath
+                )
+                
+                sharePage.activeTransfer.items = [item]
+                sharePage.activeTransfer.state = ContentTransfer.Charged
+                
+                console.log("[ContentHub] File shared:", sharePage.downloadedFilePath)
             }
         }
         
         onCancelPressed: {
-            if (contentHubDialog.activeTransfer) {
-                contentHubDialog.activeTransfer.state = ContentTransfer.Aborted
+            if (sharePage.activeTransfer) {
+                sharePage.activeTransfer.state = ContentTransfer.Aborted
             }
-            console.log("ContentHub: Transfer cancelled")
+            if (sharePage.pageStack) {
+                sharePage.pageStack.pop()
+            }
         }
     }
     
     Component {
         id: contentItemComponent
-        ContentItem {
-            property alias url: contentItemInstance.url
-            id: contentItemInstance
-        }
+        ContentItem {}
     }
 }

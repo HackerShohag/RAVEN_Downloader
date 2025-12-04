@@ -14,18 +14,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-# Standard library imports - no external dependencies required
 
-
-def parse_video_formats(info_dict):
+def parse_video_formats(info_dict: dict) -> dict:
     """
-    Parse yt-dlp info dict into QML-compatible format
+    Parse yt-dlp metadata into QML-compatible format structure.
     
     Args:
-        info_dict (dict): yt-dlp extracted info
+        info_dict: Raw metadata dictionary from yt-dlp extraction
         
     Returns:
-        dict: Formatted data compatible with QML mediaFormats object
+        Formatted dictionary containing separated video/audio formats with metadata,
+        or None if input is invalid
     """
     if not info_dict:
         return None
@@ -37,28 +36,19 @@ def parse_video_formats(info_dict):
         'videoUrl': info_dict.get('webpage_url', info_dict.get('url', '')),
         'uploader': info_dict.get('uploader', ''),
         'uploadDate': info_dict.get('upload_date', ''),
-        
-        # Video format arrays
         'vcodeces': [],
-        'notes': [],  # Resolutions
+        'notes': [],
         'videoExtensions': [],
         'videoFormatIds': [],
-        
-        # Audio format arrays
         'acodeces': [],
         'audioExtensions': [],
         'audioFormatIds': [],
         'audioBitrates': [],
         'audioSizes': [],
-        
-        # Common
         'filesizes': [],
     }
     
-    # Process all available formats
     formats = info_dict.get('formats', [])
-    
-    # Separate video and audio formats
     video_formats = []
     audio_formats = []
     
@@ -66,21 +56,17 @@ def parse_video_formats(info_dict):
         vcodec = fmt.get('vcodec', 'none')
         acodec = fmt.get('acodec', 'none')
         
-        # Video formats (has video codec)
         if vcodec and vcodec != 'none':
             video_formats.append(fmt)
-        # Audio-only formats (has audio but no video)
         elif acodec and acodec != 'none' and vcodec == 'none':
             audio_formats.append(fmt)
     
-    # Parse video formats
     for fmt in video_formats:
         format_id = str(fmt.get('format_id', ''))
         vcodec = fmt.get('vcodec', 'unknown')
         ext = fmt.get('ext', 'mp4')
         filesize = fmt.get('filesize', 0) or fmt.get('filesize_approx', 0) or 0
         
-        # Resolution/quality note
         resolution = fmt.get('resolution', '')
         if not resolution:
             height = fmt.get('height', 0)
@@ -96,12 +82,11 @@ def parse_video_formats(info_dict):
         formats_data['notes'].append(resolution)
         formats_data['filesizes'].append(filesize)
     
-    # Parse audio formats
     for fmt in audio_formats:
         format_id = str(fmt.get('format_id', ''))
         acodec = fmt.get('acodec', 'unknown')
         ext = fmt.get('ext', 'mp3')
-        abr = fmt.get('abr', 0)  # Audio bitrate
+        abr = fmt.get('abr', 0)
         filesize = fmt.get('filesize', 0) or fmt.get('filesize_approx', 0) or 0
         
         formats_data['audioFormatIds'].append(format_id)
@@ -113,25 +98,25 @@ def parse_video_formats(info_dict):
     return formats_data
 
 
-def parse_playlist_info(info_dict):
+def parse_playlist_info(info_dict: dict) -> dict:
     """
-    Parse playlist information
+    Extract and structure playlist metadata from yt-dlp output.
     
     Args:
-        info_dict (dict): yt-dlp extracted playlist info
+        info_dict: Raw playlist metadata from yt-dlp
         
     Returns:
-        dict: Playlist metadata
+        Dictionary containing playlist title, ID, video count, and processed entries,
+        or None if input is invalid
     """
     if not info_dict:
         return None
     
     entries = info_dict.get('entries', [])
-    
-    # Process entries to ensure we have necessary data
     processed_entries = []
+    
     for entry in entries:
-        if entry:  # Skip None entries
+        if entry:
             processed_entry = {
                 'id': entry.get('id', ''),
                 'title': entry.get('title', 'Unknown'),
@@ -149,15 +134,15 @@ def parse_playlist_info(info_dict):
     }
 
 
-def format_duration(seconds):
+def format_duration(seconds: int) -> str:
     """
-    Convert duration in seconds to readable format (HH:MM:SS)
+    Convert duration from seconds to human-readable time format.
     
     Args:
-        seconds (int): Duration in seconds
+        seconds: Duration in seconds
         
     Returns:
-        str: Formatted duration string
+        Formatted string as MM:SS or HH:MM:SS, or "00:00" for invalid input
     """
     if not seconds or seconds <= 0:
         return "00:00"
@@ -172,15 +157,15 @@ def format_duration(seconds):
         return f"{minutes:02d}:{secs:02d}"
 
 
-def format_filesize(bytes_size):
+def format_filesize(bytes_size: int) -> str:
     """
-    Convert bytes to human-readable file size
+    Convert byte size to human-readable format with appropriate units.
     
     Args:
-        bytes_size (int): Size in bytes
+        bytes_size: File size in bytes
         
     Returns:
-        str: Formatted size string (e.g., "10.5 MB")
+        Formatted string with size and unit (B, KB, MB, GB, TB), or "Unknown" for invalid input
     """
     if not bytes_size or bytes_size <= 0:
         return "Unknown"
@@ -196,16 +181,16 @@ def format_filesize(bytes_size):
     return f"{size:.2f} {units[unit_index]}"
 
 
-def get_best_format_id(info_dict, prefer_quality='best'):
+def get_best_format_id(info_dict: dict, prefer_quality: str = 'best') -> str:
     """
-    Get the best format ID based on preference
+    Select optimal video format based on quality preference.
     
     Args:
-        info_dict (dict): yt-dlp extracted info
-        prefer_quality (str): 'best', 'worst', or specific resolution like '720p'
+        info_dict: yt-dlp metadata dictionary
+        prefer_quality: Quality preference ('best', 'worst', or specific resolution)
         
     Returns:
-        str: Format ID or None
+        Format ID string of the selected format, or None if no suitable format found
     """
     formats = info_dict.get('formats', [])
     
@@ -213,7 +198,6 @@ def get_best_format_id(info_dict, prefer_quality='best'):
         return None
     
     if prefer_quality == 'best':
-        # Get format with highest resolution
         video_formats = [f for f in formats if f.get('vcodec', 'none') != 'none']
         if video_formats:
             best_format = max(video_formats, key=lambda f: f.get('height', 0) or 0)

@@ -40,41 +40,6 @@ Page {
         title: i18n.tr("Install/Save with")
         contents: RowLayout {
             anchors.fill: parent
-//            Rectangle {
-//                id: backButtonContainer
-//                Layout.alignment: Qt.AlignLeft
-//                visible: isExportPage
-//
-//                height: units.gu(5)
-//                width: units.gu(5)
-//                radius: units.gu(1)
-//                Icon {
-//                    id: backButtonIcon
-//                    Layout.fillWidth: true
-//                    anchors.centerIn: parent
-//                    visible: isExportPage
-//                    width: units.gu(3)
-//                    height: units.gu(3)
-//                    name: 'back'
-//                    color: "red"
-//                    keyColor: "blue"
-//                }
-//
-//
-//                MouseArea {
-//                    anchors.fill: parent
-//                    visible: isExportPage
-//                    onClicked: {
-//                            PopupUtils.close(exportPageComponent)
-//                        picker.backPressed();
-//                        isExportPage = false;
-//                        console.log("Back pressed")
-//                    }
-//
-//                    onPressed: backButtonContainer.color = "lightgrey"
-//                    onReleased: backButtonContainer.color = "white"
-//                }
-//            }
 
             Label {
                 anchors.centerIn: parent
@@ -92,12 +57,10 @@ Page {
         handler: ContentHandler.Destination
 
         onPeerSelected: {
-            //peer.selectionType = ContentTransfer.Single
             picker.activeTransfer = peer.request()
             picker.activeTransfer.stateChanged.connect(function() {
 				if (picker.activeTransfer.state === ContentTransfer.InProgress) {
 					console.log("In progress");
-					//picker.activeTransfer.items = picker.activeTransfer.items[0].url = url;
 					picker.activeTransfer.items = [ resultComponent.createObject(parent, {"url": url}) ];
 					picker.activeTransfer.state = ContentTransfer.Charged;
 					pageStack.pop()

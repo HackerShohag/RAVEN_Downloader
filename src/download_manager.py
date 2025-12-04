@@ -14,7 +14,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-# Standard library imports
 import os
 import random
 import sys
@@ -22,19 +21,15 @@ import threading
 import time
 from pathlib import Path
 
-# Configure embedded library paths
 current_dir = Path(__file__).parent.parent
 
-# Add yt-dlp library path
 lib_path = current_dir / "lib" / "python3" / "dist-packages"
 if lib_path.exists():
     sys.path.insert(0, str(lib_path))
     print(f"[download_manager] Added lib path: {lib_path}")
 
-# Add ffmpeg library path for shared libraries
 ffmpeg_lib_path = current_dir / "lib"
 if ffmpeg_lib_path.exists():
-    # Add to LD_LIBRARY_PATH for dynamic linking
     ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
     if ld_library_path:
         os.environ["LD_LIBRARY_PATH"] = f"{ffmpeg_lib_path}{os.pathsep}{ld_library_path}"
@@ -42,7 +37,6 @@ if ffmpeg_lib_path.exists():
         os.environ["LD_LIBRARY_PATH"] = str(ffmpeg_lib_path)
     print(f"[download_manager] Added ffmpeg lib path to LD_LIBRARY_PATH: {ffmpeg_lib_path}")
 
-# Add ffmpeg binary path
 bin_path = current_dir / "bin"
 if bin_path.exists():
     os.environ["PATH"] = str(bin_path) + os.pathsep + os.environ.get("PATH", "")
@@ -57,7 +51,6 @@ if bin_path.exists():
 else:
     print(f"[download_manager] WARNING: bin directory not found at {bin_path}")
 
-# Third-party imports
 try:
     import yt_dlp
     print(f"[download_manager] yt-dlp imported successfully, version: {yt_dlp.version.__version__}")
@@ -68,7 +61,6 @@ except Exception as e:
     print(f"[download_manager] ERROR importing yt-dlp: {e}")
     yt_dlp = None
 
-# Local module imports
 try:
     from .format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from .storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
@@ -82,35 +74,60 @@ except ImportError:
                                is_valid_playlist, supports_playlists, get_platform_name)
     print("[download_manager] Using absolute imports")
 
-
-def speak(message):
-    """Send debug message to QML"""
-    print(f"[DownloadManager] {message}")
-    return message
-
-
 class DownloadManager:
-    """Main download manager class"""
+    """
+    Orchestrates video downloads using yt-dlp library.
+    
+    Manages download lifecycle including format extraction, progress tracking,
+    and post-processing. Implements singleton pattern for global access.
+    """
     
     def __init__(self):
-        """Initialize download manager"""
+        """
+        Initialize download manager with empty state.
+        
+        Sets up tracking structures for active downloads, progress throttling,
+        and storage manager integration.
+        """
         self.active_downloads = {}
         self.download_counter = 0
         self.storage = get_storage_manager()
         self.last_progress_time = {}
-        self.progress_throttle = 0.1  # Throttle to 100ms between updates
+        self.progress_throttle = 0.1
+    
+    @staticmethod
+    def _get_common_ydl_opts():
+        """
+        Generate shared yt-dlp configuration options.
+        
+        Returns:
+            Dictionary containing common options for yt-dlp operations including
+            quiet mode, SSL bypass, and user agent configuration
+        """
+        return {
+            'quiet': True,
+            'no_warnings': True,
+            'nocheckcertificate': True,
+            'legacy_server_connect': True,
+            'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'cookiesfrombrowser': None,
+        }
     
     def action_submit(self, url, download_type=0):
         """
-        Submit URL for processing (extract format information)
-        Replaces C++ downloadManager.actionSubmit()
+        Extract video or playlist metadata from URL.
+        
+        Validates URL, determines content type (video/playlist), and extracts
+        format information using yt-dlp. Replaces C++ downloadManager.actionSubmit().
         
         Args:
-            url (str): Video URL to process
-            download_type (int): 0 for single video, 1 for playlist
+            url: Video or playlist URL to process
+            download_type: Content type selector (0=single video, 1=playlist)
             
         Returns:
-            dict: Format data or error information
+            Dictionary containing extracted format data and metadata, or error information
+            if extraction fails. Format: {'type': 'video'|'playlist', 'data': {...}} or
+            {'error': 'error message'}
         """
         print(f"[action_submit] Called with URL: {url}, download_type: {download_type}")
         
@@ -120,7 +137,6 @@ class DownloadManager:
                 print(f"[action_submit] ERROR: {error_msg}")
                 return {'error': error_msg}
             
-            # Validate URL
             print(f"[action_submit] Validating URL...")
             if not is_valid_url(url):
                 error_msg = f'Invalid URL provided: {url}'
@@ -129,11 +145,9 @@ class DownloadManager:
             
             print(f"[action_submit] URL is valid")
             
-            # Check if it's a playlist
             is_playlist = is_valid_playlist_url(url)
             print(f"[action_submit] Is playlist: {is_playlist}")
             
-            # Check if user wants playlist but platform doesn't support it
             if download_type == 1 and not supports_playlists(url):
                 platform = get_platform_name(url)
                 error_msg = f'{platform} does not support playlist downloads'
@@ -141,32 +155,19 @@ class DownloadManager:
                 return {'error': error_msg}
             
             if is_playlist and download_type == 0:
-                # User submitted playlist as single video
                 print(f"[action_submit] Playlist URL submitted as single video")
                 return {'error': 'playlist_as_video', 'url': url}
             
-            # If user selected playlist mode but URL is not a playlist
             if download_type == 1 and not is_playlist:
                 platform = get_platform_name(url)
                 error_msg = f'This is not a valid playlist URL for {platform}'
                 print(f"[action_submit] ERROR: {error_msg}")
                 return {'error': error_msg}
             
-            # Extract video/playlist information
             print(f"[action_submit] Extracting info from: {url}")
             
-            ydl_opts = {
-                'quiet': True,
-                'no_warnings': True,
-                'extract_flat': is_playlist,  # Don't download playlist videos
-                # Fix SSL/TLS issues for Dailymotion and others
-                'nocheckcertificate': True,
-                'legacy_server_connect': True,
-                # Add user-agent for sites that require it (e.g., Vimeo)
-                'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                # Enable cookie support for authenticated content
-                'cookiesfrombrowser': None,  # Can be set to browser name if needed
-            }
+            ydl_opts = self._get_common_ydl_opts()
+            ydl_opts['extract_flat'] = is_playlist
             
             print(f"[action_submit] Creating YoutubeDL instance...")
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -175,13 +176,11 @@ class DownloadManager:
                 print(f"[action_submit] Info extracted - Title: {info.get('title', 'Unknown')}")
                 
                 if is_playlist:
-                    # Parse playlist info
                     print(f"[action_submit] Parsing playlist info...")
                     playlist_data = parse_playlist_info(info)
                     print(f"[action_submit] Returning playlist data")
                     return {'type': 'playlist', 'data': playlist_data}
                 else:
-                    # Parse video formats
                     print(f"[action_submit] Parsing video formats...")
                     formats_data = parse_video_formats(info)
                     print(f"[action_submit] Formats parsed: {len(formats_data.get('videoFormatIds', []))} video, {len(formats_data.get('audioFormatIds', []))} audio")
@@ -197,21 +196,24 @@ class DownloadManager:
     
     def action_download(self, video_url, options):
         """
-        Download video with specified format
-        Replaces C++ downloadManager.actionDownload()
+        Execute video download with specified format and options.
+        
+        Starts threaded download process with progress tracking and post-processing.
+        Replaces C++ downloadManager.actionDownload().
         
         Args:
-            video_url (str): Video URL to download
-            options (dict): Download options including format IDs, path, etc.
+            video_url: Video URL to download
+            options: Download configuration dictionary:
                 - format: Combined format string (e.g., "137+140")
                 - indexID: Download ID for progress tracking
                 - downloadLocation: Custom download path (optional)
-                - subtitle: Download subtitles (optional)
-                - caption: Download captions (optional)
-                - embedded: Embed subtitles (optional)
+                - subtitle: Download subtitles flag (optional)
+                - caption: Download captions flag (optional)
+                - embedded: Embed subtitles flag (optional)
                 
         Returns:
-            dict: Download started confirmation with download_id
+            Dictionary with success status and download_id for tracking:
+            {'success': True, 'download_id': int} or {'success': False, 'error': str}
         """
         try:
             if not yt_dlp:
@@ -219,20 +221,16 @@ class DownloadManager:
                 print(f"[action_download] ERROR: {error_msg}")
                 return {'success': False, 'error': error_msg}
             
-            # Extract download ID from options
             download_id = options.get('indexID', self.download_counter)
             if 'indexID' not in options:
                 self.download_counter += 1
                 download_id = self.download_counter
             
-            # Extract format string
             format_selector = options.get('format', 'best')
             
-            # Get output path
             output_path = options.get('downloadLocation', self.storage.get_download_path())
             output_name = '%(title)s.%(ext)s'
             
-            # Subtitle/caption options
             download_subtitles = options.get('subtitle', False)
             download_captions = options.get('caption', False)
             embed_subs = options.get('embedded', False)
@@ -240,25 +238,21 @@ class DownloadManager:
             print(f"[action_download] Starting download {download_id} for {video_url}")
             print(f"[action_download] Format: {format_selector}, Path: {output_path}")
             
-            # Initialize progress with "preparing" status
             self.last_progress_time[download_id] = {
                 'progress': 0,
                 'status': 'preparing',
                 'timestamp': time.time()
             }
             
-            # Progress hook - stores progress for polling
             def progress_hook(d):
                 current_time = time.time()
                 
                 if d['status'] == 'downloading':
-                    # Calculate progress percentage
                     downloaded = d.get('downloaded_bytes', 0)
                     total = d.get('total_bytes', 0) or d.get('total_bytes_estimate', 0)
                     
                     if total > 0:
                         progress = (downloaded / total) * 100.0
-                        # Store progress for polling
                         self.last_progress_time[download_id] = {
                             'progress': progress,
                             'downloaded': downloaded,
@@ -268,15 +262,11 @@ class DownloadManager:
                         }
                     
                 elif d['status'] == 'finished':
-                    # This is called after each fragment/stream download
-                    # For audio+video, it's called twice (once for audio, once for video)
-                    # Wait for post-processing to complete before marking as finished
                     filename = d.get('filename', 'Unknown')
                     print(f"[action_download] Stream downloaded: {filename}")
                     
-                    # Update to processing status (ffmpeg merging)
                     self.last_progress_time[download_id] = {
-                        'progress': 95.0,  # Show 95% while processing
+                        'progress': 95.0,
                         'status': 'processing',
                         'filename': filename,
                         'timestamp': current_time
@@ -290,14 +280,11 @@ class DownloadManager:
                         'timestamp': current_time
                     }
             
-            # Post-processing hook for ffmpeg merging
             def postprocessor_hook(d):
                 if d['status'] == 'finished':
-                    # Final file ready after merging
                     filename = d.get('info_dict', {}).get('filepath', 'Unknown')
                     print(f"[action_download] Post-processing complete: {filename}")
                     
-                    # Now mark as truly finished
                     self.last_progress_time[download_id] = {
                         'progress': 100.0,
                         'status': 'finished',
@@ -305,7 +292,6 @@ class DownloadManager:
                         'timestamp': time.time()
                     }
                     
-                    # Add to history
                     self.storage.add_download_entry({
                         'url': video_url,
                         'filename': os.path.basename(filename),
@@ -313,32 +299,23 @@ class DownloadManager:
                         'timestamp': time.time(),
                     })
             
-            # Build yt-dlp options
             output_template = os.path.join(output_path, output_name)
             
-            ydl_opts = {
+            ydl_opts = self._get_common_ydl_opts()
+            ydl_opts.update({
                 'format': format_selector,
                 'outtmpl': output_template,
                 'progress_hooks': [progress_hook],
                 'postprocessor_hooks': [postprocessor_hook],
                 'quiet': False,
                 'no_warnings': False,
-                # Fix SSL/TLS issues for Dailymotion and others
-                'nocheckcertificate': True,
-                'legacy_server_connect': True,
-                # Add user-agent for sites that require it (e.g., Vimeo)
-                'user_agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                # Enable cookie support for authenticated content
-                'cookiesfrombrowser': None,
-            }
+            })
             
-            # Configure ffmpeg location if available
             ffmpeg_binary = os.environ.get("FFMPEG_BINARY")
             if ffmpeg_binary and os.path.exists(ffmpeg_binary):
                 ydl_opts['ffmpeg_location'] = os.path.dirname(ffmpeg_binary)
                 print(f"[action_download] Using ffmpeg at: {ffmpeg_binary}")
             
-            # Add subtitle options
             if download_subtitles or download_captions:
                 ydl_opts['writesubtitles'] = True
                 if download_captions:
@@ -349,14 +326,11 @@ class DownloadManager:
                         'key': 'FFmpegEmbedSubtitle',
                     }]
             
-            # Start download in separate thread
             def download_thread():
                 try:
                     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                         ydl.download([video_url])
                     
-                    # If still in processing state, mark as finished
-                    # (happens when no post-processing needed)
                     if self.last_progress_time[download_id].get('status') == 'processing':
                         filename = self.last_progress_time[download_id].get('filename', 'Unknown')
                         self.last_progress_time[download_id] = {
@@ -367,7 +341,6 @@ class DownloadManager:
                             'success': True
                         }
                         
-                        # Add to history
                         self.storage.add_download_entry({
                             'url': video_url,
                             'filename': os.path.basename(filename),
@@ -375,7 +348,6 @@ class DownloadManager:
                             'timestamp': time.time(),
                         })
                     else:
-                        # Mark as success
                         self.last_progress_time[download_id]['success'] = True
                         
                 except Exception as e:
@@ -405,17 +377,16 @@ class DownloadManager:
     
     def cancel_download(self, download_id):
         """
-        Cancel active download
+        Attempt to cancel an active download.
         
         Args:
-            download_id (int): Download ID to cancel
+            download_id: Download ID to cancel
             
         Returns:
-            dict: Cancellation result
+            Dictionary with cancellation result. Note: yt-dlp does not support
+            graceful cancellation, so this currently returns not-implemented error
         """
         if download_id in self.active_downloads:
-            # Note: yt-dlp doesn't support cancellation easily
-            # This is a limitation we need to document
             print(f"[cancel_download] Cancel requested for download {download_id} (not implemented)")
             return {'success': False, 'error': 'Download cancellation not supported yet'}
         else:
@@ -423,13 +394,14 @@ class DownloadManager:
     
     def get_download_progress(self, download_id):
         """
-        Get current download progress
+        Retrieve current progress information for download.
         
         Args:
-            download_id (int): Download ID to check
+            download_id: Download ID to query
             
         Returns:
-            dict: Progress information or None if not found
+            Dictionary with progress data including percentage, status, and timestamps,
+            or None if download not found
         """
         if download_id in self.last_progress_time:
             return self.last_progress_time[download_id]
@@ -437,43 +409,48 @@ class DownloadManager:
     
     def get_version_info(self):
         """
-        Get yt-dlp version information
+        Get yt-dlp library version information.
         
         Returns:
-            str: Version string
+            Version string if yt-dlp is available, error message otherwise
         """
         if yt_dlp:
             return yt_dlp.version.__version__
         return "yt-dlp not installed"
 
 
-# Global instance
 _manager = None
 
 def get_manager():
-    """Get singleton download manager instance"""
+    """
+    Retrieve singleton instance of DownloadManager.
+    
+    Returns:
+        Global DownloadManager instance, creating it if necessary
+    """
     global _manager
     if _manager is None:
         _manager = DownloadManager()
     return _manager
 
 
-# Module-level functions for QML access
 def action_submit(url, download_type=0):
     """
-    Submit URL for format extraction
+    Extract video or playlist metadata with thumbnail caching.
+    
+    QML-accessible wrapper for DownloadManager.action_submit() that adds
+    automatic thumbnail download and caching for video entries.
     
     Args:
-        url (str): Video URL
-        download_type (int): 0 for video, 1 for playlist
+        url: Video or playlist URL to process
+        download_type: Content type (0=video, 1=playlist)
         
     Returns:
-        dict: Format data or error
+        Dictionary with extracted data, cached thumbnail path, and generated entry ID
     """
     manager = get_manager()
     result = manager.action_submit(url, download_type)
     
-    # Download and cache thumbnail if available
     if result and result.get('type') == 'video' and result.get('data'):
         data = result['data']
         thumbnail_url = data.get('thumbnail')
@@ -481,14 +458,11 @@ def action_submit(url, download_type=0):
         
         if thumbnail_url and video_id:
             storage = get_storage_manager()
-            # Generate entry ID for this download
             timestamp = int(time.time() * 1000)
             rand = random.randint(1000, 9999)
             entry_id = f"entry_{timestamp}_{rand}"
             
-            # Download thumbnail to entry directory
             cached_thumbnail = storage.download_thumbnail(thumbnail_url, video_id, entry_id)
-            # Update with local path and entry ID
             data['thumbnail'] = cached_thumbnail
             data['entryId'] = entry_id
             print(f"[action_submit] Entry ID: {entry_id}, Thumbnail: {cached_thumbnail}")
@@ -498,14 +472,16 @@ def action_submit(url, download_type=0):
 
 def action_download(video_url, options):
     """
-    Download video with options
+    Initiate video download with specified configuration.
+    
+    QML-accessible wrapper for DownloadManager.action_download().
     
     Args:
-        video_url (str): Video URL
-        options (dict): Download options
+        video_url: URL to download
+        options: Download configuration dictionary
         
     Returns:
-        dict: Download start confirmation
+        Dictionary with download start confirmation and tracking ID
     """
     manager = get_manager()
     return manager.action_download(video_url, options)
@@ -513,13 +489,15 @@ def action_download(video_url, options):
 
 def get_download_progress(download_id):
     """
-    Get download progress
+    Query download progress for tracking.
+    
+    QML-accessible wrapper for DownloadManager.get_download_progress().
     
     Args:
-        download_id (int): Download ID
+        download_id: Download ID to query
         
     Returns:
-        dict: Progress information or None
+        Progress dictionary or None
     """
     manager = get_manager()
     return manager.get_download_progress(download_id)
@@ -527,35 +505,31 @@ def get_download_progress(download_id):
 
 def cancel_download(download_id):
     """
-    Cancel download
+    Request download cancellation.
+    
+    QML-accessible wrapper for DownloadManager.cancel_download().
     
     Args:
-        download_id (int): Download ID
+        download_id: Download ID to cancel
         
     Returns:
-        dict: Cancellation result
+        Cancellation result dictionary
     """
     manager = get_manager()
     return manager.cancel_download(download_id)
 
-
-# Note: Validation and storage functions are re-exported from their respective modules
-# No wrapper functions needed - they are imported directly at the top of this file:
-# - is_valid_video_url, is_valid_playlist (from url_validator)
-# - save_list_model_data, load_list_model_data (from storage_manager)
-
-
 def get_yt_dlp_version():
     """
-    Get yt-dlp version
+    Retrieve yt-dlp version string.
+    
+    QML-accessible wrapper for DownloadManager.get_version_info().
     
     Returns:
-        str: Version string
+        Version string
     """
     manager = get_manager()
     return manager.get_version_info()
 
-# Module initialization complete
-print("[download_manager.py] Module loaded successfully")
-print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")
-print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")
+if __name__ != "__main__":
+    print("[download_manager.py] Module loaded successfully")
+    print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")

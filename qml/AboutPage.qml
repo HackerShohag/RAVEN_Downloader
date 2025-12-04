@@ -18,12 +18,9 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import Lomiri.Components 1.3
 import Lomiri.Components.Popups 1.3
+import "Components"
 import "version.js" as Version
 
-/**
- * AboutPage - Application information and credits
- * Displays app version, features, developer info, and technologies used
- */
 Dialog {
     id: aboutDialogue
     title: i18n.tr("About RAVEN Downloader")
@@ -52,11 +49,7 @@ Dialog {
                 text: "Version " + Version.BUILD_VERSION
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Multi-Platform Video Downloader")
             }
             
@@ -66,11 +59,7 @@ Dialog {
                 text: i18n.tr("Download videos from 12+ platforms including YouTube, Vimeo, Dailymotion, Twitch, Facebook, Instagram, Twitter, TikTok, SoundCloud, Reddit, and Bilibili.")
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Features:")
             }
             
@@ -84,11 +73,7 @@ Dialog {
                       "• " + i18n.tr("Subtitle & caption support")
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Developer:")
             }
             
@@ -98,67 +83,28 @@ Dialog {
                 text: "Abdullah AL Shohag"
             }
             
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Text.WordWrap
-                color: theme.palette.normal.activity
+            CustomLabel {
                 text: "<a href='mailto:HackerShohag@outlook.com'>HackerShohag@outlook.com</a>"
-                onLinkActivated: Qt.openUrlExternally(link)
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                }
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Report Bugs & Send Feedback:")
             }
             
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Text.WordWrap
-                color: theme.palette.normal.activity
+            CustomLabel {
                 text: "<a href='https://t.me/HackerShohag'>Telegram: @HackerShohag</a>"
-                onLinkActivated: Qt.openUrlExternally(link)
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                }
             }
 
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Technologies & Libraries:")
             }
 
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Text.WordWrap
-                color: theme.palette.normal.activity
+            CustomLabel {
                 text: "• <a href='https://github.com/yt-dlp/yt-dlp'>yt-dlp</a> 2025.11.12<br>" +
                       "• <a href='https://ffmpeg.org'>FFmpeg</a> 8.0.1<br>"
-                onLinkActivated: Qt.openUrlExternally(link)
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                }
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("License:")
             }
             
@@ -168,27 +114,13 @@ Dialog {
                 text: "GNU GPL v3.0"
             }
             
-            Label {
-                Layout.fillWidth: true
-                Layout.topMargin: units.gu(1)
-                wrapMode: Text.WordWrap
-                font.bold: true
+            SectionLabel {
                 text: i18n.tr("Source Code:")
             }
             
-            Label {
-                Layout.fillWidth: true
-                wrapMode: Text.WordWrap
-                color: theme.palette.normal.activity
+            CustomLabel {
                 text: "<a href='https://github.com/HackerShohag/RAVEN_Downloader'>https://github.com/HackerShohag/RAVEN_Downloader</a>"
-                onLinkActivated: Qt.openUrlExternally(link)
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-                }
             }
-
         }
     }
     

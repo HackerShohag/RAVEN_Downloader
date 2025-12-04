@@ -24,7 +24,6 @@ import io.thp.pyotherside 1.4
 Item {
     id: root
     
-    // Properties
     property var pythonInstance
     property var onVideoFormatsReady: null
     property var onProcessingComplete: null
@@ -35,13 +34,9 @@ Item {
     property int processedVideos: 0
     property bool isProcessing: false
     
-    // Internal state
     property var _currentEntries: []
     property int _currentIndex: 0
     
-    /**
-     * Start processing playlist
-     */
     function processPlaylist(playlistData) {
         if (!playlistData || !playlistData.entries || playlistData.entries.length === 0) {
             console.log("[PlaylistProcessor] No entries to process");
@@ -76,7 +71,6 @@ Item {
         processedVideos = _currentIndex + 1;
         console.log("[PlaylistProcessor] Processing video " + processedVideos + "/" + totalVideos + ": " + (entry.title || videoUrl));
         
-        // Get full video info
         pythonInstance.call('download_manager.action_submit', [videoUrl, 0], function(result) {
             if (result && result.type === 'video') {
                 if (onVideoFormatsReady) {

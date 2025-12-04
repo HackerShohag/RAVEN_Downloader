@@ -24,12 +24,10 @@ import io.thp.pyotherside 1.4
 Item {
     id: root
     
-    // Properties
     property alias model: downloadItemsModel
     property int count: 0
     property var pythonInstance
     
-    // Model
     ListModel {
         id: downloadItemsModel
     }
@@ -71,12 +69,10 @@ Item {
         
         count++;
         
-        // Move new item to end of list
         if (downloadItemsModel.count > 1) {
             downloadItemsModel.move(0, 1, downloadItemsModel.count - 1);
         }
         
-        // Save immediately
         saveHistory();
     }
     

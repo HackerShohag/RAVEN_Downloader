@@ -40,14 +40,29 @@ Button {
             id: dialogue
             title: heading
             Keys.onPressed: PopupUtils.close(dialogue)
-            Repeater {
-                model: dropdownModel
-                Button {
-                    text: multipleModel ? modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
-                    onClicked: {
-                        dropdown.text = modelData;
-                        dropdown.index = index
-                        PopupUtils.close(dialogue)
+            
+            Flickable {
+                width: parent.width
+                height: Math.min(contentHeight, units.gu(40))
+                contentHeight: column.height
+                clip: true
+                
+                Column {
+                    id: column
+                    width: parent.width
+                    spacing: units.gu(0.5)
+                    
+                    Repeater {
+                        model: dropdownModel
+                        delegate: Button {
+                            width: parent.width
+                            text: multipleModel ? modelData + " (" + dropdownModel2[index] + " - " + dropdownModel3[index] + ")" : modelData
+                            onClicked: {
+                                dropdown.text = modelData;
+                                dropdown.index = index
+                                PopupUtils.close(dialogue)
+                            }
+                        }
                     }
                 }
             }

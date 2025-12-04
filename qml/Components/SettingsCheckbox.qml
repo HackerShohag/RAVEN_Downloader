@@ -18,23 +18,16 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.0
 import Lomiri.Components 1.3
 
-/**
- * Reusable settings checkbox row component
- * Provides consistent styling and layout for settings items
- */
 RowLayout {
     id: settingsCheckbox
     
-    // Public properties
     property string labelText: ""
     property bool checked: false
     property bool isEnabled: true
     property alias fontSize: label.font.pixelSize
     
-    // Signals
     signal toggled(bool checked)
     
-    // Layout
     spacing: units.gu(1)
     
     Text {
@@ -58,7 +51,6 @@ RowLayout {
         }
     }
     
-    // Sync external changes
     onCheckedChanged: {
         if (checkbox.checked !== checked) {
             checkbox.checked = checked
