@@ -262,6 +262,7 @@ MainView {
                 
                 downloadManager.reloadHistory(function(hasHistory) {
                     historyLoadingOverlay.running = false;
+                    mainScroll.isRefreshing = false;
                     
                     if (hasHistory) {
                         showDownloadItems();
@@ -285,26 +286,66 @@ MainView {
                     contentHeight: inputPanel.height + downloadContainerHeading.height + 
                                   (downloadManager.count ? downloadManager.count * units.gu(10) : units.gu(10)) + units.gu(12)
                     
-                    // Pull-to-refresh detection
+                    // Pull-to-refresh state
                     property bool isRefreshing: false
-                    property bool hasTriggered: false
-                    property real pullThreshold: units.gu(6)
+                    property real pullThreshold: units.gu(15)
+                    property bool isPulledEnough: contentY < -pullThreshold && atYBeginning
                     
                     onContentYChanged: {
-                        // Detect pull down from top (contentY becomes negative when pulling down past the top)
-                    if (!isRefreshing && !hasTriggered && contentY < -pullThreshold && atYBeginning) {
-                        hasTriggered = true;
-                        isRefreshing = true;
-                        mainPage.reloadHistoryUI();
-                    }                        // Reset trigger flag when user pulls back up
-                        if (hasTriggered && contentY > -pullThreshold / 2) {
-                            hasTriggered = false;
+                        // Update pull indicator visibility
+                        if (atYBeginning && contentY < 0 && !isRefreshing) {
+                            pullToRefreshIndicator.visible = true;
+                        } else if (contentY >= 0 || isRefreshing) {
+                            pullToRefreshIndicator.visible = false;
                         }
                     }
                     
                     onMovementEnded: {
-                        isRefreshing = false;
-                        hasTriggered = false;
+                        // Trigger refresh only on release if pulled enough
+                        if (isPulledEnough && !isRefreshing && atYBeginning) {
+                            isRefreshing = true;
+                            pullToRefreshIndicator.visible = false;
+                            mainPage.reloadHistoryUI();
+                        }
+                    }
+                    
+                    // Pull-to-refresh indicator
+                    Item {
+                        id: pullToRefreshIndicator
+                        visible: false
+                        anchors {
+                            top: parent.top
+                            topMargin: -height
+                            horizontalCenter: parent.horizontalCenter
+                        }
+                        width: parent.width
+                        height: units.gu(6)
+                        
+                        Rectangle {
+                            anchors.fill: parent
+                            color: theme.palette.normal.background
+                            opacity: 0.9
+                        }
+                        
+                        Row {
+                            anchors.centerIn: parent
+                            spacing: units.gu(1)
+                            
+                            Icon {
+                                name: mainScroll.isPulledEnough ? "view-refresh" : "go-down"
+                                width: units.gu(3)
+                                height: units.gu(3)
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            
+                            Label {
+                                text: mainScroll.isPulledEnough ? 
+                                      i18n.tr("Release to refresh") : 
+                                      i18n.tr("Pull down to refresh")
+                                anchors.verticalCenter: parent.verticalCenter
+                                font.bold: mainScroll.isPulledEnough
+                            }
+                        }
                     }
 
                     ColumnLayout {

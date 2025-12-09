@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-09 06:53+0000\n"
+"POT-Creation-Date: 2025-12-09 07:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,7 +88,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/MainPage.qml:454
+#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/MainPage.qml:495
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -190,31 +190,39 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../qml/MainPage.qml:325
+#: ../qml/MainPage.qml:343
+msgid "Release to refresh"
+msgstr ""
+
+#: ../qml/MainPage.qml:344
+msgid "Pull down to refresh"
+msgstr ""
+
+#: ../qml/MainPage.qml:366
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:332
+#: ../qml/MainPage.qml:373
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:334
+#: ../qml/MainPage.qml:375
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:334
+#: ../qml/MainPage.qml:375
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:340
+#: ../qml/MainPage.qml:381
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:361
+#: ../qml/MainPage.qml:402
 msgid "Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:443
+#: ../qml/MainPage.qml:484
 msgid "No downloads yet."
 msgstr ""
 
