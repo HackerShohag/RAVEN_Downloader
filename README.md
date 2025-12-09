@@ -14,6 +14,8 @@
 - **12 Platform Support** — YouTube, Vimeo, Dailymotion, Twitch, Facebook, Instagram, Twitter/X, TikTok, SoundCloud, Reddit, Bilibili with intelligent URL validation
 - **Granular Format Control** — Independent video resolution and audio bitrate selection
 - **Smart Playlist Handling** — Batch downloads with per-video format customization (platform-dependent)
+- **Pull-to-Refresh History** — Swipe down on download history to reload entries from storage
+- **One-Tap History Clear** — Clear all download history with automatic UI refresh via signal-based architecture
 - **Native ContentHub** — Seamless file export to any Ubuntu Touch app
 - **Subtitle Engine** — Download, auto-caption, and embed subtitles in multiple languages
 - **Entry-Based Storage** — Persistent history with dedicated directories and thumbnail caching
@@ -72,7 +74,11 @@ clickable desktop --no-nvidia
 - Enable subtitle downloads (embedded or separate)
 - Toggle auto-captions
 - Switch themes (Ambiance/Suru Dark)
-- Clear download history
+- Clear download history (automatic UI refresh)
+
+**History Management**
+- Pull down on the download list to refresh from storage
+- Swipe up from bottom edge → Settings → Clear All History (one-tap with automatic reload)
 
 ---
 
@@ -81,9 +87,11 @@ clickable desktop --no-nvidia
 ### Version 2.0.0 — December 2025
 
 #### Major Enhancements
+- **Pull-to-Refresh** — Swipe down on download history to reload entries from storage (6 grid unit threshold with debouncing)
+- **Signal-Based History Clear** — One-tap history clearing with automatic UI refresh via PyOtherSide signals
 - **Entry-Based Storage** — Dedicated directories per download with reliable persistence
 - **Component Architecture** — 7 reusable QML components (ThumbnailImage, DownloadButton, CustomLabel, SectionLabel, etc.)
-- **Code Optimization** — Reduced codebase by ~220 lines while adding features
+- **Code Optimization** — Reduced codebase by ~220 lines while adding features, cleaned debug logging
 - **Python Type Hints** — Full type annotations for better IDE support and code clarity
 - **Common Options Pattern** — Extracted duplicate yt-dlp configurations into `_get_common_ydl_opts()`
 
@@ -93,9 +101,11 @@ clickable desktop --no-nvidia
 - **Playlist Validation** — Enhanced platform-specific error messages
 
 #### Code Quality
+- **Minimal Debug Logging** — Removed verbose operational logs, kept only errors and critical state changes
 - **PEP 8 Compliance** — All Python files follow style guidelines
 - **Modular QML** — Extracted MainPageDialogs, MediaItem optimizations
 - **Type Safety** — Type hints in url_validator, format_parser, download_manager
+- **PyOtherSide Signals** — Event-driven architecture for cross-component communication
 
 ---
 
@@ -122,16 +132,17 @@ clickable desktop --no-nvidia
 ### Component Hierarchy
 ```
 qml/
-├── MainPage.qml              (448 lines) — Main UI, URL submission
-├── SettingsPage.qml          — Configuration, theme selection
+├── MainPage.qml              (496 lines) — Main UI, URL submission, pull-to-refresh
+├── SettingsPage.qml          — Configuration, theme selection, history clearing
 ├── ExportPage.qml            — ContentHub file export
 ├── AboutPage.qml             (140 lines) — Credits, optimized with components
 └── Components/
-    ├── MediaItem.qml         (300 lines) — Download list item, optimized
+    ├── DownloadItemManager.qml — History management with reload support
+    ├── MediaItem.qml         (298 lines) — Download list item, optimized
     ├── ThumbnailImage.qml    — Smart thumbnail loader with caching
     ├── DownloadButton.qml    — Download orchestration with polling
     ├── MainPageDialogs.qml   — Error/warning dialog collection
-    ├── CustomLabel.qml    — Reusable link labels
+    ├── CustomLabel.qml       — Reusable link labels
     ├── SectionLabel.qml      — Consistent section headers
     ├── ContentHubDialog.qml  — File export dialog
     ├── LoadingOverlay.qml    — Busy indicator overlay
@@ -162,6 +173,8 @@ qml/
 1. **URL Submit** → Validate → Extract metadata → Cache thumbnail in entry dir
 2. **Download** → Temp cache → Progress tracking → ContentHub export
 3. **History Load** → Read index.json → Lazy-load full metadata on demand
+4. **Pull-to-Refresh** → Flickable contentY detection → Clear model → Reload from storage
+5. **History Clear** → Python clears storage → PyOtherSide signal → QML reloads UI automatically
 
 ---
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: raven.downloader.shohag\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-04 03:17+0000\n"
+"POT-Creation-Date: 2025-12-09 06:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,7 +88,7 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: ../qml/Components/CustomBottomEdge.qml:24 ../qml/MainPage.qml:423
+#: ../qml/Components/CustomBottomEdge.qml:26 ../qml/MainPage.qml:454
 msgid "Swipe for Settings"
 msgstr ""
 
@@ -182,74 +182,74 @@ msgstr ""
 msgid "Install/Save with"
 msgstr ""
 
-#: ../qml/MainPage.qml:227 raven.downloader.desktop.in.h:1
+#: ../qml/MainPage.qml:223 raven.downloader.desktop.in.h:1
 msgid "RAVEN Downloader"
 msgstr ""
 
-#: ../qml/MainPage.qml:232
+#: ../qml/MainPage.qml:228
 msgid "About"
 msgstr ""
 
-#: ../qml/MainPage.qml:294
+#: ../qml/MainPage.qml:325
 msgid "Put YouTube video or playlist URL here"
 msgstr ""
 
-#: ../qml/MainPage.qml:301
+#: ../qml/MainPage.qml:332
 msgid "Select download type"
 msgstr ""
 
-#: ../qml/MainPage.qml:303
+#: ../qml/MainPage.qml:334
 msgid "playlist"
 msgstr ""
 
-#: ../qml/MainPage.qml:303
+#: ../qml/MainPage.qml:334
 msgid "single video"
 msgstr ""
 
-#: ../qml/MainPage.qml:309
+#: ../qml/MainPage.qml:340
 msgid "Submit"
 msgstr ""
 
-#: ../qml/MainPage.qml:330
+#: ../qml/MainPage.qml:361
 msgid "Downloaded Files"
 msgstr ""
 
-#: ../qml/MainPage.qml:412
+#: ../qml/MainPage.qml:443
 msgid "No downloads yet."
 msgstr ""
 
-#: ../qml/SettingsPage.qml:47
+#: ../qml/SettingsPage.qml:49
 msgid "System theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:48
+#: ../qml/SettingsPage.qml:50
 msgid "Ambiance theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:49
+#: ../qml/SettingsPage.qml:51
 msgid "Suru-dark theme"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:64
+#: ../qml/SettingsPage.qml:66
 msgid "Settings"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:94
+#: ../qml/SettingsPage.qml:96
 msgid "Download available subtitles"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:118
+#: ../qml/SettingsPage.qml:120
 msgid "Download captions (If subtitle unavailable)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:129
+#: ../qml/SettingsPage.qml:131
 msgid "Embed subtitles in files"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:146
+#: ../qml/SettingsPage.qml:148
 msgid "Auto Download (best format)"
 msgstr ""
 
-#: ../qml/SettingsPage.qml:206
+#: ../qml/SettingsPage.qml:208
 msgid "Clear All History"
 msgstr ""

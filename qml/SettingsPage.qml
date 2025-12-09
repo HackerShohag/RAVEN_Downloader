@@ -26,6 +26,8 @@ import "Components"
 Page { 
     id: settingsPageRoot
     
+    property var pythonInstance
+    
     Settings {
         id: localSettings
         category: "GeneralSettings"
@@ -207,8 +209,8 @@ Page {
                 colorBut: LomiriColors.red
                 colorButText: "white"
                 onClicked: {
-                    downloadItemsModel.clear();
-                    mainPage.toggleBlankPage();
+                    // Clear all download history - signal will trigger automatic reload
+                    pythonInstance.call('storage_manager.clear_download_history', [pythonInstance], function(result) {});
                 }
             }
         }

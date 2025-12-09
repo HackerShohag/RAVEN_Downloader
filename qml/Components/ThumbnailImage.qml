@@ -23,8 +23,10 @@ Image {
     id: thumbnailImage
     
     property string thumbnailUrl: ""
-    property string placeholderPath: "../../assets/placeholder-video.png"
+    property string placeholderPath: Qt.resolvedUrl("../../assets/placeholder-video.png")
     property real cornerRadius: units.gu(1)
+    
+    fillMode: Image.PreserveAspectCrop
     
     layer.enabled: true
     layer.effect: OpacityMask {
@@ -41,7 +43,7 @@ Image {
     }
     
     Component.onCompleted: {
-        source = Qt.resolvedUrl(placeholderPath);
+        source = placeholderPath;
         if (thumbnailUrl && thumbnailUrl !== "") {
             loadThumbnail(thumbnailUrl);
         }
@@ -51,27 +53,27 @@ Image {
         if (thumbnailUrl && thumbnailUrl !== "") {
             loadThumbnail(thumbnailUrl);
         } else {
-            source = Qt.resolvedUrl(placeholderPath);
+            source = placeholderPath;
         }
     }
     
     onStatusChanged: {
         if (status === Image.Error) {
-            source = Qt.resolvedUrl(placeholderPath);
+            console.log("[ThumbnailImage] Error loading:", thumbnailUrl, "using placeholder");
+            source = placeholderPath;
         }
     }
     
     function loadThumbnail(url) {
         if (url.startsWith("/")) {
             source = "file://" + url;
-        } else if (url.startsWith("qrc://") || 
-                   url.startsWith("file://") ||
+        } else if (url.startsWith("file://") ||
                    url.startsWith("http://") || 
                    url.startsWith("https://")) {
             source = url;
         } else {
-            console.log("[ThumbnailImage] Invalid URL format, using placeholder");
-            source = Qt.resolvedUrl(placeholderPath);
+            console.error("[ThumbnailImage] Invalid URL format:", url, "using placeholder");
+            source = placeholderPath;
         }
     }
 }

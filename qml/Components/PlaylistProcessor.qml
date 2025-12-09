@@ -39,7 +39,7 @@ Item {
     
     function processPlaylist(playlistData) {
         if (!playlistData || !playlistData.entries || playlistData.entries.length === 0) {
-            console.log("[PlaylistProcessor] No entries to process");
+            console.error("[PlaylistProcessor] No entries to process");
             return;
         }
         
@@ -69,7 +69,6 @@ Item {
         var videoUrl = entry.url || ('https://www.youtube.com/watch?v=' + entry.id);
         
         processedVideos = _currentIndex + 1;
-        console.log("[PlaylistProcessor] Processing video " + processedVideos + "/" + totalVideos + ": " + (entry.title || videoUrl));
         
         pythonInstance.call('download_manager.action_submit', [videoUrl, 0], function(result) {
             if (result && result.type === 'video') {
@@ -77,7 +76,7 @@ Item {
                     onVideoFormatsReady(result.data);
                 }
             } else if (result && result.error) {
-                console.log("[PlaylistProcessor] Error processing video: " + result.error);
+                console.error("[PlaylistProcessor] Error processing video:", result.error);
                 if (onError) {
                     onError(result.error);
                 }
@@ -92,7 +91,6 @@ Item {
      * Processing complete callback
      */
     function _onComplete() {
-        console.log("[PlaylistProcessor] Finished processing all videos");
         isProcessing = false;
         
         if (onProcessingComplete) {

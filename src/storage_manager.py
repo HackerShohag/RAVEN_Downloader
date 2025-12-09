@@ -21,6 +21,11 @@ import sys
 import time
 from pathlib import Path
 
+try:
+    import pyotherside
+except ImportError:
+    pyotherside = None
+
 class StorageManager:
     """
     Manages persistent storage for download history, settings, and thumbnail caching.
@@ -42,15 +47,6 @@ class StorageManager:
         self.index_file = os.path.join(self.config_dir, 'index.json')
         self.entries_dir = os.path.join(self.config_dir, 'entries')
         self.settings_file = os.path.join(self.config_dir, 'settings.json')
-        
-        print(f"[StorageManager] Config directory: {self.config_dir}")
-        sys.stdout.flush()
-        print(f"[StorageManager] Index file: {self.index_file}")
-        sys.stdout.flush()
-        print(f"[StorageManager] Entries directory: {self.entries_dir}")
-        sys.stdout.flush()
-        print(f"[StorageManager] Settings file: {self.settings_file}")
-        sys.stdout.flush()
         
         os.makedirs(self.config_dir, exist_ok=True)
         os.makedirs(self.entries_dir, exist_ok=True)
@@ -92,7 +88,6 @@ class StorageManager:
         Returns:
             True (always succeeds as operation is deprecated)
         """
-        print(f"[StorageManager] save_download_history is deprecated - use entry-based storage")
         return True
     
     def load_download_history(self):
@@ -105,7 +100,6 @@ class StorageManager:
         Returns:
             List of all download entries from entry-based storage
         """
-        print(f"[StorageManager] load_download_history is deprecated - using load_all_entries()")
         return self.load_all_entries()
     
     def add_download_entry(self, entry):
@@ -143,7 +137,6 @@ class StorageManager:
                 shutil.rmtree(self.entries_dir)
                 os.makedirs(self.entries_dir, exist_ok=True)
             
-            print(f"[StorageManager] Download history cleared")
             return True
         except Exception as e:
             print(f"[StorageManager] Error clearing history: {e}")
@@ -201,8 +194,6 @@ class StorageManager:
             cache_downloads = os.path.join(Path.home(), '.cache', self.app_name, 'downloads')
         
         os.makedirs(cache_downloads, exist_ok=True)
-        print(f"[StorageManager] Download path: {cache_downloads}")
-        
         return cache_downloads
     
     def get_thumbnails_path(self):
@@ -260,13 +251,9 @@ class StorageManager:
                 thumbnail_path = os.path.join(self.get_thumbnails_path(), thumbnail_filename)
             
             if os.path.exists(thumbnail_path):
-                print(f"[StorageManager] Using cached thumbnail: {thumbnail_path}")
                 return thumbnail_path
             
-            print(f"[StorageManager] Downloading thumbnail from: {thumbnail_url}")
             urllib.request.urlretrieve(thumbnail_url, thumbnail_path)
-            print(f"[StorageManager] Thumbnail saved to: {thumbnail_path}")
-            
             return thumbnail_path
             
         except Exception as e:
@@ -287,33 +274,18 @@ class StorageManager:
             Entry ID string if successful, None on error
         """
         try:
-            print(f"[StorageManager] save_entry called with data: {list(entry_data.keys()) if entry_data else 'None'}")
-            sys.stdout.flush()
-            
             entry_id = entry_data.get('entryId')
             if not entry_id:
                 entry_id = self._generate_entry_id()
                 entry_data['entryId'] = entry_id
-                print(f"[StorageManager] Generated new entry_id: {entry_id}")
-                sys.stdout.flush()
-            else:
-                print(f"[StorageManager] Using existing entry_id: {entry_id}")
-                sys.stdout.flush()
             
             entry_dir = os.path.join(self.entries_dir, entry_id)
             os.makedirs(entry_dir, exist_ok=True)
-            print(f"[StorageManager] Entry directory created/verified: {entry_dir}")
-            sys.stdout.flush()
             
             entry_file = os.path.join(entry_dir, 'metadata.json')
             with open(entry_file, 'w', encoding='utf-8') as f:
                 json.dump(entry_data, f, indent=2, ensure_ascii=False)
             
-            print(f"[StorageManager] Entry metadata saved to: {entry_file}")
-            sys.stdout.flush()
-            
-            print(f"[StorageManager] Calling _update_index...")
-            sys.stdout.flush()
             self._update_index(entry_id, entry_data)
             
             return entry_id
@@ -370,14 +342,7 @@ class StorageManager:
             entry_data: Full entry metadata dictionary
         """
         try:
-            print(f"[StorageManager] _update_index called for: {entry_id}")
-            sys.stdout.flush()
-            print(f"[StorageManager] Index file path: {self.index_file}")
-            sys.stdout.flush()
-            
             index = self.load_index()
-            print(f"[StorageManager] Current index has {len(index)} entries")
-            sys.stdout.flush()
             
             index_entry = {
                 'entryId': entry_id,
@@ -388,8 +353,6 @@ class StorageManager:
             }
             
             if not index_entry['vTitle'] and not index_entry['vID']:
-                print(f"[StorageManager] Skipping index update for empty entry: {entry_id}")
-                sys.stdout.flush()
                 return
             
             existing_index = next((i for i, e in enumerate(index) if e.get('entryId') == entry_id), None)
@@ -397,38 +360,22 @@ class StorageManager:
             if existing_index is None and index_entry['vID']:
                 duplicate_index = next((i for i, e in enumerate(index) if e.get('vID') == index_entry['vID'] and e.get('vID') != ''), None)
                 if duplicate_index is not None:
-                    print(f"[StorageManager] Found duplicate vID at index {duplicate_index}, updating instead")
-                    sys.stdout.flush()
                     existing_index = duplicate_index
                     entry_id = index[duplicate_index]['entryId']
                     index_entry['entryId'] = entry_id
             
             if existing_index is not None:
-                print(f"[StorageManager] Updating existing entry at index {existing_index}")
-                sys.stdout.flush()
                 index[existing_index] = index_entry
             else:
-                print(f"[StorageManager] Adding new entry to index")
-                sys.stdout.flush()
                 index.append(index_entry)
             
             os.makedirs(os.path.dirname(self.index_file), exist_ok=True)
             
-            print(f"[StorageManager] Writing index to: {self.index_file}")
-            sys.stdout.flush()
             with open(self.index_file, 'w', encoding='utf-8') as f:
                 json.dump(index, f, indent=2, ensure_ascii=False)
             
-            print(f"[StorageManager] Index successfully written with {len(index)} entries")
-            sys.stdout.flush()
-            
-            if os.path.exists(self.index_file):
-                file_size = os.path.getsize(self.index_file)
-                print(f"[StorageManager] Index file verified: {self.index_file} ({file_size} bytes)")
-                sys.stdout.flush()
-            else:
+            if not os.path.exists(self.index_file):
                 print(f"[StorageManager] WARNING: Index file not found after write!")
-                sys.stdout.flush()
             
         except Exception as e:
             print(f"[StorageManager] Error updating index: {e}")
@@ -492,7 +439,6 @@ class StorageManager:
                 if entry_data:
                     entries.append(entry_data)
         
-        print(f"[StorageManager] Loaded {len(entries)} entries")
         return entries
 
 
@@ -526,25 +472,14 @@ def save_list_model_data(data):
         True if successful, False on error
     """
     storage = get_storage_manager()
-    print(f"[save_list_model_data] Called with {len(data) if data else 0} items")
-    sys.stdout.flush()
     
     try:
         if data:
-            print(f"[save_list_model_data] Data type: {type(data)}")
-            sys.stdout.flush()
-            
             for idx, item in enumerate(data):
-                print(f"[save_list_model_data] Item {idx} type: {type(item)}, value: {item}")
-                sys.stdout.flush()
-                
                 item_dict = {}
                 
                 type_str = str(type(item))
                 if 'pyotherside' in type_str.lower() or 'qobject' in type_str.lower():
-                    print(f"[save_list_model_data] Converting PyOtherSide QObject to dict")
-                    sys.stdout.flush()
-                    
                     try:
                         expected_keys = [
                             'entryId', 'vTitle', 'vThumbnail', 'vDuration', 'vID',
@@ -562,12 +497,8 @@ def save_list_model_data(data):
                             except:
                                 pass
                         
-                        print(f"[save_list_model_data] Extracted {len(item_dict)} properties from QObject")
-                        sys.stdout.flush()
-                        
                     except Exception as e:
                         print(f"[save_list_model_data] Error extracting QObject properties: {e}")
-                        sys.stdout.flush()
                         continue
                         
                 elif isinstance(item, dict):
@@ -577,16 +508,10 @@ def save_list_model_data(data):
                         item_dict = dict(item)
                     except:
                         print(f"[save_list_model_data] Warning: Could not convert item {idx} to dict, type was: {type_str}")
-                        sys.stdout.flush()
                         continue
                 
                 if item_dict:
-                    print(f"[save_list_model_data] Processing item {idx}: entryId={item_dict.get('entryId', 'NO_ID')}, title={item_dict.get('vTitle', 'NO_TITLE')[:30]}")
-                    sys.stdout.flush()
-                    
                     if not item_dict.get('vTitle') and not item_dict.get('vID'):
-                        print(f"[save_list_model_data] Skipping empty entry at index {idx}")
-                        sys.stdout.flush()
                         continue
                     
                     for int_field in ['vVideoIndex', 'vAudioIndex', 'vIndex', 'timestamp']:
@@ -599,20 +524,13 @@ def save_list_model_data(data):
                     if 'timestamp' not in item_dict:
                         item_dict['timestamp'] = int(time.time() * 1000)
                     
-                    entry_id = storage.save_entry(item_dict)
-                    print(f"[save_list_model_data] Item {idx} saved with entry_id: {entry_id}")
-                    sys.stdout.flush()
+                    storage.save_entry(item_dict)
             
-            print(f"[save_list_model_data] Saved {len(data)} entries successfully")
-            sys.stdout.flush()
             return True
         else:
-            print("[save_list_model_data] No data to save")
-            sys.stdout.flush()
             return True
     except Exception as e:
         print(f"[save_list_model_data] Error: {e}")
-        sys.stdout.flush()
         import traceback
         traceback.print_exc()
         return False
@@ -632,7 +550,6 @@ def load_list_model_data():
     storage = get_storage_manager()
     
     entries = storage.load_all_entries()
-    print(f"[load_list_model_data] Loaded {len(entries)} entries")
     
     if not entries:
         return []
@@ -649,8 +566,7 @@ def load_list_model_data():
         thumbnail = item.get('vThumbnail', '')
         if thumbnail and not thumbnail.startswith('qrc://'):
             if not os.path.exists(thumbnail):
-                print(f"[load_list_model_data] Thumbnail not found: {thumbnail}, using placeholder")
-                item['vThumbnail'] = 'qrc:///assets/placeholder-video.png'
+                item['vThumbnail'] = 'file:///assets/placeholder-video.png'
         
         if 'vDuration' not in item:
             item['vDuration'] = item.get('duration', '')
@@ -702,3 +618,26 @@ def save_single_entry(entry_data):
     """
     storage = get_storage_manager()
     return storage.save_single_entry(entry_data)
+
+
+def clear_download_history(pyotherside_instance=None):
+    """
+    Clear all download history from storage.
+    
+    QML-accessible wrapper for clearing download history.
+    Deletes all entry directories and clears the index file.
+    Emits 'historyCleared' signal to QML for automatic reload.
+    
+    Args:
+        pyotherside_instance: PyOtherSide instance to emit signals (optional)
+    
+    Returns:
+        True if successful, False on error
+    """
+    storage = get_storage_manager()
+    result = storage.clear_download_history()
+    
+    if result and pyotherside:
+        pyotherside.send('historyCleared', [])
+    
+    return result

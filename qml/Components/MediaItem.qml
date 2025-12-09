@@ -85,7 +85,6 @@ ListItem {
             var videoIdx = vcodec.indexOf(selectedVideoCodec);
             if (videoIdx >= 0) {
                 videoIndex = videoIdx;
-                console.log('[MediaItem] Restored video codec:', selectedVideoCodec, 'at index', videoIdx);
             }
         }
         
@@ -93,7 +92,6 @@ ListItem {
             var audioIdx = acodec.indexOf(selectedAudioCodec);
             if (audioIdx >= 0) {
                 audioIndex = audioIdx;
-                console.log('[MediaItem] Restored audio codec:', selectedAudioCodec, 'at index', audioIdx);
             }
         }
     }
@@ -182,7 +180,7 @@ ListItem {
         jsonObject["format"] = "bestaudio+bestvideo";
         
         python.call('download_manager.action_download', [videoLink, jsonObject], function() {
-            console.log('[MediaItem] Auto-download started');
+            // Auto-download initiated
         });
         
         if (downloadItems.itemAt(indexID)) {

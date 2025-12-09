@@ -60,7 +60,6 @@ Page {
             picker.activeTransfer = peer.request()
             picker.activeTransfer.stateChanged.connect(function() {
 				if (picker.activeTransfer.state === ContentTransfer.InProgress) {
-					console.log("In progress");
 					picker.activeTransfer.items = [ resultComponent.createObject(parent, {"url": url}) ];
 					picker.activeTransfer.state = ContentTransfer.Charged;
 					pageStack.pop()

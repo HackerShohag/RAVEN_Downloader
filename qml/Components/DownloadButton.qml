@@ -38,7 +38,7 @@ Button {
     
     onClicked: {
         if (!pythonInstance || !videoUrl || !formatData) {
-            console.log('[DownloadButton] Missing required properties');
+            console.error('[DownloadButton] Missing required properties');
             return;
         }
         initiateDownload();
@@ -46,8 +46,6 @@ Button {
     
     function initiateDownload() {
         if (loadingOverlay) loadingOverlay.running = true;
-        console.log('[DownloadButton] Download initiated');
-        
         downloadStarted();
         
         pythonInstance.call('download_manager.action_download', [videoUrl, formatData], function(result) {
@@ -56,8 +54,6 @@ Button {
     }
     
     function handleDownloadResponse(result) {
-        console.log('[DownloadButton] Response:', JSON.stringify(result));
-        
         if (result && result.success === false && result.error) {
             if (loadingOverlay) loadingOverlay.running = false;
             if (dialogs && dialogs.downloadErrorDialog) {
@@ -70,7 +66,7 @@ Button {
             pollDownloadId = result.download_id;
             startStatusPolling();
         } else {
-            console.log('[DownloadButton] Unexpected response');
+            console.error('[DownloadButton] Unexpected response:', result);
             if (loadingOverlay) loadingOverlay.running = false;
         }
     }
@@ -97,11 +93,8 @@ Button {
     }
     
     function handleDownloadStatus(status) {
-        console.log('[DownloadButton] Status:', status.status, 'Progress:', status.progress);
-        
         if ((status.status === 'downloading' || status.status === 'processing' || status.progress > 0) 
             && loadingOverlay && loadingOverlay.running) {
-            console.log('[DownloadButton] Hiding loading overlay');
             loadingOverlay.running = false;
         }
         

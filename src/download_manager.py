@@ -26,7 +26,6 @@ current_dir = Path(__file__).parent.parent
 lib_path = current_dir / "lib" / "python3" / "dist-packages"
 if lib_path.exists():
     sys.path.insert(0, str(lib_path))
-    print(f"[download_manager] Added lib path: {lib_path}")
 
 ffmpeg_lib_path = current_dir / "lib"
 if ffmpeg_lib_path.exists():
@@ -35,16 +34,13 @@ if ffmpeg_lib_path.exists():
         os.environ["LD_LIBRARY_PATH"] = f"{ffmpeg_lib_path}{os.pathsep}{ld_library_path}"
     else:
         os.environ["LD_LIBRARY_PATH"] = str(ffmpeg_lib_path)
-    print(f"[download_manager] Added ffmpeg lib path to LD_LIBRARY_PATH: {ffmpeg_lib_path}")
 
 bin_path = current_dir / "bin"
 if bin_path.exists():
     os.environ["PATH"] = str(bin_path) + os.pathsep + os.environ.get("PATH", "")
-    print(f"[download_manager] Added bin path to PATH: {bin_path}")
     
     ffmpeg_location = bin_path / "ffmpeg"
     if ffmpeg_location.exists():
-        print(f"[download_manager] Found embedded ffmpeg at: {ffmpeg_location}")
         os.environ["FFMPEG_BINARY"] = str(ffmpeg_location)
     else:
         print(f"[download_manager] WARNING: ffmpeg binary not found at {ffmpeg_location}")
@@ -53,7 +49,6 @@ else:
 
 try:
     import yt_dlp
-    print(f"[download_manager] yt-dlp imported successfully, version: {yt_dlp.version.__version__}")
 except ImportError as e:
     print(f"[download_manager] WARNING: yt-dlp not installed: {e}")
     yt_dlp = None
@@ -66,13 +61,11 @@ try:
     from .storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
     from .url_validator import (is_valid_playlist_url, is_valid_url, is_valid_video_url, 
                                 is_valid_playlist, supports_playlists, get_platform_name)
-    print("[download_manager] Using relative imports")
 except ImportError:
     from format_parser import format_filesize, parse_playlist_info, parse_video_formats
     from storage_manager import get_storage_manager, save_list_model_data, load_list_model_data
     from url_validator import (is_valid_playlist_url, is_valid_url, is_valid_video_url, 
                                is_valid_playlist, supports_playlists, get_platform_name)
-    print("[download_manager] Using absolute imports")
 
 class DownloadManager:
     """
@@ -129,24 +122,18 @@ class DownloadManager:
             if extraction fails. Format: {'type': 'video'|'playlist', 'data': {...}} or
             {'error': 'error message'}
         """
-        print(f"[action_submit] Called with URL: {url}, download_type: {download_type}")
-        
         try:
             if not yt_dlp:
                 error_msg = 'yt-dlp is not installed'
                 print(f"[action_submit] ERROR: {error_msg}")
                 return {'error': error_msg}
             
-            print(f"[action_submit] Validating URL...")
             if not is_valid_url(url):
                 error_msg = f'Invalid URL provided: {url}'
                 print(f"[action_submit] ERROR: {error_msg}")
                 return {'error': error_msg}
             
-            print(f"[action_submit] URL is valid")
-            
             is_playlist = is_valid_playlist_url(url)
-            print(f"[action_submit] Is playlist: {is_playlist}")
             
             if download_type == 1 and not supports_playlists(url):
                 platform = get_platform_name(url)
@@ -155,7 +142,6 @@ class DownloadManager:
                 return {'error': error_msg}
             
             if is_playlist and download_type == 0:
-                print(f"[action_submit] Playlist URL submitted as single video")
                 return {'error': 'playlist_as_video', 'url': url}
             
             if download_type == 1 and not is_playlist:
@@ -164,27 +150,17 @@ class DownloadManager:
                 print(f"[action_submit] ERROR: {error_msg}")
                 return {'error': error_msg}
             
-            print(f"[action_submit] Extracting info from: {url}")
-            
             ydl_opts = self._get_common_ydl_opts()
             ydl_opts['extract_flat'] = is_playlist
             
-            print(f"[action_submit] Creating YoutubeDL instance...")
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                print(f"[action_submit] Calling extract_info...")
                 info = ydl.extract_info(url, download=False)
-                print(f"[action_submit] Info extracted - Title: {info.get('title', 'Unknown')}")
                 
                 if is_playlist:
-                    print(f"[action_submit] Parsing playlist info...")
                     playlist_data = parse_playlist_info(info)
-                    print(f"[action_submit] Returning playlist data")
                     return {'type': 'playlist', 'data': playlist_data}
                 else:
-                    print(f"[action_submit] Parsing video formats...")
                     formats_data = parse_video_formats(info)
-                    print(f"[action_submit] Formats parsed: {len(formats_data.get('videoFormatIds', []))} video, {len(formats_data.get('audioFormatIds', []))} audio")
-                    print(f"[action_submit] Returning formats data")
                     return {'type': 'video', 'data': formats_data}
                     
         except Exception as e:
@@ -234,9 +210,6 @@ class DownloadManager:
             download_subtitles = options.get('subtitle', False)
             download_captions = options.get('caption', False)
             embed_subs = options.get('embedded', False)
-            
-            print(f"[action_download] Starting download {download_id} for {video_url}")
-            print(f"[action_download] Format: {format_selector}, Path: {output_path}")
             
             self.last_progress_time[download_id] = {
                 'progress': 0,
@@ -314,7 +287,6 @@ class DownloadManager:
             ffmpeg_binary = os.environ.get("FFMPEG_BINARY")
             if ffmpeg_binary and os.path.exists(ffmpeg_binary):
                 ydl_opts['ffmpeg_location'] = os.path.dirname(ffmpeg_binary)
-                print(f"[action_download] Using ffmpeg at: {ffmpeg_binary}")
             
             if download_subtitles or download_captions:
                 ydl_opts['writesubtitles'] = True
@@ -365,7 +337,6 @@ class DownloadManager:
             thread.start()
             self.active_downloads[download_id] = thread
             
-            print(f"[action_download] Download thread started for ID {download_id}")
             return {'success': True, 'download_id': download_id}
             
         except Exception as e:
@@ -387,7 +358,6 @@ class DownloadManager:
             graceful cancellation, so this currently returns not-implemented error
         """
         if download_id in self.active_downloads:
-            print(f"[cancel_download] Cancel requested for download {download_id} (not implemented)")
             return {'success': False, 'error': 'Download cancellation not supported yet'}
         else:
             return {'success': False, 'error': 'Download not found'}
@@ -465,7 +435,6 @@ def action_submit(url, download_type=0):
             cached_thumbnail = storage.download_thumbnail(thumbnail_url, video_id, entry_id)
             data['thumbnail'] = cached_thumbnail
             data['entryId'] = entry_id
-            print(f"[action_submit] Entry ID: {entry_id}, Thumbnail: {cached_thumbnail}")
     
     return result
 
@@ -531,5 +500,4 @@ def get_yt_dlp_version():
     return manager.get_version_info()
 
 if __name__ != "__main__":
-    print("[download_manager.py] Module loaded successfully")
-    print("[download_manager.py] Available functions: action_submit, action_download, is_valid_video_url, is_valid_playlist, save_list_model_data, load_list_model_data, get_yt_dlp_version")
+    pass

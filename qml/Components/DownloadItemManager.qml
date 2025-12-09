@@ -131,6 +131,22 @@ Item {
     }
     
     /**
+     * Reload history from storage (for pull-to-refresh)
+     */
+    function reloadHistory(callback) {
+        // Clear current model
+        downloadItemsModel.clear();
+        count = 0;
+        
+        // Load fresh data from storage
+        loadHistory(function(hasHistory) {
+            if (callback) {
+                callback(hasHistory);
+            }
+        });
+    }
+    
+    /**
      * Clear all items
      */
     function clear() {

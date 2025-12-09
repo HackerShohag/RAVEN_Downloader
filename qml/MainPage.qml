@@ -123,7 +123,6 @@ MainView {
     }
 
     function openContentHubExport(filePath) {
-        console.log("[MainPage] Opening ContentHub for:", filePath);
         pageStack.push(contentSharePage, {
             downloadedFilePath: filePath
         });
@@ -171,8 +170,6 @@ MainView {
         target: python
         
         function onReceived(event, data) {
-            console.log('[MainPage] Event received:', event);
-            
             switch(event) {
                 case 'downloadFinished':
                     PopupUtils.open(exportPage, root, { url: data[1] });
@@ -185,7 +182,7 @@ MainView {
                     PopupUtils.open(mainDialogs.processError, root, { text: data });
                     break;
                 default:
-                    console.log('[MainPage] Unknown event:', event);
+                    console.error('[MainPage] Unknown event received:', event);
             }
         }
     }
@@ -193,7 +190,6 @@ MainView {
     Connections {
         target: Qt.application
         function onAboutToQuit() {
-            console.log("[MainPage] Saving history on quit");
             downloadManager.saveHistory();
         }
     }
@@ -260,6 +256,20 @@ MainView {
                     }
                 });
             }
+            
+            function reloadHistoryUI() {
+                historyLoadingOverlay.running = true;
+                
+                downloadManager.reloadHistory(function(hasHistory) {
+                    historyLoadingOverlay.running = false;
+                    
+                    if (hasHistory) {
+                        showDownloadItems();
+                    } else {
+                        hideDownloadItems();
+                    }
+                });
+            }
 
             ColumnLayout {
                 id: searchBarLayout
@@ -271,10 +281,31 @@ MainView {
                     id: mainScroll
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-                    Layout.minimumHeight: mainPage.height - header.height - bottomEdge.height - units.gu(2)
-                    contentY: units.gu(1)
+                    Layout.minimumHeight: mainPage.height - header.header - bottomEdge.height - units.gu(2)
                     contentHeight: inputPanel.height + downloadContainerHeading.height + 
                                   (downloadManager.count ? downloadManager.count * units.gu(10) : units.gu(10)) + units.gu(12)
+                    
+                    // Pull-to-refresh detection
+                    property bool isRefreshing: false
+                    property bool hasTriggered: false
+                    property real pullThreshold: units.gu(6)
+                    
+                    onContentYChanged: {
+                        // Detect pull down from top (contentY becomes negative when pulling down past the top)
+                    if (!isRefreshing && !hasTriggered && contentY < -pullThreshold && atYBeginning) {
+                        hasTriggered = true;
+                        isRefreshing = true;
+                        mainPage.reloadHistoryUI();
+                    }                        // Reset trigger flag when user pulls back up
+                        if (hasTriggered && contentY > -pullThreshold / 2) {
+                            hasTriggered = false;
+                        }
+                    }
+                    
+                    onMovementEnded: {
+                        isRefreshing = false;
+                        hasTriggered = false;
+                    }
 
                     ColumnLayout {
                         id: inputPanel
@@ -422,6 +453,7 @@ MainView {
                 height: root.height
                 hint.text: i18n.tr("Swipe for Settings")
                 hint.visible: enabled
+                pythonInstance: python
             }
         }
     }
@@ -431,13 +463,14 @@ MainView {
 
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../src/'));
-
-            importModule('download_manager', function() {
-                console.log('[MainPage] download_manager module imported');
-            });
+            importModule('download_manager', function() {});
+            importModule('storage_manager', function() {});
             
-            importModule('storage_manager', function() {
-                console.log('[MainPage] storage_manager module imported');
+            // Set up handler for historyCleared event
+            setHandler('historyCleared', function() {
+                if (pageStack.currentPage && pageStack.currentPage.objectName === 'mainPageItem') {
+                    pageStack.currentPage.reloadHistoryUI();
+                }
             });
         }
 
