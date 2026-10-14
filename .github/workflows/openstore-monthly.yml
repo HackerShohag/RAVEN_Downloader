@@ -148,8 +148,8 @@ jobs:
           click_file="$(find "${build_dir}" -maxdepth 1 -type f -name '*.click' -print -quit)"
           test -n "${click_file}"
           mkdir -p "${build_dir}/install"
-          dpkg-deb --fsys-tarfile "${click_file}" \
-            | tar -xOf - --wildcards --no-anchored 'manifest.json' \
+          dpkg-deb --ctrl-tarfile "${click_file}" \
+            | tar -xOf - --wildcards --no-anchored '*manifest*' \
               > "${build_dir}/install/manifest.json"
           test -s "${build_dir}/install/manifest.json"
 
