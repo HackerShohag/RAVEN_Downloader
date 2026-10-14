@@ -10,6 +10,6 @@
         }
     },
     "version": "@BUILD_VERSION@",
-    "maintainer": "Abdullah AL Shohag <HackerShohag@outlook.com>",
+    "maintainer": "RAVEN Developers Ltd. <HackerShohag@outlook.com>",
     "framework" : "@CLICK_FRAMEWORK@"
 }

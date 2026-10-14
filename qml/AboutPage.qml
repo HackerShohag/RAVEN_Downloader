@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025  Abdullah AL Shohag
+ * Copyright (C) 2025  RAVEN Developers Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,19 @@ Dialog {
             id: aboutContent
             width: parent.width
             spacing: units.gu(1)
+
+            Image {
+                Layout.alignment: Qt.AlignHCenter
+                Layout.preferredWidth: units.gu(14)
+                Layout.preferredHeight: units.gu(14)
+                property color backgroundColor: theme.palette.normal.background
+                source: backgroundColor.r + backgroundColor.g + backgroundColor.b < 1.5
+                        ? Qt.resolvedUrl("../assets/raven/logo_dark.png")
+                        : Qt.resolvedUrl("../assets/raven/logo_light.png")
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                mipmap: true
+            }
             
             Label {
                 Layout.fillWidth: true
@@ -80,7 +93,7 @@ Dialog {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.WordWrap
-                text: "Abdullah AL Shohag"
+                text: "RAVEN Developers Ltd."
             }
             
             CustomLabel {
@@ -100,7 +113,7 @@ Dialog {
             }
 
             CustomLabel {
-                text: "• <a href='https://github.com/yt-dlp/yt-dlp'>yt-dlp</a> 2025.11.12<br>" +
+                text: "• <a href='https://github.com/yt-dlp/yt-dlp'>yt-dlp</a> (embedded)<br>" +
                       "• <a href='https://ffmpeg.org'>FFmpeg</a> 8.0.1<br>"
             }
             

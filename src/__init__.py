@@ -1,5 +1,5 @@
 '''
- Copyright (C) 2025  Abdullah AL Shohag
+ Copyright (C) 2025  RAVEN Developers Ltd.
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by

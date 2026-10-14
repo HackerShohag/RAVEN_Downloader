@@ -381,7 +381,7 @@ We welcome contributions! Follow these steps:
 
 **GNU General Public License v3.0**
 
-Copyright (C) 2025 Abdullah AL Shohag
+Copyright (C) 2025 RAVEN Developers Ltd.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
 
@@ -397,7 +397,7 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 - **Issues**: [github.com/HackerShohag/RAVEN_Downloader/issues](https://github.com/HackerShohag/RAVEN_Downloader/issues)
 
 ### Contact
-- **Developer**: Abdullah AL Shohag
+- **Developer**: RAVEN Developers Ltd.
 - **Email**: [HackerShohag@outlook.com](mailto:HackerShohag@outlook.com)
 - **Platform**: Ubuntu Touch (Lomiri)
 
