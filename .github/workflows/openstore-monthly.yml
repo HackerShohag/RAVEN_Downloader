@@ -114,6 +114,9 @@ jobs:
     environment: openstore
     strategy:
       fail-fast: false
+      # Each upload updates the same OpenStore app record. Submit one
+      # architecture at a time to avoid concurrent app updates.
+      max-parallel: 1
       matrix:
         include:
           - arch: arm64
@@ -164,4 +167,19 @@ jobs:
         run: |
           set -euo pipefail
           test -n "${OPENSTORE_API_KEY}"
-          clickable publish --arch "${{ matrix.arch }}" -- "Automated monthly build ${BUILD_VERSION} with the latest yt-dlp release."
+          publish_log="$(mktemp)"
+          trap 'rm -f "$publish_log"' EXIT
+          for attempt in 1 2 3 4 5; do
+            if clickable publish --arch "${{ matrix.arch }}" -- "Automated monthly build ${BUILD_VERSION} with the latest yt-dlp release." 2>&1 | tee "$publish_log"; then
+              break
+            else
+              status=$?
+            fi
+            # Retry only rate limits and transient OpenStore server errors.
+            # Review, authentication, and other client errors stay fatal.
+            if ! grep -Eq '\((429|5[0-9]{2})\)' "$publish_log" || [[ "$attempt" -eq 5 ]]; then
+              exit "$status"
+            fi
+            echo "OpenStore returned a transient error; retrying upload (attempt $((attempt + 1))/5)."
+            sleep "$((15 * attempt))"
+          done
