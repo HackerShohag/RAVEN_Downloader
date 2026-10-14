@@ -35,7 +35,7 @@ jobs:
     outputs:
       value: ${{ steps.version.outputs.value }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - id: version
         name: Choose release version
@@ -77,13 +77,13 @@ jobs:
       # than a package cached in a prior container layer.
       PIP_NO_CACHE_DIR: "1"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build Click package with the latest yt-dlp
         run: clickable build --arch "${{ matrix.arch }}"
 
       - name: Upload Click package
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: raven-downloader-${{ matrix.arch }}
           path: ${{ matrix.build_dir }}/*.click
@@ -123,10 +123,10 @@ jobs:
       OPENSTORE_API_KEY: ${{ secrets.OPENSTORE_API_KEY }}
       BUILD_VERSION: ${{ needs.version.outputs.value }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Download Click package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: raven-downloader-${{ matrix.arch }}
           path: ${{ matrix.build_dir }}
@@ -136,6 +136,21 @@ jobs:
         run: |
           set -euo pipefail
           find "${{ matrix.build_dir }}" -maxdepth 1 -type f -name '*.click' -print
+
+      # `clickable publish` reads the manifest from the install directory even
+      # when the completed Click package is already available. Reconstruct that
+      # one metadata file from the downloaded artifact; do not rebuild it.
+      - name: Restore Clickable publish metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          build_dir="${{ matrix.build_dir }}"
+          click_file="$(find "${build_dir}" -maxdepth 1 -type f -name '*.click' -print -quit)"
+          test -n "${click_file}"
+          mkdir -p "${build_dir}/install"
+          dpkg-deb --fsys-tarfile "${click_file}" \
+            | tar -xOf - ./manifest.json > "${build_dir}/install/manifest.json"
+          test -s "${build_dir}/install/manifest.json"
 
       - name: Publish to OpenStore
         shell: bash
