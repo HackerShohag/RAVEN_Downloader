@@ -36,31 +36,38 @@ else()
     )
 endif()
 
-# Sets BUILD_VERSION: Either tag of the current git HEAD or devel build version with git hash
-execute_process(
-  COMMAND git describe --tags --abbrev=0 --exact-match
-  OUTPUT_VARIABLE BUILD_VERSION_RAW
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-  ERROR_QUIET
-  )
-if(NOT BUILD_VERSION_RAW)
+# CI can supply one release version for every architecture in a multi-arch build.
+# This is used by the scheduled OpenStore workflow, which needs a fresh and
+# identical version for the arm64, amd64, and armhf packages.
+if(DEFINED ENV{BUILD_VERSION} AND NOT "$ENV{BUILD_VERSION}" STREQUAL "")
+  set(BUILD_VERSION "$ENV{BUILD_VERSION}")
+else()
+  # Sets BUILD_VERSION: Either tag of the current git HEAD or a timestamped
+  # development version. Only v-prefixed tags are considered release tags.
   execute_process(
-    COMMAND git describe --tags --abbrev=0
-    OUTPUT_VARIABLE LAST_VERSION_RAW
+    COMMAND git describe --tags --match "v*" --abbrev=0 --exact-match
+    OUTPUT_VARIABLE BUILD_VERSION_RAW
     OUTPUT_STRIP_TRAILING_WHITESPACE
     ERROR_QUIET
+  )
+  if(NOT BUILD_VERSION_RAW)
+    execute_process(
+      COMMAND git describe --tags --match "v*" --abbrev=0
+      OUTPUT_VARIABLE LAST_VERSION_RAW
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_QUIET
     )
-  if(LAST_VERSION_RAW)
-    string(SUBSTRING ${LAST_VERSION_RAW} 1 -1 LAST_VERSION)
-    string(TIMESTAMP BUILD_VERSION "${LAST_VERSION}.%y%m%d%H%M%S" UTC)
+    if(LAST_VERSION_RAW)
+      string(SUBSTRING "${LAST_VERSION_RAW}" 1 -1 LAST_VERSION)
+      string(TIMESTAMP BUILD_VERSION "${LAST_VERSION}.%y%m%d%H%M%S" UTC)
+    else()
+      string(TIMESTAMP BUILD_VERSION "${PROJECT_VERSION}.%y%m%d%H%M%S" UTC)
+    endif()
   else()
-    # Fallback to PROJECT_VERSION if no git tags
-    string(TIMESTAMP BUILD_VERSION "${PROJECT_VERSION}")
+    # Remove the v prefix from a release tag.
+    string(SUBSTRING "${BUILD_VERSION_RAW}" 1 -1 BUILD_VERSION)
   endif()
-else()
-  # Remove 'v' prefix from git tag
-  string(SUBSTRING ${BUILD_VERSION_RAW} 1 -1 BUILD_VERSION)
-endif(NOT BUILD_VERSION_RAW)
+endif()
 message(STATUS "Build version is: ${BUILD_VERSION}")
 add_definitions(-DBUILD_VERSION="${BUILD_VERSION}")
 

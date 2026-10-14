@@ -1,0 +1,151 @@
+name: Build and publish to OpenStore
+
+on:
+  # GitHub Actions schedules use UTC. The first day of every month has fewer
+  # competing scheduled workflows than the top of the hour.
+  schedule:
+    - cron: "23 04 1 * *"
+  # Preserve the former GitLab release behavior for explicit release tags.
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the built packages to OpenStore
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+# Do not overlap OpenStore submissions. Each run publishes all architectures
+# under the same generated version.
+concurrency:
+  group: openstore-publish
+  cancel-in-progress: false
+
+jobs:
+  version:
+    name: Generate package version
+    runs-on: ubuntu-latest
+    outputs:
+      value: ${{ steps.version.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: version
+        name: Choose release version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            base_version="$(sed -n 's/^set(PROJECT_VERSION "\([^"]*\)")/\1/p' CMakeLists.txt)"
+            test -n "${base_version}"
+            version="${base_version}.$(date -u +%Y%m%d%H%M%S)"
+          fi
+          echo "value=${version}" >> "${GITHUB_OUTPUT}"
+          echo "Building version ${version}"
+
+  build:
+    name: Build (${{ matrix.arch }})
+    needs: version
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            image: clickable/ci-dev-ut24.04-1.x-arm64:8
+            build_dir: build/aarch64-linux-gnu/app
+          - arch: amd64
+            image: clickable/ci-dev-ut24.04-1.x-amd64:8
+            build_dir: build/x86_64-linux-gnu/app
+          - arch: armhf
+            image: clickable/ci-dev-ut24.04-1.x-armhf:8
+            build_dir: build/arm-linux-gnueabihf/app
+    env:
+      BUILD_VERSION: ${{ needs.version.outputs.value }}
+      # A scheduled release must resolve the current yt-dlp release rather
+      # than a package cached in a prior container layer.
+      PIP_NO_CACHE_DIR: "1"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Click package with the latest yt-dlp
+        run: clickable build --arch "${{ matrix.arch }}"
+
+      - name: Record embedded yt-dlp version
+        run: |
+          set -euo pipefail
+          package_dir="${{ matrix.build_dir }}"
+          PYTHONPATH="${package_dir}/lib/python3/dist-packages" \
+            python3 -c 'import yt_dlp; print(yt_dlp.version.__version__)' \
+            | tee "${package_dir}/yt-dlp-version.txt"
+
+      - name: Upload Click package
+        uses: actions/upload-artifact@v4
+        with:
+          name: raven-downloader-${{ matrix.arch }}
+          path: |
+            ${{ matrix.build_dir }}/*.click
+            ${{ matrix.build_dir }}/yt-dlp-version.txt
+          if-no-files-found: error
+          retention-days: 31
+
+  publish:
+    name: Publish (${{ matrix.arch }})
+    needs:
+      - version
+      - build
+    # Scheduled builds and version tags publish automatically. Manual runs can
+    # build without publishing unless the caller explicitly enables publishing.
+    if: >-
+      github.event_name == 'schedule' ||
+      github.ref_type == 'tag' ||
+      (github.event_name == 'workflow_dispatch' && inputs.publish)
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ matrix.image }}
+    environment: openstore
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            image: clickable/ci-dev-ut24.04-1.x-arm64:8
+            build_dir: build/aarch64-linux-gnu/app
+          - arch: amd64
+            image: clickable/ci-dev-ut24.04-1.x-amd64:8
+            build_dir: build/x86_64-linux-gnu/app
+          - arch: armhf
+            image: clickable/ci-dev-ut24.04-1.x-armhf:8
+            build_dir: build/arm-linux-gnueabihf/app
+    env:
+      OPENSTORE_API_KEY: ${{ secrets.OPENSTORE_API_KEY }}
+      BUILD_VERSION: ${{ needs.version.outputs.value }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download Click package
+        uses: actions/download-artifact@v4
+        with:
+          name: raven-downloader-${{ matrix.arch }}
+          path: ${{ matrix.build_dir }}
+
+      - name: Show package versions
+        run: |
+          set -euo pipefail
+          find "${{ matrix.build_dir }}" -maxdepth 1 -type f -name '*.click' -print
+          cat "${{ matrix.build_dir }}/yt-dlp-version.txt"
+
+      - name: Publish to OpenStore
+        run: |
+          set -euo pipefail
+          test -n "${OPENSTORE_API_KEY}"
+          clickable publish --arch "${{ matrix.arch }}" -- "Automated monthly build ${BUILD_VERSION} with the latest yt-dlp release."

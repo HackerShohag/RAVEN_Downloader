@@ -215,6 +215,20 @@ To update yt-dlp:
 pip install --target lib/python3/dist-packages yt-dlp --upgrade
 ```
 
+### Automated OpenStore Releases
+
+GitHub Actions builds arm64, amd64, and armhf packages and publishes them to
+OpenStore on the first day of every month at 04:23 UTC. The build installs the
+latest stable `yt-dlp` release at build time and records the embedded version in
+the workflow artifact.
+
+Before enabling the workflow, add the OpenStore API key as the
+`OPENSTORE_API_KEY` GitHub Actions secret (repository-level or in the
+`openstore` environment). The key is available from the OpenStore account
+settings. A release tag beginning with `v` also publishes all architectures.
+You can run the workflow manually from the Actions tab; manual runs build only
+unless **Publish the built packages to OpenStore** is selected.
+
 ---
 
 ## URL Format Examples
