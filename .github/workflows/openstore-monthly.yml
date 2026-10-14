@@ -149,7 +149,8 @@ jobs:
           test -n "${click_file}"
           mkdir -p "${build_dir}/install"
           dpkg-deb --fsys-tarfile "${click_file}" \
-            | tar -xOf - ./manifest.json > "${build_dir}/install/manifest.json"
+            | tar -xOf - --wildcards --no-anchored 'manifest.json' \
+              > "${build_dir}/install/manifest.json"
           test -s "${build_dir}/install/manifest.json"
 
       - name: Publish to OpenStore
