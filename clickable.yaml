@@ -31,7 +31,8 @@ postbuild: |
   mkdir -p "$TARGET_DIR/lib/python3/dist-packages"
   
   echo "Installing yt-dlp..."
-  pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-warn-script-location yt-dlp
+  pip3 install --target="$TARGET_DIR/lib/python3/dist-packages" --upgrade --no-cache-dir --no-warn-script-location yt-dlp
+  PYTHONPATH="$TARGET_DIR/lib/python3/dist-packages" python3 -c 'import yt_dlp; print("Embedded yt-dlp version: " + yt_dlp.version.__version__)'
   
   echo "=== Building ffmpeg from source ==="
   mkdir -p "$TARGET_DIR/bin"

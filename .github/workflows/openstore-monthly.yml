@@ -95,9 +95,10 @@ jobs:
     needs:
       - version
       - build
-    # Scheduled builds and version tags publish automatically. Manual runs can
-    # build without publishing unless the caller explicitly enables publishing.
+    # Main pushes, scheduled builds, and version tags publish automatically.
+    # Manual runs can build without publishing unless the caller enables it.
     if: >-
+      github.event_name == 'push' ||
       github.event_name == 'schedule' ||
       github.ref_type == 'tag' ||
       (github.event_name == 'workflow_dispatch' && inputs.publish)
