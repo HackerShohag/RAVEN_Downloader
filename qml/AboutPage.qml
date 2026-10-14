@@ -132,7 +132,7 @@ Dialog {
             }
             
             CustomLabel {
-                text: "<a href='https://github.com/HackerShohag/RAVEN_Downloader'>https://github.com/HackerShohag/RAVEN_Downloader</a>"
+                text: "<a href='https://github.com/raven-dev-ltd/RAVEN_Downloader'>https://github.com/raven-dev-ltd/RAVEN_Downloader</a>"
             }
         }
     }

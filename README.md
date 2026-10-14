@@ -3,7 +3,7 @@
 **Professional video downloader for Ubuntu Touch** — Powered by yt-dlp with native QML interface and Python backend.
 
 [![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
-[![Build and publish to OpenStore](https://github.com/HackerShohag/RAVEN_Downloader/actions/workflows/openstore-monthly.yml/badge.svg)](https://github.com/HackerShohag/RAVEN_Downloader/actions/workflows/openstore-monthly.yml) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](manifest.json.in)
+[![Build and publish to OpenStore](https://github.com/raven-dev-ltd/RAVEN_Downloader/actions/workflows/openstore-monthly.yml/badge.svg)](https://github.com/raven-dev-ltd/RAVEN_Downloader/actions/workflows/openstore-monthly.yml) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE) [![Version](https://img.shields.io/badge/version-2.0.0-green.svg)](manifest.json.in)
 
 ---
 
@@ -392,9 +392,9 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 ## Links & Resources
 
 ### Project
-- **Repository**: [github.com/HackerShohag/RAVEN_Downloader](https://github.com/HackerShohag/RAVEN_Downloader)
+- **Repository**: [github.com/raven-dev-ltd/RAVEN_Downloader](https://github.com/raven-dev-ltd/RAVEN_Downloader)
 - **OpenStore**: [open-store.io/app/raven.downloader.shohag](https://open-store.io/app/raven.downloader.shohag)
-- **Issues**: [github.com/HackerShohag/RAVEN_Downloader/issues](https://github.com/HackerShohag/RAVEN_Downloader/issues)
+- **Issues**: [github.com/raven-dev-ltd/RAVEN_Downloader/issues](https://github.com/raven-dev-ltd/RAVEN_Downloader/issues)
 
 ### Contact
 - **Developer**: RAVEN Developers Ltd.
