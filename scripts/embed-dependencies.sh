@@ -73,8 +73,14 @@ popd >/dev/null
 
 test -x "$ffmpeg_bin_dir/ffmpeg"
 file "$ffmpeg_bin_dir/ffmpeg"
-LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-  "$ffmpeg_bin_dir/ffmpeg" -version
+
+# The GitHub runner is amd64. Cross-compiled ARM binaries cannot be executed
+# there, but `file` above still verifies that Click review will see a native
+# target executable in the package.
+if [[ "$ARCH" == "amd64" ]]; then
+  LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+    "$ffmpeg_bin_dir/ffmpeg" -version
+fi
 
 rm -rf "$ffmpeg_build_dir" "$ffmpeg_archive"
 echo "=== Embedded dependencies installed ==="
