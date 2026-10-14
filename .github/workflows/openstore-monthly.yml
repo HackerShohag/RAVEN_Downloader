@@ -5,8 +5,10 @@ on:
   # competing scheduled workflows than the top of the hour.
   schedule:
     - cron: "23 04 1 * *"
-  # Preserve the former GitLab release behavior for explicit release tags.
+  # Run CI on changes merged to main and preserve tag-based releases.
   push:
+    branches:
+      - main
     tags:
       - "v*"
   workflow_dispatch:
