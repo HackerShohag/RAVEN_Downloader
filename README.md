@@ -47,7 +47,7 @@
 
 ```bash
 # From OpenStore (Recommended)
-Search for "RAVEN Downloader" in OpenStore app
+[Get RAVEN Downloader from OpenStore](https://open-store.io/app/raven.downloader.shohag)
 
 # Manual Build
 clickable build
