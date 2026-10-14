@@ -27,25 +27,31 @@ lib_path = current_dir / "lib" / "python3" / "dist-packages"
 if lib_path.exists():
     sys.path.insert(0, str(lib_path))
 
-ffmpeg_lib_path = current_dir / "lib"
-if ffmpeg_lib_path.exists():
-    ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
-    if ld_library_path:
-        os.environ["LD_LIBRARY_PATH"] = f"{ffmpeg_lib_path}{os.pathsep}{ld_library_path}"
-    else:
-        os.environ["LD_LIBRARY_PATH"] = str(ffmpeg_lib_path)
+# Target-specific executables and shared libraries belong below
+# lib/<multiarch-triplet>.  This is Clickable's runtime layout and lets
+# click-review verify that the Click architecture matches the embedded ffmpeg.
+# Keep the former root-level bin directory as a fallback for already-installed
+# versions of the app.
+ffmpeg_candidates = []
+runtime_triplet = os.environ.get("ARCH_TRIPLET")
+if runtime_triplet:
+    ffmpeg_candidates.append(current_dir / "lib" / runtime_triplet / "bin" / "ffmpeg")
+ffmpeg_candidates.extend((current_dir / "lib").glob("*/bin/ffmpeg"))
+ffmpeg_candidates.append(current_dir / "bin" / "ffmpeg")
 
-bin_path = current_dir / "bin"
-if bin_path.exists():
-    os.environ["PATH"] = str(bin_path) + os.pathsep + os.environ.get("PATH", "")
-    
-    ffmpeg_location = bin_path / "ffmpeg"
-    if ffmpeg_location.exists():
-        os.environ["FFMPEG_BINARY"] = str(ffmpeg_location)
-    else:
-        print(f"[download_manager] WARNING: ffmpeg binary not found at {ffmpeg_location}")
+ffmpeg_location = next((path for path in ffmpeg_candidates if path.is_file()), None)
+if ffmpeg_location:
+    ffmpeg_bin_path = ffmpeg_location.parent
+    ffmpeg_lib_path = ffmpeg_bin_path.parent
+    ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
+    os.environ["LD_LIBRARY_PATH"] = (
+        f"{ffmpeg_lib_path}{os.pathsep}{ld_library_path}"
+        if ld_library_path else str(ffmpeg_lib_path)
+    )
+    os.environ["PATH"] = str(ffmpeg_bin_path) + os.pathsep + os.environ.get("PATH", "")
+    os.environ["FFMPEG_BINARY"] = str(ffmpeg_location)
 else:
-    print(f"[download_manager] WARNING: bin directory not found at {bin_path}")
+    print("[download_manager] WARNING: embedded ffmpeg binary not found")
 
 try:
     import yt_dlp

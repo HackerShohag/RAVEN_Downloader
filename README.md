@@ -1,5 +1,5 @@
 # RAVEN Downloader
-
+[![Build and publish to OpenStore](https://github.com/HackerShohag/RAVEN_Downloader/actions/workflows/openstore-monthly.yml/badge.svg)](https://github.com/HackerShohag/RAVEN_Downloader/actions/workflows/openstore-monthly.yml)
 **Professional video downloader for Ubuntu Touch** — Powered by yt-dlp with native QML interface and Python backend.
 
 [![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/raven.downloader.shohag)
@@ -207,7 +207,7 @@ clickable install
 ### Embedded Dependencies
 Dependencies are bundled during build process:
 - **yt-dlp** → `lib/python3/dist-packages/` (Python package)
-- **ffmpeg** → `bin/ffmpeg` (binary for media processing)
+- **ffmpeg** → `lib/<target-triplet>/bin/ffmpeg` (binary for media processing)
 
 To update yt-dlp:
 ```bash
@@ -271,9 +271,8 @@ raven.downloader/
 ├── assets/                 # Images, icons
 ├── lib/                    # Embedded Python packages
 │   └── python3/dist-packages/yt_dlp/
-├── bin/                    # Embedded binaries
-│   ├── arm64/ffmpeg
-│   └── x86_64/ffmpeg
+├── lib/<target-triplet>/bin/ # Embedded target binaries
+│   └── ffmpeg
 ├── clickable.yaml          # Build configuration
 ├── manifest.json.in        # App metadata
 └── README.md
@@ -310,7 +309,7 @@ clickable desktop --no-nvidia 2>&1 | tee app.log
 |-------|----------|
 | **yt-dlp not found** | `clickable clean && clickable build` |
 | **Module import error** | Verify `lib/python3/dist-packages` contains yt-dlp |
-| **ffmpeg missing** | Check `bin/arm64/ffmpeg` (or `x86_64`) exists |
+| **ffmpeg missing** | Check `lib/aarch64-linux-gnu/bin/ffmpeg` (or the matching target triplet) exists |
 | **CMake warnings** | Safe to ignore deprecation warnings (compatibility) |
 
 ### Runtime Issues

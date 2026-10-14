@@ -9,9 +9,6 @@ image_setup:
     - apt update
     - apt install -y python3-pip build-essential yasm nasm pkg-config
 
-ignore_review_warnings: true
-ignore_review_errors: true
-
 # Post-build script to install yt-dlp as embedded Python library and build ffmpeg from source
 postbuild: |
   set -ex
@@ -35,8 +32,14 @@ postbuild: |
   PYTHONPATH="$TARGET_DIR/lib/python3/dist-packages" python3 -c 'import yt_dlp; print("Embedded yt-dlp version: " + yt_dlp.version.__version__)'
   
   echo "=== Building ffmpeg from source ==="
-  mkdir -p "$TARGET_DIR/bin"
-  mkdir -p "$TARGET_DIR/lib"
+  # Clickable and click-review require target binaries and their shared
+  # libraries below lib/${ARCH_TRIPLET}.  These are also the directories
+  # Clickable adds to PATH and LD_LIBRARY_PATH when the app starts.
+  test -n "${ARCH_TRIPLET:-}"
+  FFMPEG_BIN_DIR="$TARGET_DIR/lib/$ARCH_TRIPLET/bin"
+  FFMPEG_LIB_DIR="$TARGET_DIR/lib/$ARCH_TRIPLET"
+  mkdir -p "$FFMPEG_BIN_DIR"
+  mkdir -p "$FFMPEG_LIB_DIR"
   mkdir -p "$TARGET_DIR/include"
   # mkdir -p "$TARGET_DIR/opt"
   
@@ -93,7 +96,7 @@ postbuild: |
       ;;
   esac
 
-  ./configure --prefix="$TARGET_DIR" --bindir="$TARGET_DIR/bin" --libdir="$TARGET_DIR/lib" $ARCH_CONFIG --enable-shared --enable-gpl --enable-small --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-debug --disable-static --disable-programs --enable-ffmpeg --enable-ffprobe
+  ./configure --prefix="$TARGET_DIR" --bindir="$FFMPEG_BIN_DIR" --libdir="$FFMPEG_LIB_DIR" $ARCH_CONFIG --enable-shared --enable-gpl --enable-small --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-debug --disable-static --disable-programs --enable-ffmpeg --enable-ffprobe
   
   if [ $? -ne 0 ]; then
     echo "ERROR: ffmpeg configuration failed"
@@ -118,20 +121,20 @@ postbuild: |
   
   # Verify installation
   echo "Verifying ffmpeg installation..."
-  if [ -f "$TARGET_DIR/bin/ffmpeg" ]; then
-    chmod +x "$TARGET_DIR/bin/ffmpeg"
-    echo "ffmpeg binary installed to $TARGET_DIR/bin/ffmpeg"
+  if [ -f "$FFMPEG_BIN_DIR/ffmpeg" ]; then
+    chmod +x "$FFMPEG_BIN_DIR/ffmpeg"
+    echo "ffmpeg binary installed to $FFMPEG_BIN_DIR/ffmpeg"
     
     # Verify architecture of built binaries
     echo "Verifying architecture of built binaries:"
-    file "$TARGET_DIR/bin/ffmpeg"
-    if [ -f "$TARGET_DIR/lib/libavcodec.so" ]; then
-      file "$TARGET_DIR/lib/libavcodec.so"
+    file "$FFMPEG_BIN_DIR/ffmpeg"
+    if [ -f "$FFMPEG_LIB_DIR/libavcodec.so" ]; then
+      file "$FFMPEG_LIB_DIR/libavcodec.so"
     fi
     
     # Set library path for verification
-    export LD_LIBRARY_PATH="$TARGET_DIR/lib:${LD_LIBRARY_PATH:-}"
-    "$TARGET_DIR/bin/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
+    export LD_LIBRARY_PATH="$FFMPEG_LIB_DIR:${LD_LIBRARY_PATH:-}"
+    "$FFMPEG_BIN_DIR/ffmpeg" -version || echo "WARNING: ffmpeg binary may not be functional"
   else
     echo "ERROR: ffmpeg binary not found after installation"
     exit 1

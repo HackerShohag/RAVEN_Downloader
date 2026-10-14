@@ -82,6 +82,12 @@ jobs:
       - name: Build Click package with the latest yt-dlp
         run: clickable build --arch "${{ matrix.arch }}"
 
+      # Clickable already reviews automatically after `build`. Keep this
+      # explicit review gate as well: it makes the OpenStore prerequisite
+      # visible in CI and prevents an artifact upload on any review finding.
+      - name: Verify Click package passes automated review
+        run: clickable review --arch "${{ matrix.arch }}"
+
       - name: Upload Click package
         uses: actions/upload-artifact@v6
         with:
