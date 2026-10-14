@@ -31,7 +31,8 @@ case "$ARCH" in
     ffmpeg_arch_args=(--arch=aarch64 --enable-cross-compile --cross-prefix=aarch64-linux-gnu- --target-os=linux)
     ;;
   armhf)
-    ffmpeg_arch_args=(--arch=arm --cpu=armv7-a --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- --target-os=linux)
+    # ARMv7-A is an instruction architecture, not a GCC -mcpu model.
+    ffmpeg_arch_args=(--arch=arm "--extra-cflags=-march=armv7-a -mfpu=vfpv3-d16" --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- --target-os=linux)
     ;;
   amd64)
     ffmpeg_arch_args=(--arch=x86_64)
@@ -74,13 +75,18 @@ popd >/dev/null
 test -x "$ffmpeg_bin_dir/ffmpeg"
 file "$ffmpeg_bin_dir/ffmpeg"
 
-# The GitHub runner is amd64. Cross-compiled ARM binaries cannot be executed
-# there, but `file` above still verifies that Click review will see a native
-# target executable in the package.
-if [[ "$ARCH" == "amd64" ]]; then
-  LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-    "$ffmpeg_bin_dir/ffmpeg" -version
-fi
+# Execute the runtime check only when the host can run the target binary.
+# armhf is built for ARMv7, so an ARMv6 host is not compatible.
+host_arch="$(uname -m)"
+case "$ARCH:$host_arch" in
+  amd64:x86_64|amd64:amd64|arm64:aarch64|arm64:arm64|armhf:armv7l|armhf:armhf)
+    LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+      "$ffmpeg_bin_dir/ffmpeg" -version
+    ;;
+  *)
+    echo "Skipping ffmpeg runtime check for target ${ARCH} on host ${host_arch}"
+    ;;
+esac
 
 rm -rf "$ffmpeg_build_dir" "$ffmpeg_archive"
 echo "=== Embedded dependencies installed ==="

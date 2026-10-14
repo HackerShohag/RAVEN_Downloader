@@ -7,13 +7,7 @@ framework: ubuntu-touch-24.04-1.x
 image_setup:
   run:
     - apt update
-    # The Clickable image provides the cross compilers, but FFmpeg's configure
-    # test also links a target executable.  Install each target C runtime so
-    # that test has its crt objects and dynamic linker.
-    - >-
-      apt install -y python3-pip build-essential yasm nasm pkg-config
-      gcc-aarch64-linux-gnu libc6-dev-arm64-cross
-      gcc-arm-linux-gnueabihf libc6-dev-armhf-cross
+    - apt install -y python3-pip build-essential yasm nasm pkg-config
 
 # Keep the commands in a file. In container mode Clickable wraps inline
 # commands in `bash -c "..."`, which truncates an inline script containing
