@@ -73,8 +73,27 @@ popd >/dev/null
 
 test -x "$ffmpeg_bin_dir/ffmpeg"
 file "$ffmpeg_bin_dir/ffmpeg"
-LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
-  "$ffmpeg_bin_dir/ffmpeg" -version
+
+host_arch="$(uname -m)"
+can_run_ffmpeg=false
+case "$ARCH" in
+  arm64)
+    [[ "$host_arch" == "aarch64" || "$host_arch" == "arm64" ]] && can_run_ffmpeg=true
+    ;;
+  armhf)
+    [[ "$host_arch" == "armv7l" || "$host_arch" == "armv6l" || "$host_arch" == "armhf" ]] && can_run_ffmpeg=true
+    ;;
+  amd64)
+    [[ "$host_arch" == "x86_64" || "$host_arch" == "amd64" ]] && can_run_ffmpeg=true
+    ;;
+esac
+
+if [[ "$can_run_ffmpeg" == true ]]; then
+  LD_LIBRARY_PATH="$ffmpeg_lib_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" \
+    "$ffmpeg_bin_dir/ffmpeg" -version
+else
+  echo "Skipping ffmpeg runtime check for target architecture ${ARCH} on host ${host_arch}"
+fi
 
 rm -rf "$ffmpeg_build_dir" "$ffmpeg_archive"
 echo "=== Embedded dependencies installed ==="
