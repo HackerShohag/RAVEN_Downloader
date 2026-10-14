@@ -83,6 +83,7 @@ jobs:
         run: clickable build --arch "${{ matrix.arch }}"
 
       - name: Record embedded yt-dlp version
+        shell: bash
         run: |
           set -euo pipefail
           package_dir="${{ matrix.build_dir }}"
@@ -141,12 +142,14 @@ jobs:
           path: ${{ matrix.build_dir }}
 
       - name: Show package versions
+        shell: bash
         run: |
           set -euo pipefail
           find "${{ matrix.build_dir }}" -maxdepth 1 -type f -name '*.click' -print
           cat "${{ matrix.build_dir }}/yt-dlp-version.txt"
 
       - name: Publish to OpenStore
+        shell: bash
         run: |
           set -euo pipefail
           test -n "${OPENSTORE_API_KEY}"
